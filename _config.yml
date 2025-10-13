@@ -1,0 +1,12 @@
+# Jekyll configuration for GitHub Pages
+exclude:
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - vite.config.ts
+  - tsconfig.json
+  - tsconfig.node.json
+  - src/
+  - docs/rules/
+  - README.md
+  - CLAUDE.md
