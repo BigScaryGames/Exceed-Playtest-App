@@ -61,7 +61,8 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]) =>
     '2H': 0,
     'SaS': 0,
     'Sh': 0,
-    'Ar': 0
+    'Ar': 0,
+    'Spell': 0
   };
 
   // Sum up CP for each domain
@@ -77,15 +78,27 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]) =>
     '2H': 0,
     'SaS': 0,
     'Sh': 0,
-    'Ar': 0
+    'Ar': 0,
+    'Spell': 0
   };
 
   Object.keys(cpByDomain).forEach(domain => {
     const cp = cpByDomain[domain];
     let level = 0;
-    for (let i = 0; i < DOMAIN_CP_THRESHOLDS.length; i++) {
-      if (cp >= DOMAIN_CP_THRESHOLDS[i]) {
-        level = i + 1;
+
+    // Spell domain has different thresholds: 10, 30, 60, 100, 150
+    if (domain === 'Spell') {
+      if (cp >= 150) level = 5;
+      else if (cp >= 100) level = 4;
+      else if (cp >= 60) level = 3;
+      else if (cp >= 30) level = 2;
+      else if (cp >= 10) level = 1;
+    } else {
+      // Weapon domains use standard thresholds: 5, 15, 30, 50, 75
+      for (let i = 0; i < DOMAIN_CP_THRESHOLDS.length; i++) {
+        if (cp >= DOMAIN_CP_THRESHOLDS[i]) {
+          level = i + 1;
+        }
       }
     }
     domains[domain as WeaponDomain] = level;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, Upload } from 'lucide-react';
+import { User, Upload, Trash2 } from 'lucide-react';
 import { Character } from '@/types/character';
 import {
   createEmptyCharacter,
@@ -7,6 +7,7 @@ import {
   loadAllCharacters,
   importCharacter,
   exportCharacter,
+  deleteCharacter,
 } from '@/utils/character';
 import { CharacterSheet } from '@/components/CharacterSheet';
 
@@ -101,6 +102,26 @@ export default function App() {
   const handleExportCharacter = () => {
     if (!currentCharacter) return;
     exportCharacter(currentCharacter);
+  };
+
+  const handleDeleteCharacter = (characterName: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent triggering the character selection
+
+    if (!confirm(`Are you sure you want to delete "${characterName}"? This cannot be undone.`)) {
+      return;
+    }
+
+    // Delete from localStorage
+    deleteCharacter(characterName);
+
+    // Update local state
+    const updatedCharacters = characters.filter(c => c.name !== characterName);
+    setCharacters(updatedCharacters);
+
+    // If the deleted character was currently loaded, clear it
+    if (currentCharacter?.name === characterName) {
+      setCurrentCharacter(null);
+    }
   };
 
   const handleBackToLanding = () => {
@@ -282,16 +303,25 @@ export default function App() {
                   <div
                     key={character.name + index}
                     onClick={() => handleSelectCharacter(character)}
-                    className="p-4 hover:bg-slate-750 cursor-pointer transition-colors"
+                    className="p-4 hover:bg-slate-750 cursor-pointer transition-colors flex items-center justify-between"
                   >
-                    <h3 className="font-semibold text-lg">{character.name}</h3>
-                    {character.concept && (
-                      <p className="text-slate-400 text-sm">{character.concept}</p>
-                    )}
-                    <div className="flex gap-4 mt-2 text-xs text-slate-500">
-                      <span>Combat XP: {character.combatXP}</span>
-                      <span>Social XP: {character.socialXP}</span>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg">{character.name}</h3>
+                      {character.concept && (
+                        <p className="text-slate-400 text-sm">{character.concept}</p>
+                      )}
+                      <div className="flex gap-4 mt-2 text-xs text-slate-500">
+                        <span>Combat XP: {character.combatXP}</span>
+                        <span>Social XP: {character.socialXP}</span>
+                      </div>
                     </div>
+                    <button
+                      onClick={(e) => handleDeleteCharacter(character.name, e)}
+                      className="text-red-400 hover:text-red-300 hover:bg-red-900/20 p-2 rounded transition-colors"
+                      title="Delete character"
+                    >
+                      <Trash2 size={20} />
+                    </button>
                   </div>
                 ))}
               </div>

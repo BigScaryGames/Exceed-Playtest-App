@@ -2,7 +2,7 @@
 
 export type AttributeCode = 'MG' | 'EN' | 'AG' | 'DX' | 'WT' | 'WI' | 'PR' | 'CH';
 
-export type WeaponDomain = '1H' | '2H' | 'SaS' | 'Sh' | 'Ar';
+export type WeaponDomain = '1H' | '2H' | 'SaS' | 'Sh' | 'Ar' | 'Spell';
 
 export interface Stats {
   MG: number; // Might
@@ -21,6 +21,7 @@ export interface WeaponDomains {
   'SaS': number; // Staves and Spears
   'Sh': number;  // Shield
   'Ar': number;  // Archery
+  'Spell': number; // Spellcraft
 }
 
 export interface Skill {
@@ -46,6 +47,7 @@ export interface CombatPerk {
   description: string;
 }
 
+
 export interface Equipment {
   name: string;
   weight: number;
@@ -58,12 +60,15 @@ export interface ExtraHPEntry {
 }
 
 export interface ProgressionLogEntry {
-  type: 'skill' | 'perk' | 'combatPerk' | 'extraHP' | 'extraWound';
+  type: 'skill' | 'perk' | 'combatPerk' | 'magicPerk' | 'extraHP' | 'extraWound' | 'spell';
   name?: string;
   level?: number;
   attribute?: string;
   cost: number;
   domain?: WeaponDomain;
+  tier?: number; // For spells
+  spellType?: 'basic' | 'advanced'; // For spells
+  xpType?: 'combat' | 'social'; // Track which XP pool was used
 }
 
 export interface Character {
@@ -75,6 +80,7 @@ export interface Character {
   skills: Skill[];
   perks: Perk[];
   combatPerks: CombatPerk[];
+  magicPerks: Perk[];
   equipment: Equipment[];
   customItems: Equipment[];
   progressionLog: ProgressionLogEntry[];
@@ -94,6 +100,9 @@ export interface Character {
   extraWoundCount: number;
   // Unified Inventory System (new)
   inventory?: InventoryItem[]; // Optional for backward compatibility
+  // Magic System (new)
+  knownSpells?: KnownSpell[];
+  attunedSpells?: string[]; // Array of spell IDs currently attuned
 }
 
 export interface ArmorType {
@@ -173,4 +182,45 @@ export interface InventoryItem {
   customWeaponData?: CustomWeaponData;
   customArmorData?: CustomArmorData;
   customShieldData?: CustomShieldData;
+}
+
+// Magic System Types
+export type SpellTier = 0 | 1 | 2 | 3 | 4 | 5;
+export type SpellType = 'basic' | 'advanced';
+
+export interface Spell {
+  tier: SpellTier;
+  type: SpellType;
+  apCost: string; // e.g., "2", "R", "3", "1m"
+  attributes: string; // e.g., "AG/WT", "EN/DX"
+  limitCost: number; // 0 if no limit cost, otherwise the limit consumed
+  traits: string[]; // e.g., ["Spell", "Offensive", "Strike"]
+  effect: string; // Description of the effect
+  distance: string; // e.g., "3m", "Touch", "10m"
+  duration: string; // e.g., "Instant", "1 minute", "-"
+  damage?: string; // e.g., "Spellcraft * 4d", optional for damage spells
+}
+
+export interface CustomSpellData {
+  tier: SpellTier;
+  type: SpellType;
+  apCost: string;
+  attributes: string;
+  limitCost: number;
+  traits: string[];
+  effect: string;
+  distance: string;
+  duration: string;
+  damage?: string;
+}
+
+export interface KnownSpell {
+  id: string;
+  name: string;
+  tier: SpellTier;
+  type: SpellType;
+  isCustom: boolean;
+  dataRef?: string; // Reference to spell in SPELLS database
+  customSpellData?: CustomSpellData;
+  xpCost: number; // XP paid to learn this spell
 }

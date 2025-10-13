@@ -13,6 +13,7 @@ export const createEmptyCharacter = (): Character => ({
   skills: [],
   perks: [],
   combatPerks: [],
+  magicPerks: [],
   equipment: [],
   customItems: [],
   progressionLog: [],
@@ -21,7 +22,8 @@ export const createEmptyCharacter = (): Character => ({
     '2H': 0,
     'SaS': 0,
     'Sh': 0,
-    'Ar': 0
+    'Ar': 0,
+    'Spell': 0
   },
   maxWounds: 2,
   hpPerWound: 5,
@@ -35,7 +37,10 @@ export const createEmptyCharacter = (): Character => ({
   markedWounds: 0,
   extraHPCount: 0,
   extraHPHistory: [],
-  extraWoundCount: 0
+  extraWoundCount: 0,
+  inventory: [],
+  knownSpells: [],
+  attunedSpells: []
 });
 
 // Save character to localStorage
@@ -56,11 +61,44 @@ export const saveCharacter = (character: Character): void => {
   }
 };
 
+// Migrate character to add missing fields
+const migrateCharacter = (character: Character): Character => {
+  // Add magic system fields if missing
+  if (!character.knownSpells) {
+    character.knownSpells = [];
+  }
+  if (!character.attunedSpells) {
+    character.attunedSpells = [];
+  }
+  // Add Spell domain if missing
+  if (character.weaponDomains && !('Spell' in character.weaponDomains)) {
+    (character.weaponDomains as any).Spell = 0;
+  }
+  // Add inventory if missing
+  if (!character.inventory) {
+    character.inventory = [];
+  }
+  // Add magicPerks if missing
+  if (!character.magicPerks) {
+    character.magicPerks = [];
+  }
+  // Clean up old fields that no longer exist
+  if ('spellcraft' in character) {
+    delete (character as any).spellcraft;
+  }
+  if ('magicXP' in character) {
+    delete (character as any).magicXP;
+  }
+  return character;
+};
+
 // Load all characters from localStorage
 export const loadAllCharacters = (): Character[] => {
   try {
     const stored = localStorage.getItem('exceed-characters');
-    return stored ? JSON.parse(stored) : [];
+    const characters = stored ? JSON.parse(stored) : [];
+    // Migrate all characters
+    return characters.map(migrateCharacter);
   } catch (error) {
     console.error('Failed to load characters:', error);
     return [];

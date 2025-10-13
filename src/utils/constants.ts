@@ -12,6 +12,30 @@ export const ATTRIBUTE_MAP: Record<string, string> = {
   'CH': 'Charisma'
 };
 
+// Normalize attribute names to canonical full names
+// Handles abbreviations (WI, WT) and common variations (Willpower → Will)
+export const normalizeAttributeName = (attribute: string): string => {
+  // First check if it's an abbreviation
+  if (ATTRIBUTE_MAP[attribute]) {
+    return ATTRIBUTE_MAP[attribute];
+  }
+
+  // Check for common variations
+  const normalized = attribute.trim();
+  const lowerCase = normalized.toLowerCase();
+
+  // Map common variations to canonical names
+  if (lowerCase === 'willpower') return 'Will';
+
+  // Check if it already matches a canonical name (case-insensitive)
+  const canonicalNames = Object.values(ATTRIBUTE_MAP);
+  const found = canonicalNames.find(name => name.toLowerCase() === lowerCase);
+  if (found) return found;
+
+  // Return as-is if no match found
+  return normalized;
+};
+
 // CP thresholds for attribute progression (CP → Attribute Value)
 export const ATTRIBUTE_CP_THRESHOLDS = [10, 30, 60, 100, 150];
 
