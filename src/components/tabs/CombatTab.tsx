@@ -252,6 +252,7 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
     setDragStartX(e.touches[0].clientX);
     setDragStartHP(hp.totalCurrent);
     e.preventDefault();
+    e.stopPropagation(); // Prevent parent swipe handlers
   };
 
   const handleMouseMove = (e: MouseEvent) => {

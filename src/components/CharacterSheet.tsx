@@ -35,8 +35,8 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
     if (!touchStart || !touchEnd) return;
 
     const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50;
-    const isRightSwipe = distance < -50;
+    const isLeftSwipe = distance > 75;
+    const isRightSwipe = distance < -75;
 
     const currentIndex = tabs.indexOf(activeTab);
 
