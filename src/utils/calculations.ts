@@ -67,8 +67,17 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]) =>
 
   // Sum up CP for each domain
   progressionLog.forEach(entry => {
-    if (entry.type === 'combatPerk' && entry.domain) {
+    // Combat perks contribute to their specified domain (excluding Spell domain)
+    if (entry.type === 'combatPerk' && entry.domain && entry.domain !== 'Spell') {
       cpByDomain[entry.domain] += entry.cost;
+    }
+    // Spells contribute to Spell domain
+    else if (entry.type === 'spell') {
+      cpByDomain['Spell'] += entry.cost;
+    }
+    // Magic perks contribute to Spell domain
+    else if (entry.type === 'magicPerk') {
+      cpByDomain['Spell'] += entry.cost;
     }
   });
 
