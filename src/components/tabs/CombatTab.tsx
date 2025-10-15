@@ -644,61 +644,42 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
         )}
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        {/* Speed Block */}
-        <div className="bg-slate-800 rounded-lg p-4">
-          <h4 className="text-lg font-bold text-white mb-3">Speed</h4>
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-slate-400 text-sm">Current</span>
-              <span className="text-white font-bold">{speedWithArmor}</span>
-            </div>
-            {armorPenalty !== 0 && (
-              <div className="text-slate-400 text-xs">
-                {speedWithoutArmor} without armor
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Defense Block - Rollable */}
-        <div className="bg-slate-800 rounded-lg p-4">
-          <h4 className="text-lg font-bold text-white mb-3">Defense</h4>
-          <div className="grid grid-cols-2 gap-2 mb-3">
-            <button
-              onClick={() => handleDefenseRoll('Parry', parry)}
-              className={`rounded py-2 text-white text-xs font-semibold ${
-                parry
-                  ? 'bg-emerald-700 hover:bg-emerald-600'
-                  : 'bg-slate-600 hover:bg-slate-500'
-              }`}
-            >
-              Parry ({parry || '0'})
-            </button>
-            <button
-              onClick={() => handleDefenseRoll('Block', block)}
-              className={`rounded py-2 text-white text-xs font-semibold ${
-                block
-                  ? 'bg-amber-700 hover:bg-amber-600'
-                  : 'bg-slate-600 hover:bg-slate-500'
-              }`}
-            >
-              Block ({block || '0'})
-            </button>
-            <button
-              onClick={() => handleDefenseRoll('Dodge', dodge)}
-              className="bg-indigo-700 hover:bg-indigo-600 rounded py-2 text-white text-xs font-semibold"
-            >
-              Dodge ({dodge})
-            </button>
-            <button
-              onClick={() => handleDefenseRoll('Endure', endure)}
-              className="bg-purple-700 hover:bg-purple-600 rounded py-2 text-white text-xs font-semibold"
-            >
-              Endure ({endure})
-            </button>
-          </div>
+      {/* Defense Block - Rollable */}
+      <div className="bg-slate-800 rounded-lg p-4 mb-4">
+        <h4 className="text-lg font-bold text-white mb-3">Defense</h4>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => handleDefenseRoll('Parry', parry)}
+            className={`rounded py-3 text-white text-sm font-semibold ${
+              parry
+                ? 'bg-emerald-700 hover:bg-emerald-600'
+                : 'bg-slate-600 hover:bg-slate-500'
+            }`}
+          >
+            Parry ({parry || '0'})
+          </button>
+          <button
+            onClick={() => handleDefenseRoll('Block', block)}
+            className={`rounded py-3 text-white text-sm font-semibold ${
+              block
+                ? 'bg-amber-700 hover:bg-amber-600'
+                : 'bg-slate-600 hover:bg-slate-500'
+            }`}
+          >
+            Block ({block || '0'})
+          </button>
+          <button
+            onClick={() => handleDefenseRoll('Dodge', dodge)}
+            className="bg-indigo-700 hover:bg-indigo-600 rounded py-3 text-white text-sm font-semibold"
+          >
+            Dodge ({dodge})
+          </button>
+          <button
+            onClick={() => handleDefenseRoll('Endure', endure)}
+            className="bg-purple-700 hover:bg-purple-600 rounded py-3 text-white text-sm font-semibold"
+          >
+            Endure ({endure})
+          </button>
         </div>
       </div>
 

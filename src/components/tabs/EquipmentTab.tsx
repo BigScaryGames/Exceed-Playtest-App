@@ -175,9 +175,9 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
         </div>
       </div>
 
-      {/* Encumbrance Section */}
+      {/* Encumbrance & Speed Section */}
       <div className="bg-slate-800 rounded-lg p-4 mb-4">
-        <h4 className="text-lg font-semibold text-white mb-3">Encumbrance</h4>
+        <h4 className="text-lg font-semibold text-white mb-3">Encumbrance & Speed</h4>
         <div className="grid grid-cols-3 gap-3 mb-3">
           <div className="bg-slate-700 rounded p-2">
             <div className="text-slate-400 text-xs">Total Weight</div>
@@ -205,10 +205,42 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
           </div>
         </div>
         {level.name !== 'None' && (
-          <div className="text-sm text-slate-300">
+          <div className="text-sm text-slate-300 mb-3">
             Penalties: Speed {level.speedPenalty}, Dodge {level.dodgePenalty}
           </div>
         )}
+
+        {/* Speed Display */}
+        <div className="bg-slate-700 rounded p-3 mt-3">
+          <div className="text-slate-400 text-xs mb-1">Speed</div>
+          <div className="text-white font-bold text-lg">
+            {(() => {
+              // Get armor stats
+              const equippedArmor = getEquippedArmor(character);
+              const armorData = equippedArmor ? getArmorData(equippedArmor) : null;
+              const meetsArmorReq = armorData ? character.stats.MG >= armorData.mightReq : true;
+              const armorPenalty = armorData ? (meetsArmorReq ? armorData.penaltyMet : armorData.penalty) : 0;
+
+              // Calculate speed
+              const runningSkill = character.skills.find(s => s.name === 'Running');
+              const runningBonus = runningSkill ? Math.floor(runningSkill.level / 2) : 0;
+              const speedWithArmor = 5 + character.stats.AG + runningBonus + armorPenalty;
+              const speedWithoutArmor = 5 + character.stats.AG + runningBonus;
+
+              return (
+                <>
+                  <span className="text-2xl">{speedWithArmor}</span>
+                  <span className="text-slate-400 text-base"> / {speedWithoutArmor}</span>
+                  {armorPenalty !== 0 && (
+                    <div className="text-slate-400 text-xs mt-1">
+                      Current / Max (without armor)
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        </div>
       </div>
 
       {/* Inventory List */}
