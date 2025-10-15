@@ -131,10 +131,10 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
   const armorPenalty = meetsArmorReq ? armorData.penaltyMet : armorData.penalty;
 
   // Calculate Speed
-  const runningSkill = character.skills.find(s => s.name === 'Running');
-  const runningBonus = runningSkill ? Math.floor(runningSkill.level / 2) : 0;
-  const speedWithArmor = 5 + character.stats.AG + runningBonus + armorPenalty;
-  const speedWithoutArmor = 5 + character.stats.AG + runningBonus;
+ // const runningSkill = character.skills.find(s => s.name === 'Running');
+ // const runningBonus = runningSkill ? Math.floor(runningSkill.level / 2) : 0;
+ // const speedWithArmor = 5 + character.stats.AG + runningBonus + armorPenalty;
+ // const speedWithoutArmor = 5 + character.stats.AG + runningBonus;
 
   // Calculate HP values with effective max wounds
   const calculateHP = () => {
