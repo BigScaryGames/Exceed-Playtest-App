@@ -181,9 +181,9 @@ export const calculateParry = (character: Character): number | null => {
 export const calculateEncumbrance = (character: Character) => {
   const capacity = Math.pow(5 + character.stats.EN + character.stats.MG, 2);
 
-  let totalWeight = 0;
-  let equippedWeight = 0;
-  let inventoryWeight = 0;
+  let totalWeight;
+  let equippedWeight;
+  let inventoryWeight;
 
   // Use new inventory system if available
   if (character.inventory && character.inventory.length > 0) {
