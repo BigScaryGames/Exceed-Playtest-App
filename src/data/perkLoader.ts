@@ -4,7 +4,8 @@
 
 import type { PerkDatabase, Perk } from '@/types/perks';
 
-const BUNDLED_PERKS_PATH = '/data/perks.json';
+// Use import.meta.env.BASE_URL to get the correct base path (works with GitHub Pages)
+const BUNDLED_PERKS_PATH = `${import.meta.env.BASE_URL}data/perks.json`;
 
 /**
  * Load perks from the bundled JSON file
