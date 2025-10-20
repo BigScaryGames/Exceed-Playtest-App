@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Plus, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, ChevronUp, ChevronDown, Menu } from 'lucide-react';
 import { Character } from '@/types/character';
 import { XPModal } from '@/components/modals/XPModal';
 
 interface CharacterHeaderProps {
   character: Character;
   onUpdateXP: (combatXP: number, socialXP: number) => void;
+  onMenuToggle: () => void;
 }
 
-export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onUpdateXP }) => {
+export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onUpdateXP, onMenuToggle }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showXPModal, setShowXPModal] = useState(false);
 
@@ -20,12 +21,26 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onU
   return (
     <>
       <div className="bg-black border-b border-slate-700">
-        <div
-          className="p-4 cursor-pointer"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
+        <div className="p-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-white">{character.name}</h2>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMenuToggle();
+                }}
+                className="text-slate-400 hover:text-white transition-colors p-1"
+                title="Open menu"
+              >
+                <Menu size={20} />
+              </button>
+              <h2
+                className="text-2xl font-bold text-white cursor-pointer hover:text-blue-400 transition-colors"
+                onClick={() => setIsExpanded(!isExpanded)}
+              >
+                {character.name}
+              </h2>
+            </div>
             <div className="flex items-center gap-6">
               <div className="flex flex-col items-center">
                 <span className="text-xs font-semibold text-white">Combat</span>

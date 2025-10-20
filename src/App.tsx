@@ -11,6 +11,8 @@ import {
 } from '@/utils/character';
 import { CharacterSheet } from '@/components/CharacterSheet';
 import { RulesTab } from '@/components/tabs/RulesTab';
+import { SideMenu } from '@/components/SideMenu';
+import { RenameCharacterModal } from '@/components/modals/RenameCharacterModal';
 import { loadPerks } from '@/services/perkSync';
 import type { PerkDatabase } from '@/types/perks';
 
@@ -22,6 +24,8 @@ export default function App() {
   const [currentCharacter, setCurrentCharacter] = useState<Character | null>(null);
   const [newCharacter, setNewCharacter] = useState<Character>(createEmptyCharacter());
   const [perkDatabase, setPerkDatabase] = useState<PerkDatabase | null>(null); // Used by future perk selection components
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showRenameModal, setShowRenameModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Suppress unused warning - perkDatabase will be used by PerkSelectModal
@@ -163,6 +167,27 @@ export default function App() {
   const handleBackToLanding = () => {
     setCurrentView('landing');
     setCurrentCharacter(null);
+    setIsMenuOpen(false);
+  };
+
+  const handleRenameCharacter = (newName: string) => {
+    if (!currentCharacter) return;
+
+    const oldName = currentCharacter.name;
+    const updatedCharacter = { ...currentCharacter, name: newName };
+
+    // Update in localStorage
+    deleteCharacter(oldName);
+    saveCharacter(updatedCharacter);
+
+    // Update state
+    setCurrentCharacter(updatedCharacter);
+    setCharacters(prev => prev.map(c => c.name === oldName ? updatedCharacter : c));
+  };
+
+  const handleViewRules = () => {
+    setCurrentView('rules');
+    setIsMenuOpen(false);
   };
 
   // Landing Page
@@ -379,27 +404,29 @@ export default function App() {
   // Character Sheet Page
   if (currentView === 'characterSheet' && currentCharacter) {
     return (
-      <div>
-        <div className="bg-black p-4 flex justify-between items-center border-b border-slate-700">
-          <button
-            onClick={handleBackToLanding}
-            className="text-slate-400 hover:text-white transition-colors"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={handleExportCharacter}
-            className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded text-white transition-colors"
-          >
-            Export
-          </button>
-        </div>
+      <>
+        <SideMenu
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          characterName={currentCharacter.name}
+          onBackToLanding={handleBackToLanding}
+          onRename={() => setShowRenameModal(true)}
+          onExport={handleExportCharacter}
+          onViewRules={handleViewRules}
+        />
+        <RenameCharacterModal
+          isOpen={showRenameModal}
+          onClose={() => setShowRenameModal(false)}
+          currentName={currentCharacter.name}
+          onRename={handleRenameCharacter}
+        />
         <CharacterSheet
           character={currentCharacter}
           onUpdate={handleUpdateCharacter}
           perkDatabase={perkDatabase}
+          onMenuToggle={() => setIsMenuOpen(!isMenuOpen)}
         />
-      </div>
+      </>
     );
   }
 

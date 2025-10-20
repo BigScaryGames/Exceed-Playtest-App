@@ -14,11 +14,12 @@ interface CharacterSheetProps {
   character: Character;
   onUpdate: (character: Character) => void;
   perkDatabase: PerkDatabase | null;
+  onMenuToggle: () => void;
 }
 
 type TabType = 'skills' | 'combat' | 'equipment' | 'magic' | 'list';
 
-export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpdate, perkDatabase }) => {
+export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpdate, perkDatabase, onMenuToggle }) => {
   const [activeTab, setActiveTab] = useState<TabType>('skills');
   const [touchStart, setTouchStart] = useState<number>(0);
   const [touchEnd, setTouchEnd] = useState<number>(0);
@@ -106,7 +107,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <CharacterHeader character={displayCharacter} onUpdateXP={handleUpdateXP} />
+      <CharacterHeader character={displayCharacter} onUpdateXP={handleUpdateXP} onMenuToggle={onMenuToggle} />
 
       <div className="border-b border-slate-700">
         <div className="flex">
