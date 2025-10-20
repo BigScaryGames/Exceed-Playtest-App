@@ -174,47 +174,46 @@ export const RulesTab: React.FC = () => {
         </div>
       )}
 
-      {/* Main content area */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 overflow-hidden">
-        {/* File list sidebar */}
-        <div className="lg:col-span-1 bg-slate-800 rounded-lg p-4 overflow-y-auto">
-          <h3 className="text-lg font-semibold text-white mb-3">Core Rules</h3>
+      {/* File Selector Dropdown */}
+      <div className="mb-4">
+        <label className="block text-sm font-semibold text-slate-300 mb-2">
+          Select Rule
+        </label>
+        {isLoading && !selectedFile ? (
+          <div className="bg-slate-800 rounded-lg p-3 text-slate-400 text-center">
+            Loading rules...
+          </div>
+        ) : files.length === 0 ? (
+          <div className="bg-slate-800 rounded-lg p-3 text-slate-400 text-center">
+            No rules found
+          </div>
+        ) : (
+          <select
+            value={selectedFile?.name || ''}
+            onChange={(e) => {
+              const file = files.find(f => f.name === e.target.value);
+              if (file) loadRuleContent(file);
+            }}
+            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+          >
+            <option value="">-- Choose a rule --</option>
+            {files.map((file) => (
+              <option key={file.name} value={file.name}>
+                {getDisplayTitle(file.name)}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
 
-          {isLoading && !selectedFile ? (
-            <div className="text-slate-400 text-center py-8">
-              Loading rules...
-            </div>
-          ) : files.length === 0 ? (
-            <div className="text-slate-400 text-center py-8">
-              No rules found
-            </div>
-          ) : (
-            <div className="space-y-1">
-              {files.map((file) => (
-                <button
-                  key={file.name}
-                  onClick={() => loadRuleContent(file)}
-                  className={`w-full text-left px-3 py-2 rounded transition-colors ${
-                    selectedFile?.name === file.name
-                      ? 'bg-blue-700 text-white'
-                      : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-                  }`}
-                >
-                  <div className="text-sm font-medium">
-                    {getDisplayTitle(file.name)}
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
+      {/* Main content area - Full width */}
+      <div className="flex-1 overflow-hidden">
         {/* Rule content viewer */}
-        <div className="lg:col-span-2 bg-slate-800 rounded-lg p-6 overflow-y-auto">
+        <div className="h-full bg-slate-800 rounded-lg p-6 overflow-y-auto">
           {!selectedFile ? (
             <div className="text-center text-slate-400 py-16">
               <p className="text-lg mb-2">Select a rule to view</p>
-              <p className="text-sm">Choose from the list on the left</p>
+              <p className="text-sm">Choose from the dropdown above</p>
             </div>
           ) : isLoading ? (
             <div className="text-center text-slate-400 py-16">

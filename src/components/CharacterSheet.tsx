@@ -6,7 +6,7 @@ import { SkillsTab } from '@/components/tabs/SkillsTab';
 import { CombatTab } from '@/components/tabs/CombatTab';
 import { EquipmentTab } from '@/components/tabs/EquipmentTab';
 import { MagicTab } from '@/components/tabs/MagicTab';
-import { ProgressionListTab } from '@/components/tabs/ProgressionListTab';
+import { NotesTab } from '@/components/tabs/NotesTab';
 import { calculateAttributeValues, calculateWeaponDomains } from '@/utils/calculations';
 import { migrateCharacterIfNeeded, needsMigration } from '@/utils/migration';
 
@@ -40,6 +40,14 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 75;
     const isRightSwipe = distance < -75;
+
+    // Check for swipe from left edge to open menu
+    if (touchStart < 50 && isRightSwipe) {
+      onMenuToggle();
+      setTouchStart(0);
+      setTouchEnd(0);
+      return;
+    }
 
     const currentIndex = tabs.indexOf(activeTab);
 
@@ -159,7 +167,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
                 : 'text-slate-500'
             }`}
           >
-            List
+            Notes
           </button>
         </div>
       </div>
@@ -169,7 +177,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
         {activeTab === 'combat' && <CombatTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
         {activeTab === 'equipment' && <EquipmentTab character={displayCharacter} onUpdate={onUpdate} />}
         {activeTab === 'magic' && <MagicTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
-        {activeTab === 'list' && <ProgressionListTab character={displayCharacter} />}
+        {activeTab === 'list' && <NotesTab character={displayCharacter} onUpdate={onUpdate} />}
       </div>
     </div>
   );

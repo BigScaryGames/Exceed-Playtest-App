@@ -40,7 +40,10 @@ export const createEmptyCharacter = (): Character => ({
   extraWoundCount: 0,
   inventory: [],
   knownSpells: [],
-  attunedSpells: []
+  attunedSpells: [],
+  bio: '',
+  notes: '',
+  reputation: ''
 });
 
 // Save character to localStorage

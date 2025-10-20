@@ -117,6 +117,10 @@ export interface Character {
   // Magic System (new)
   knownSpells?: KnownSpell[];
   attunedSpells?: string[]; // Array of spell IDs currently attuned
+  // Character notes and bio (new)
+  bio?: string;
+  notes?: string;
+  reputation?: string;
 }
 
 export interface ArmorType {
