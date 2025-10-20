@@ -1,8 +1,16 @@
-import { Character, AttributeCode, ProgressionLogEntry, WeaponDomain } from '@/types/character';
+import { Character, AttributeCode, ProgressionLogEntry, WeaponDomain, Weapon } from '@/types/character';
 import { ARMOR_TYPES } from '@/data/armor';
 import { WEAPONS } from '@/data/weapons';
 import { SHIELDS } from '@/data/shields';
 import { ATTRIBUTE_CP_THRESHOLDS, DOMAIN_CP_THRESHOLDS, ENCUMBRANCE_LEVELS } from './constants';
+import {
+  getEquippedWeapons,
+  getEquippedArmor,
+  getEquippedShield,
+  getWeaponData,
+  getArmorData,
+  getShieldData
+} from './inventory';
 
 // Reverse mapping from full name to abbreviation
 const ATTRIBUTE_NAME_TO_CODE: Record<string, AttributeCode> = {
@@ -245,4 +253,200 @@ export const calculateDodge = (agility: number, perception: number, armorPenalty
 // Calculate endure
 export const calculateEndure = (endurance: number, will: number): number => {
   return endurance + will;
+};
+
+// Calculate damage dice count based on domain level
+export const calculateDamageDiceCount = (domainLevel: number): number => {
+  if (domainLevel >= 5) return 3;
+  if (domainLevel >= 3) return 2;
+  return 1;
+};
+
+// Parse damage string (e.g., "d6", "d12+1", "4+Might") into dice and bonus
+export const parseDamageString = (damageStr: string, might: number): { die: number; bonus: number; isBow: boolean } => {
+  // Check if it's bow damage format (e.g., "4+Might", "5+Might")
+  if (damageStr.includes('+Might')) {
+    const baseValue = parseInt(damageStr.split('+')[0]);
+    return { die: 0, bonus: baseValue + might, isBow: true };
+  }
+  // Standard dice format
+  if (damageStr.includes('+')) {
+    const [die, bonus] = damageStr.split('+');
+    return { die: parseInt(die.replace('d', '')), bonus: parseInt(bonus) + might, isBow: false };
+  }
+  return { die: parseInt(damageStr.replace('d', '')), bonus: might, isBow: false };
+};
+
+// Calculate which attribute to use for attack based on weapon properties
+export const calculateAttackAttribute = (character: Character, weapon: Weapon): number => {
+  let attackAttr = character.stats.AG; // Default: Agility
+
+  if (weapon.domain === 'Ar') {
+    // Bows use Perception
+    attackAttr = character.stats.PR;
+  } else if (weapon.finesse && character.stats.DX > character.stats.AG) {
+    // Finesse weapons use Dexterity if higher
+    attackAttr = character.stats.DX;
+  } else if (weapon.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
+    // Heavy weapons use Might if higher than Agility
+    attackAttr = character.stats.MG;
+  }
+
+  return attackAttr;
+};
+
+// Calculate parry for a specific weapon
+export const calculateParryForWeapon = (character: Character, weapon: Weapon): number => {
+  if (!weapon.domain) return 0;
+  // Can't parry with bows (Archery domain)
+  if (weapon.domain === 'Ar') return 0;
+
+  const weaponDomain = character.weaponDomains[weapon.domain] || 0;
+  const parryBase = weapon.finesse && character.stats.DX > character.stats.AG
+    ? character.stats.DX
+    : character.stats.AG;
+
+  return parryBase + weaponDomain;
+};
+
+// Calculate best parry value from all equipped weapons
+export const calculateParryFromEquipped = (character: Character): number => {
+  const equippedWeaponsFromInventory = getEquippedWeapons(character);
+  let equippedWeapons: Array<Weapon> = [];
+
+  if (equippedWeaponsFromInventory.length > 0) {
+    // Use new inventory system
+    equippedWeapons = equippedWeaponsFromInventory
+      .map(item => getWeaponData(item))
+      .filter((w): w is Weapon => w !== null);
+  } else if (character.equippedWeapon1 || character.equippedWeapon2) {
+    // Fallback to old system
+    if (character.equippedWeapon1 && character.equippedWeapon1 !== 'None') {
+      const weapon = WEAPONS[character.equippedWeapon1];
+      if (weapon) equippedWeapons.push(weapon);
+    }
+    if (character.equippedWeapon2 && character.equippedWeapon2 !== 'None') {
+      const weapon = WEAPONS[character.equippedWeapon2];
+      if (weapon) equippedWeapons.push(weapon);
+    }
+  }
+
+  return Math.max(0, ...equippedWeapons.map(w => calculateParryForWeapon(character, w)));
+};
+
+// Calculate block value from equipped shield
+export const calculateBlockFromEquipped = (character: Character): number => {
+  // Get equipped shield - with backward compatibility
+  const equippedShieldItem = getEquippedShield(character);
+  const shieldData = equippedShieldItem
+    ? (getShieldData(equippedShieldItem) || SHIELDS['None'])
+    : (character.equippedShield ? SHIELDS[character.equippedShield] : SHIELDS['None']);
+
+  const shieldDomain = character.weaponDomains['Sh'];
+  let block = 0;
+
+  if (shieldData.defenseBonus > 0) {
+    // Light shields use Agility, Medium use Endurance, Heavy use Might
+    let blockBase = character.stats.AG; // Light default
+    if (shieldData.type === 'Medium') {
+      blockBase = character.stats.EN;
+    } else if (shieldData.type === 'Heavy') {
+      blockBase = character.stats.MG;
+    }
+    block = blockBase + shieldDomain + shieldData.defenseBonus;
+  }
+
+  return block;
+};
+
+// Calculate dodge including armor and encumbrance penalties
+export const calculateDodgeFromEquipped = (character: Character): number => {
+  // Get armor stats
+  const equippedArmor = getEquippedArmor(character);
+  const armorData = equippedArmor
+    ? (getArmorData(equippedArmor) || ARMOR_TYPES['None'])
+    : (character.armorType ? ARMOR_TYPES[character.armorType] : ARMOR_TYPES['None']);
+
+  const meetsArmorReq = character.stats.MG >= armorData.mightReq;
+  const armorPenalty = meetsArmorReq ? armorData.penaltyMet : armorData.penalty;
+
+  return character.stats.AG + character.stats.PR + (armorPenalty || 0);
+};
+
+// Calculate comprehensive HP values with bar percentages
+export const calculateHPValues = (character: Character) => {
+  const effectiveMaxWounds = character.maxWounds - character.markedWounds;
+
+  // Get armor bonus
+  const equippedArmor = getEquippedArmor(character);
+  const armorData = equippedArmor
+    ? (getArmorData(equippedArmor) || ARMOR_TYPES['None'])
+    : (character.armorType ? ARMOR_TYPES[character.armorType] : ARMOR_TYPES['None']);
+  const armorBonus = armorData.bonus;
+
+  const maxStamina = (armorBonus + character.stats.EN) * effectiveMaxWounds;
+  const maxHealth = (character.hpPerWound * effectiveMaxWounds) + character.extraHP;
+  const currentStamina = character.currentStamina !== null ? character.currentStamina : maxStamina;
+  const currentHealth = character.currentHealth !== null ? character.currentHealth : maxHealth;
+
+  const totalMax = maxStamina + maxHealth;
+  const totalCurrent = currentStamina + currentHealth;
+  const isNegative = totalCurrent < 0;
+  const maxNegativeHP = character.maxWounds * character.hpPerWound;
+
+  // Calculate bar percentages
+  let healthPercent = 0;
+  let staminaPercent = 0;
+  let negativePercent = 0;
+
+  if (!isNegative) {
+    // Positive HP - show stamina (yellow) and health (red)
+    healthPercent = maxHealth > 0
+      ? Math.min(100, (currentHealth / maxHealth) * 100)
+      : 0;
+    staminaPercent = maxStamina > 0
+      ? Math.min(100, (currentStamina / maxStamina) * 100)
+      : 0;
+  } else {
+    // Negative HP - show as dark red from 0 going left
+    negativePercent = maxNegativeHP > 0
+      ? Math.min(100, (Math.abs(totalCurrent) / maxNegativeHP) * 100)
+      : 0;
+  }
+
+  return {
+    maxStamina,
+    maxHealth,
+    currentStamina,
+    currentHealth,
+    totalMax,
+    totalCurrent,
+    effectiveMaxWounds,
+    isNegative,
+    maxNegativeHP,
+    healthPercent,
+    staminaPercent,
+    negativePercent,
+    armorBonus
+  };
+};
+
+// Calculate speed including armor and running skill
+export const calculateSpeedFromEquipped = (character: Character): { withArmor: number; withoutArmor: number } => {
+  // Get armor stats
+  const equippedArmor = getEquippedArmor(character);
+  const armorData = equippedArmor ? getArmorData(equippedArmor) : null;
+  const meetsArmorReq = armorData ? character.stats.MG >= armorData.mightReq : true;
+  const armorPenalty = armorData ? (meetsArmorReq ? armorData.penaltyMet : armorData.penalty) : 0;
+
+  // Calculate speed
+  const runningSkill = character.skills.find(s => s.name === 'Running');
+  const runningBonus = runningSkill ? Math.floor(runningSkill.level / 2) : 0;
+  const speedWithArmor = 5 + character.stats.AG + runningBonus + armorPenalty;
+  const speedWithoutArmor = 5 + character.stats.AG + runningBonus;
+
+  return {
+    withArmor: speedWithArmor,
+    withoutArmor: speedWithoutArmor
+  };
 };

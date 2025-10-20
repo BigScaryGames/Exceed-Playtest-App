@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { Character, Weapon, InventoryItem } from '@/types/character';
-import { ARMOR_TYPES } from '@/data/armor';
 import { WEAPONS } from '@/data/weapons';
-import { SHIELDS } from '@/data/shields';
 import { Modal } from '@/components/shared';
 import { AddPerkModal } from '@/components/modals/AddPerkModal';
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
 import {
   getEquippedWeapons,
-  getEquippedArmor,
-  getEquippedShield,
-  getWeaponData,
-  getArmorData,
-  getShieldData
+  getWeaponData
 } from '@/utils/inventory';
+import {
+  calculateAttackAttribute,
+  calculateDamageDiceCount,
+  parseDamageString,
+  calculateParryFromEquipped,
+  calculateBlockFromEquipped,
+  calculateDodgeFromEquipped,
+  calculateHPValues,
+  calculateEndure
+} from '@/utils/calculations';
 
 // WeaponRollSection Component
 interface WeaponRollSectionProps {
@@ -36,45 +40,14 @@ const WeaponRollSection: React.FC<WeaponRollSectionProps> = ({
   // Get domain level
   const domainLevel = weaponData.domain ? character.weaponDomains[weaponData.domain] : 0;
 
-  // Calculate attack attribute
-  let attackAttr = character.stats.AG; // Default: Agility
-  if (weaponData.domain === 'Ar') {
-    // Bows use Perception
-    attackAttr = character.stats.PR;
-  } else if (weaponData.finesse && character.stats.DX > character.stats.AG) {
-    // Finesse weapons use Dexterity if higher
-    attackAttr = character.stats.DX;
-  } else if (weaponData.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
-    // Heavy weapons use Might if higher than Agility
-    attackAttr = character.stats.MG;
-  }
+  // Calculate attack attribute using utility function
+  const attackAttr = calculateAttackAttribute(character, weaponData);
 
   // Number of damage dice based on domain level
-  const getDamageDiceCount = (level: number): number => {
-    if (level >= 5) return 3;
-    if (level >= 3) return 2;
-    return 1;
-  };
-
-  const damageDiceCount = getDamageDiceCount(domainLevel);
-
-  // Parse damage die (e.g., "d6", "d12+1", "4+Might")
-  const parseDamageDie = (damageStr: string): { die: number, bonus: number, isBow: boolean } => {
-    // Check if it's bow damage format (e.g., "4+Might", "5+Might")
-    if (damageStr.includes('+Might')) {
-      const baseValue = parseInt(damageStr.split('+')[0]);
-      return { die: 0, bonus: baseValue + character.stats.MG, isBow: true };
-    }
-    // Standard dice format
-    if (damageStr.includes('+')) {
-      const [die, bonus] = damageStr.split('+');
-      return { die: parseInt(die.replace('d', '')), bonus: parseInt(bonus) + character.stats.MG, isBow: false };
-    }
-    return { die: parseInt(damageStr.replace('d', '')), bonus: character.stats.MG, isBow: false };
-  };
+  const damageDiceCount = calculateDamageDiceCount(domainLevel);
 
   const handleOpenAttackRoll = () => {
-    const { die, bonus, isBow } = parseDamageDie(weaponData.damage);
+    const { die, bonus, isBow } = parseDamageString(weaponData.damage, character.stats.MG);
 
     onOpenRoller({
       type: `Attack - ${weaponName}`,
@@ -121,41 +94,8 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
   const [isRollerOpen, setIsRollerOpen] = useState(false);
   const [rollData, setRollData] = useState<RollData | null>(null);
 
-  // Get armor stats - with backward compatibility
-  const equippedArmor = getEquippedArmor(character);
-  const armorData = equippedArmor
-    ? (getArmorData(equippedArmor) || ARMOR_TYPES['None'])
-    : (character.armorType ? ARMOR_TYPES[character.armorType] : ARMOR_TYPES['None']);
-  const armorBonus = armorData.bonus;
-  const meetsArmorReq = character.stats.MG >= armorData.mightReq;
-  const armorPenalty = meetsArmorReq ? armorData.penaltyMet : armorData.penalty;
-
-  // Calculate Speed
- // const runningSkill = character.skills.find(s => s.name === 'Running');
- // const runningBonus = runningSkill ? Math.floor(runningSkill.level / 2) : 0;
- // const speedWithArmor = 5 + character.stats.AG + runningBonus + armorPenalty;
- // const speedWithoutArmor = 5 + character.stats.AG + runningBonus;
-
-  // Calculate HP values with effective max wounds
-  const calculateHP = () => {
-    const effectiveMaxWounds = character.maxWounds - character.markedWounds;
-    const maxStamina = (armorBonus + character.stats.EN) * effectiveMaxWounds;
-    const maxHealth = (character.hpPerWound * effectiveMaxWounds) + character.extraHP;
-    const currentStamina = character.currentStamina !== null ? character.currentStamina : maxStamina;
-    const currentHealth = character.currentHealth !== null ? character.currentHealth : maxHealth;
-
-    return {
-      maxStamina,
-      maxHealth,
-      currentStamina,
-      currentHealth,
-      totalMax: maxStamina + maxHealth,
-      totalCurrent: currentStamina + currentHealth,
-      effectiveMaxWounds
-    };
-  };
-
-  const hp = calculateHP();
+  // Calculate HP values using utility function
+  const hp = calculateHPValues(character);
 
   const handleBuyExtraHP = (attribute: string) => {
     const cost = character.maxWounds;
@@ -361,29 +301,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
     setExpandedCombatPerkIndex(null);
   };
 
-  // Calculate bar widths
-  const isNegative = hp.totalCurrent < 0;
-  const maxNegativeHP = character.maxWounds * character.hpPerWound;
-
-  let healthPercent = 0;
-  let staminaPercent = 0;
-  let negativePercent = 0;
-
-  if (!isNegative) {
-    // Positive HP - show stamina (yellow) and health (red)
-    healthPercent = hp.maxHealth > 0
-      ? Math.min(100, (hp.currentHealth / hp.maxHealth) * 100)
-      : 0;
-    staminaPercent = hp.maxStamina > 0
-      ? Math.min(100, (hp.currentStamina / hp.maxStamina) * 100)
-      : 0;
-  } else {
-    // Negative HP - show as dark red from 0 going left
-    negativePercent = maxNegativeHP > 0
-      ? Math.min(100, (Math.abs(hp.totalCurrent) / maxNegativeHP) * 100)
-      : 0;
-  }
-
   // Get equipped weapons - with backward compatibility
   const equippedWeaponsFromInventory = getEquippedWeapons(character);
   let equippedWeapons: Array<{ item: InventoryItem; weaponData: Weapon } | { name: string; weaponData: Weapon }> = [];
@@ -412,43 +329,11 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
     }
   }
 
-  // Calculate Parry - use better of all weapons
-  const calculateParryForWeapon = (weaponData: Weapon) => {
-    if (!weaponData.domain) return 0;
-    // Can't parry with bows (Archery domain)
-    if (weaponData.domain === 'Ar') return 0;
-    const weaponDomain = character.weaponDomains[weaponData.domain] || 0;
-    const parryBase = weaponData.finesse && character.stats.DX > character.stats.AG
-      ? character.stats.DX
-      : character.stats.AG;
-    return parryBase + weaponDomain;
-  };
-
-  const parry = Math.max(0, ...equippedWeapons.map(w => calculateParryForWeapon(w.weaponData)));
-
-  // Calculate Block (based on shield) - with backward compatibility
-  const equippedShieldItem = getEquippedShield(character);
-  const shieldData = equippedShieldItem
-    ? (getShieldData(equippedShieldItem) || SHIELDS['None'])
-    : (character.equippedShield ? SHIELDS[character.equippedShield] : SHIELDS['None']);
-  const shieldDomain = character.weaponDomains['Sh'];
-  let block = 0;
-  if (shieldData.defenseBonus > 0) {
-    // Light shields use Agility, Medium use Endurance, Heavy use Might
-    let blockBase = character.stats.AG; // Light default
-    if (shieldData.type === 'Medium') {
-      blockBase = character.stats.EN;
-    } else if (shieldData.type === 'Heavy') {
-      blockBase = character.stats.MG;
-    }
-    block = blockBase + shieldDomain + shieldData.defenseBonus;
-  }
-
-  // Calculate Dodge
-  const dodge = character.stats.AG + character.stats.PR + (armorPenalty || 0);
-
-  // Calculate Endure
-  const endure = character.stats.EN + character.stats.WI;
+  // Calculate defense stats using utility functions
+  const parry = calculateParryFromEquipped(character);
+  const block = calculateBlockFromEquipped(character);
+  const dodge = calculateDodgeFromEquipped(character);
+  const endure = calculateEndure(character.stats.EN, character.stats.WI);
 
   // Open dice roller modal
   const handleOpenRoller = (data: RollData) => {
@@ -473,19 +358,19 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="text-white">
-            <span className={`text-3xl font-bold ${isNegative ? 'text-red-400' : ''}`}>
+            <span className={`text-3xl font-bold ${hp.isNegative ? 'text-red-400' : ''}`}>
               {hp.totalCurrent}
             </span>
             <span className="text-slate-400 text-lg"> / {hp.totalMax}</span>
           </div>
           <div className="text-right text-sm">
-            {!isNegative && (
+            {!hp.isNegative && (
               <>
                 <div className="text-yellow-400">Stamina: {hp.currentStamina}</div>
                 <div className="text-red-400">Health: {hp.currentHealth}</div>
               </>
             )}
-            {isNegative && (
+            {hp.isNegative && (
               <div className="text-red-400">Below 0 HP!</div>
             )}
           </div>
@@ -497,35 +382,35 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
         >
-          {!isNegative ? (
+          {!hp.isNegative ? (
             <>
               {/* Stamina bar (yellow) */}
               <div
                 className="absolute inset-0 bg-yellow-600 transition-all"
-                style={{ width: `${staminaPercent}%` }}
+                style={{ width: `${hp.staminaPercent}%` }}
               />
               {/* Health bar (red) */}
               <div
                 className="absolute inset-0 bg-red-600 transition-all"
                 style={{
-                  width: `${healthPercent}%`,
-                  left: `${staminaPercent}%`
+                  width: `${hp.healthPercent}%`,
+                  left: `${hp.staminaPercent}%`
                 }}
               />
             </>
           ) : (
-            /* Negative HP bar (dark red from left) */
+            /* Negative HP bar (dark red from right to left) */
             <div
-              className="absolute inset-0 bg-red-900 transition-all"
+              className="absolute inset-y-0 right-0 bg-red-900 transition-all"
               style={{
-                width: `${negativePercent}%`
+                width: `${hp.negativePercent}%`
               }}
             />
           )}
 
           {/* Text overlay */}
           <div className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm drop-shadow-md pointer-events-none">
-            {!isNegative ? (
+            {!hp.isNegative ? (
               <>
                 <span className="text-yellow-200">{hp.currentStamina}</span>
                 <span className="mx-1">+</span>
@@ -548,7 +433,7 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
         <div className="mt-3 text-sm text-slate-300">
           Wounds: <span className="text-white font-semibold">{character.maxWounds}</span> |
           HP/Wound: <span className="text-white font-semibold">{character.hpPerWound}</span> |
-          Armor: <span className="text-white font-semibold">+{armorBonus}</span>
+          Armor: <span className="text-white font-semibold">+{hp.armorBonus}</span>
         </div>
 
         {/* Expanded Section */}

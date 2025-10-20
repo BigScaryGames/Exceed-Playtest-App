@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Character, InventoryItem, ItemState } from '@/types/character';
-import { calculateEncumbrance } from '@/utils/calculations';
+import { calculateEncumbrance, calculateSpeedFromEquipped } from '@/utils/calculations';
 import {
   getEquippedWeapons,
   getEquippedArmor,
@@ -215,23 +215,14 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
           <div className="text-slate-400 text-xs mb-1">Speed</div>
           <div className="text-white font-bold text-lg">
             {(() => {
-              // Get armor stats
-              const equippedArmor = getEquippedArmor(character);
-              const armorData = equippedArmor ? getArmorData(equippedArmor) : null;
-              const meetsArmorReq = armorData ? character.stats.MG >= armorData.mightReq : true;
-              const armorPenalty = armorData ? (meetsArmorReq ? armorData.penaltyMet : armorData.penalty) : 0;
-
-              // Calculate speed
-              const runningSkill = character.skills.find(s => s.name === 'Running');
-              const runningBonus = runningSkill ? Math.floor(runningSkill.level / 2) : 0;
-              const speedWithArmor = 5 + character.stats.AG + runningBonus + armorPenalty;
-              const speedWithoutArmor = 5 + character.stats.AG + runningBonus;
+              const speed = calculateSpeedFromEquipped(character);
+              const hasPenalty = speed.withArmor !== speed.withoutArmor;
 
               return (
                 <>
-                  <span className="text-2xl">{speedWithArmor}</span>
-                  <span className="text-slate-400 text-base"> / {speedWithoutArmor}</span>
-                  {armorPenalty !== 0 && (
+                  <span className="text-2xl">{speed.withArmor}</span>
+                  <span className="text-slate-400 text-base"> / {speed.withoutArmor}</span>
+                  {hasPenalty && (
                     <div className="text-slate-400 text-xs mt-1">
                       Current / Max (without armor)
                     </div>

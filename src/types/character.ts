@@ -1,5 +1,7 @@
 // Character Type Definitions for EXCEED RPG
 
+import type { Perk as DatabasePerk, PerkSource } from './perks';
+
 export type AttributeCode = 'MG' | 'EN' | 'AG' | 'DX' | 'WT' | 'WI' | 'PR' | 'CH';
 
 export type WeaponDomain = '1H' | '2H' | 'SaS' | 'Sh' | 'Ar' | 'Spell';
@@ -37,6 +39,12 @@ export interface Perk {
   cost: number;
   attribute: string;
   description: string;
+  // New fields for database perk snapshot system
+  id?: string; // Perk ID from database (e.g., "shield-rush")
+  isCustom?: boolean; // True if custom perk, false if from database
+  source?: PerkSource; // 'database', 'archived', or 'custom'
+  perkSnapshot?: DatabasePerk; // Full snapshot of perk data from database
+  addedAt?: number; // Timestamp when added to character
 }
 
 export interface CombatPerk {
@@ -45,6 +53,12 @@ export interface CombatPerk {
   domain: WeaponDomain;
   attribute: string;
   description: string;
+  // New fields for database perk snapshot system
+  id?: string; // Perk ID from database
+  isCustom?: boolean; // True if custom perk, false if from database
+  source?: PerkSource; // 'database', 'archived', or 'custom'
+  perkSnapshot?: DatabasePerk; // Full snapshot of perk data from database
+  addedAt?: number; // Timestamp when added to character
 }
 
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, Upload, Trash2 } from 'lucide-react';
+import { User, Upload, Trash2, BookOpen } from 'lucide-react';
 import { Character } from '@/types/character';
 import {
   createEmptyCharacter,
@@ -10,20 +10,56 @@ import {
   deleteCharacter,
 } from '@/utils/character';
 import { CharacterSheet } from '@/components/CharacterSheet';
+import { RulesTab } from '@/components/tabs/RulesTab';
+import { loadPerks } from '@/services/perkSync';
+import type { PerkDatabase } from '@/types/perks';
 
-type ViewState = 'landing' | 'create' | 'characterList' | 'characterSheet';
+type ViewState = 'landing' | 'create' | 'characterList' | 'characterSheet' | 'rules';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
   const [characters, setCharacters] = useState<Character[]>([]);
   const [currentCharacter, setCurrentCharacter] = useState<Character | null>(null);
   const [newCharacter, setNewCharacter] = useState<Character>(createEmptyCharacter());
+  const [perkDatabase, setPerkDatabase] = useState<PerkDatabase | null>(null); // Used by future perk selection components
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Suppress unused warning - perkDatabase will be used by PerkSelectModal
+  void perkDatabase;
 
   // Load characters from localStorage on mount
   useEffect(() => {
     const loadedCharacters = loadAllCharacters();
     setCharacters(loadedCharacters);
+  }, []);
+
+  // Load perk database on mount
+  useEffect(() => {
+    loadPerks()
+      .then((database) => {
+        setPerkDatabase(database);
+        console.log('[App] Perk database loaded:', {
+          combat: database.perks.combat.length,
+          magic: database.perks.magic.length,
+          skill: database.perks.skill.length,
+          version: database.version,
+        });
+      })
+      .catch((err) => {
+        console.error('[App] Failed to load perk database:', err);
+      });
+
+    // Listen for perk updates
+    const handlePerksUpdated = (event: CustomEvent<PerkDatabase>) => {
+      console.log('[App] Perks updated from GitHub');
+      setPerkDatabase(event.detail);
+    };
+
+    window.addEventListener('perks-updated', handlePerksUpdated as EventListener);
+
+    return () => {
+      window.removeEventListener('perks-updated', handlePerksUpdated as EventListener);
+    };
   }, []);
 
   // Auto-save current character when it changes
@@ -173,6 +209,14 @@ export default function App() {
                 <span>Import Character</span>
               </label>
             </div>
+
+            <button
+              onClick={() => setCurrentView('rules')}
+              className="w-full flex items-center justify-center gap-3 bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-4 px-6 rounded-lg transition-colors border border-slate-600"
+            >
+              <BookOpen size={24} />
+              <span>View Rules</span>
+            </button>
           </div>
 
           <div className="text-center text-slate-500 text-sm">
@@ -354,6 +398,23 @@ export default function App() {
           character={currentCharacter}
           onUpdate={handleUpdateCharacter}
         />
+      </div>
+    );
+  }
+
+  // Rules View
+  if (currentView === 'rules') {
+    return (
+      <div className="min-h-screen bg-slate-900">
+        <div className="bg-black p-4 border-b border-slate-700">
+          <button
+            onClick={handleBackToLanding}
+            className="text-slate-400 hover:text-white transition-colors"
+          >
+            ← Back
+          </button>
+        </div>
+        <RulesTab />
       </div>
     );
   }
