@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Character } from '@/types/character';
+import type { PerkDatabase } from '@/types/perks';
 import { CharacterHeader } from '@/components/CharacterHeader';
 import { SkillsTab } from '@/components/tabs/SkillsTab';
 import { CombatTab } from '@/components/tabs/CombatTab';
@@ -12,11 +13,12 @@ import { migrateCharacterIfNeeded, needsMigration } from '@/utils/migration';
 interface CharacterSheetProps {
   character: Character;
   onUpdate: (character: Character) => void;
+  perkDatabase: PerkDatabase | null;
 }
 
 type TabType = 'skills' | 'combat' | 'equipment' | 'magic' | 'list';
 
-export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpdate }) => {
+export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpdate, perkDatabase }) => {
   const [activeTab, setActiveTab] = useState<TabType>('skills');
   const [touchStart, setTouchStart] = useState<number>(0);
   const [touchEnd, setTouchEnd] = useState<number>(0);
@@ -162,10 +164,10 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
       </div>
 
       <div className="bg-black min-h-screen">
-        {activeTab === 'skills' && <SkillsTab character={displayCharacter} onUpdate={onUpdate} />}
-        {activeTab === 'combat' && <CombatTab character={displayCharacter} onUpdate={onUpdate} />}
+        {activeTab === 'skills' && <SkillsTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
+        {activeTab === 'combat' && <CombatTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
         {activeTab === 'equipment' && <EquipmentTab character={displayCharacter} onUpdate={onUpdate} />}
-        {activeTab === 'magic' && <MagicTab character={displayCharacter} onUpdate={onUpdate} />}
+        {activeTab === 'magic' && <MagicTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
         {activeTab === 'list' && <ProgressionListTab character={displayCharacter} />}
       </div>
     </div>

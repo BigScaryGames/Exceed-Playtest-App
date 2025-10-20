@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Pencil, Trash2, Zap, ZapOff, Dice6, ChevronDown, ChevronRight } from 'lucide-react';
 import { Character, KnownSpell } from '@/types/character';
+import type { PerkDatabase } from '@/types/perks';
 import {
   calculateLimit,
   calculateCurrentLimit,
@@ -25,9 +26,10 @@ import { MagePerkSpellModal } from '@/components/modals/MagePerkSpellModal';
 interface MagicTabProps {
   character: Character;
   onUpdate: (character: Character) => void;
+  perkDatabase: PerkDatabase | null;
 }
 
-export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate }) => {
+export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDatabase }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingSpell, setEditingSpell] = useState<KnownSpell | null>(null);
   const [isRollerOpen, setIsRollerOpen] = useState(false);
@@ -104,10 +106,9 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate }) => {
     }
 
     // Remove from progression log
-    const updatedLog = updatedCharacter.progressionLog.filter(e =>
+    updatedCharacter.progressionLog = updatedCharacter.progressionLog.filter(e =>
       !(e.type === 'spell' && e.name === spell.name && e.cost === spell.xpCost)
     );
-    updatedCharacter.progressionLog = updatedLog;
 
     onUpdate(updatedCharacter);
   };
@@ -573,6 +574,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate }) => {
         character={character}
         onUpdate={onUpdate}
         category="magic"
+        perkDatabase={perkDatabase}
       />
 
       {/* Mage Perk Free Spell Modal */}

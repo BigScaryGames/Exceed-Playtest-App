@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { Character, Weapon, InventoryItem } from '@/types/character';
+import type { PerkDatabase } from '@/types/perks';
 import { WEAPONS } from '@/data/weapons';
 import { Modal } from '@/components/shared';
 import { AddPerkModal } from '@/components/modals/AddPerkModal';
@@ -81,9 +82,10 @@ const WeaponRollSection: React.FC<WeaponRollSectionProps> = ({
 interface CombatTabProps {
   character: Character;
   onUpdate: (character: Character) => void;
+  perkDatabase: PerkDatabase | null;
 }
 
-export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => {
+export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkDatabase }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
@@ -649,6 +651,7 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate }) => 
         character={character}
         onUpdate={onUpdate}
         category="combat"
+        perkDatabase={perkDatabase}
       />
 
       {/* ExtraHP Attribute Selection Modal */}

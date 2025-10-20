@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Dice6 } from 'lucide-react';
 import { Character, Skill, Perk, SkillDefinition, AttributeCode } from '@/types/character';
+import type { PerkDatabase } from '@/types/perks';
 import { Modal } from '@/components/shared/Modal';
 import { AttributeSelector } from '@/components/shared/AttributeSelector';
 import { SkillSelectModal } from '@/components/modals/SkillSelectModal';
@@ -11,9 +12,10 @@ import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
 interface SkillsTabProps {
   character: Character;
   onUpdate: (character: Character) => void;
+  perkDatabase: PerkDatabase | null;
 }
 
-export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate }) => {
+export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkDatabase }) => {
   // Sub-tab state
   const [activeSubTab, setActiveSubTab] = useState<'skills' | 'perks'>('skills');
 
@@ -514,6 +516,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate }) => 
         character={character}
         onUpdate={onUpdate}
         category="skill"
+        perkDatabase={perkDatabase}
       />
 
       {/* Edit Perk Modal */}

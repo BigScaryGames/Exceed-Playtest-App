@@ -397,6 +397,7 @@ export default function App() {
         <CharacterSheet
           character={currentCharacter}
           onUpdate={handleUpdateCharacter}
+          perkDatabase={perkDatabase}
         />
       </div>
     );
