@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, ChevronUp, ChevronDown, Menu } from 'lucide-react';
+import { Swords, BookOpen, Menu } from 'lucide-react';
 import { Character } from '@/types/character';
 import { XPModal } from '@/components/modals/XPModal';
 
@@ -22,8 +22,8 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onU
     <>
       <div className="bg-black border-b border-slate-700">
         <div className="p-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
+          <div className="flex justify-between items-center gap-4">
+            <div className="flex items-center gap-2 flex-1 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -34,32 +34,31 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onU
               >
                 <Menu size={20} />
               </button>
-              <h2
-                className="text-2xl font-bold text-white cursor-pointer hover:text-blue-400 transition-colors"
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
+              <h2 className="text-2xl font-bold text-white">
                 {character.name}
               </h2>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="flex flex-col items-center">
-                <span className="text-xs font-semibold text-white">Combat</span>
-                <span className="text-lg font-bold text-white">{character.combatXP}</span>
+            <div
+              className="flex items-center gap-4 bg-slate-800 hover:bg-slate-700 rounded-lg px-4 py-2 cursor-pointer transition-colors border border-slate-600"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowXPModal(true);
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <Swords size={16} className="text-red-400" />
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-semibold text-white">Combat</span>
+                  <span className="text-lg font-bold text-white">{character.combatXP}</span>
+                </div>
               </div>
-              <div className="flex flex-col items-center">
-                <span className="text-xs font-semibold text-white">Social</span>
-                <span className="text-lg font-bold text-white">{character.socialXP}</span>
+              <div className="flex items-center gap-2">
+                <BookOpen size={16} className="text-blue-400" />
+                <div className="flex flex-col items-center">
+                  <span className="text-xs font-semibold text-white">Skill</span>
+                  <span className="text-lg font-bold text-white">{character.socialXP}</span>
+                </div>
               </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowXPModal(true);
-                }}
-                className="bg-slate-700 hover:bg-slate-600 rounded-lg p-1.5"
-              >
-                <Plus size={16} />
-              </button>
-              {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </div>
           </div>
         </div>

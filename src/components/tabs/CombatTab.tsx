@@ -590,9 +590,10 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
           <h4 className="text-lg font-bold text-white">Combat Perks</h4>
           <button
             onClick={() => setShowAddCombatPerkModal(true)}
-            className="bg-slate-700 hover:bg-slate-600 rounded-lg p-1.5"
+            className="flex items-center gap-2 bg-purple-700 hover:bg-purple-600 rounded px-3 py-1.5 text-white text-sm font-semibold"
           >
             <Plus size={16} />
+            Add Perk
           </button>
         </div>
         <div className="space-y-2">

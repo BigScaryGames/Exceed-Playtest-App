@@ -440,9 +440,10 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
               <h4 className="text-lg font-semibold text-slate-300 hidden lg:block">Perks</h4>
               <button
                 onClick={() => setShowAddPerkModal(true)}
-                className="bg-slate-700 hover:bg-slate-600 rounded-lg p-1.5"
+                className="flex items-center gap-2 bg-purple-700 hover:bg-purple-600 rounded px-3 py-1.5 text-white text-sm font-semibold"
               >
                 <Plus size={16} />
+                Add Perk
               </button>
             </div>
             <div className="space-y-2">
@@ -560,7 +561,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
                 (levelUpSkillIndex !== null
                   ? (character.skills[levelUpSkillIndex].level + 1) * 2
                   : 2)}{' '}
-              Social XP)
+              Skill XP)
             </span>
           </p>
 

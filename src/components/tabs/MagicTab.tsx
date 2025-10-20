@@ -211,7 +211,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
               </div>
             )}
             <div className="text-xs text-slate-400 mt-2">
-              Combat XP: {character.combatXP} | Social XP: {character.socialXP}
+              Combat XP: {character.combatXP} | Skill XP: {character.socialXP}
             </div>
           </div>
 
@@ -241,16 +241,16 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
           <div className="bg-purple-900/30 border border-purple-700 rounded p-3 mb-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-300 font-semibold">Mage Perk Available!</p>
+                <p className="text-purple-300 font-semibold">Mage Perk Selector</p>
                 <p className="text-purple-400 text-sm mt-1">
-                  You can claim a free Tier 0 spell from your Mage perk
+                  Select your initial spell from mage perk
                 </p>
               </div>
               <button
                 onClick={() => setShowMagePerkSpellModal(true)}
                 className="bg-purple-700 hover:bg-purple-600 rounded px-4 py-2 text-white font-semibold whitespace-nowrap"
               >
-                Claim Free Spell
+                Select Initial Spell
               </button>
             </div>
           </div>
@@ -492,7 +492,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                                           : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                                       }`}
                                     >
-                                      Social XP
+                                      Skill XP
                                     </button>
                                   </div>
                                   <button

@@ -136,7 +136,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     const perkCost = perk.cost.xp;
 
     if (availableXP < perkCost) {
-      alert(`Not enough ${xpType === 'social' ? 'Social' : 'Combat'} XP. Need ${perkCost}, have ${availableXP}.`);
+      alert(`Not enough ${xpType === 'social' ? 'Skill' : 'Combat'} XP. Need ${perkCost}, have ${availableXP}.`);
       return;
     }
 
@@ -233,7 +233,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
 
     if (availableXP < cost) {
-      alert(`Not enough ${xpType === 'social' ? 'Social' : 'Combat'} XP. Need ${cost}, have ${availableXP}.`);
+      alert(`Not enough ${xpType === 'social' ? 'Skill' : 'Combat'} XP. Need ${cost}, have ${availableXP}.`);
       return;
     }
 
@@ -332,7 +332,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
           <div>
             <h3 className="text-xl font-bold text-white">Add Perk</h3>
             <p className="text-sm text-slate-400 mt-1">
-              Available {displayXpType === 'social' ? 'Social' : 'Combat'} XP: {availableXP}
+              Available {displayXpType === 'social' ? 'Skill' : 'Combat'} XP: {availableXP}
               {perkDatabase && ` • ${availablePerks.length} perks available`}
             </p>
           </div>
@@ -403,7 +403,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
                       : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                   }`}
                 >
-                  Social XP ({character.socialXP})
+                  Skill XP ({character.socialXP})
                 </button>
               </div>
             </div>

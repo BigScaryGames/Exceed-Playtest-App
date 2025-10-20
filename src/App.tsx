@@ -104,7 +104,16 @@ export default function App() {
   };
 
   const handleSelectCharacter = (character: Character) => {
-    setCurrentCharacter(character);
+    // Update lastOpened timestamp
+    const updatedCharacter = {
+      ...character,
+      lastOpened: Date.now()
+    };
+
+    // Save the updated character with new timestamp
+    saveCharacter(updatedCharacter);
+
+    setCurrentCharacter(updatedCharacter);
     setCurrentView('characterSheet');
   };
 
@@ -306,7 +315,7 @@ export default function App() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2">Social XP</label>
+                <label className="block text-sm font-semibold mb-2">Skill XP</label>
                 <input
                   type="number"
                   value={newCharacter.socialXP}
@@ -368,7 +377,14 @@ export default function App() {
               </div>
             ) : (
               <div className="divide-y divide-slate-700">
-                {characters.map((character, index) => (
+                {characters
+                  .sort((a, b) => {
+                    // Sort by lastOpened (most recent first), fallback to 0 if not set
+                    const aTime = a.lastOpened || 0;
+                    const bTime = b.lastOpened || 0;
+                    return bTime - aTime;
+                  })
+                  .map((character, index) => (
                   <div
                     key={character.name + index}
                     onClick={() => handleSelectCharacter(character)}
@@ -381,7 +397,10 @@ export default function App() {
                       )}
                       <div className="flex gap-4 mt-2 text-xs text-slate-500">
                         <span>Combat XP: {character.combatXP}</span>
-                        <span>Social XP: {character.socialXP}</span>
+                        <span>Skill XP: {character.socialXP}</span>
+                        {character.lastOpened && (
+                          <span>• Last opened: {new Date(character.lastOpened).toLocaleDateString()} {new Date(character.lastOpened).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        )}
                       </div>
                     </div>
                     <button

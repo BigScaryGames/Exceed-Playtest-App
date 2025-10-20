@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Swords, BookOpen } from 'lucide-react';
 import { Modal } from '@/components/shared/Modal';
 
 interface XPModalProps {
@@ -27,7 +28,10 @@ export const XPModal: React.FC<XPModalProps> = ({ isOpen, onClose, onAddXP }) =>
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Add Experience Points">
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-white mb-2">Combat</label>
+        <label className="flex items-center gap-2 text-sm font-semibold text-white mb-2">
+          <Swords size={16} className="text-red-400" />
+          Combat
+        </label>
         <input
           type="number"
           value={combatXPInput}
@@ -38,12 +42,15 @@ export const XPModal: React.FC<XPModalProps> = ({ isOpen, onClose, onAddXP }) =>
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-white mb-2">Social</label>
+        <label className="flex items-center gap-2 text-sm font-semibold text-white mb-2">
+          <BookOpen size={16} className="text-blue-400" />
+          Skill
+        </label>
         <input
           type="number"
           value={socialXPInput}
           onChange={(e) => setSocialXPInput(e.target.value)}
-          placeholder="Enter Social XP"
+          placeholder="Enter Skill XP"
           className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
         />
       </div>

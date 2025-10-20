@@ -121,6 +121,8 @@ export interface Character {
   bio?: string;
   notes?: string;
   reputation?: string;
+  // Timestamp tracking
+  lastOpened?: number; // Timestamp when character was last opened
 }
 
 export interface ArmorType {

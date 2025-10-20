@@ -72,7 +72,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
     const xpCost = getSpellXPCost(spellData.tier, spellData.type);
 
     if (availableXP < xpCost) {
-      alert(`Not enough ${xpType === 'combat' ? 'Combat' : 'Social'} XP. Need ${xpCost}, have ${availableXP}`);
+      alert(`Not enough ${xpType === 'combat' ? 'Combat' : 'Skill'} XP. Need ${xpCost}, have ${availableXP}`);
       return;
     }
 
@@ -132,7 +132,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
     const xpCost = getSpellXPCost(customTier, customType);
 
     if (availableXP < xpCost) {
-      alert(`Not enough ${xpType === 'combat' ? 'Combat' : 'Social'} XP. Need ${xpCost}, have ${availableXP}`);
+      alert(`Not enough ${xpType === 'combat' ? 'Combat' : 'Skill'} XP. Need ${xpCost}, have ${availableXP}`);
       return;
     }
 
@@ -274,7 +274,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
                   : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
               }`}
             >
-              Use Social XP
+              Use Skill XP
             </button>
           </div>
 
@@ -285,7 +285,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
               <span className={`font-bold ${xpType === 'combat' ? 'text-red-400' : 'text-slate-500'}`}>{character.combatXP}</span>
             </div>
             <div className="flex justify-between items-center text-sm mt-1">
-              <span className="text-slate-400">Social XP:</span>
+              <span className="text-slate-400">Skill XP:</span>
               <span className={`font-bold ${xpType === 'social' ? 'text-green-400' : 'text-slate-500'}`}>{character.socialXP}</span>
             </div>
             <div className="flex justify-between items-center text-sm mt-2 pt-2 border-t border-slate-600">
@@ -297,7 +297,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
               <span className={`font-bold ${
                 availableXP - previewXpCost >= 0 ? 'text-green-400' : 'text-red-400'
               }`}>
-                {availableXP - previewXpCost} {xpType === 'combat' ? 'Combat' : 'Social'} XP
+                {availableXP - previewXpCost} {xpType === 'combat' ? 'Combat' : 'Skill'} XP
               </span>
             </div>
           </div>

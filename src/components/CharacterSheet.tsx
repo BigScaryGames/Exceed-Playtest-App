@@ -117,7 +117,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
     >
       <CharacterHeader character={displayCharacter} onUpdateXP={handleUpdateXP} onMenuToggle={onMenuToggle} />
 
-      <div className="border-b border-slate-700">
+      <div className="sticky top-0 z-10 bg-slate-900 border-b border-slate-700">
         <div className="flex">
           <button
             onClick={() => setActiveTab('skills')}

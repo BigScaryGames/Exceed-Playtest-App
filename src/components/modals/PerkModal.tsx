@@ -86,10 +86,10 @@ export const PerkModal: React.FC<PerkModalProps> = ({
               <>
                 Current: {existingCost} CP → New: {parsedCost} CP
                 <br />
-                Available Social XP: {availableCP} CP
+                Available Skill XP: {availableCP} CP
               </>
             ) : (
-              `Available Social XP: ${availableCP} CP`
+              `Available Skill XP: ${availableCP} CP`
             )}
           </div>
         </h3>

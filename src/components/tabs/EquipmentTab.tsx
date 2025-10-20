@@ -3,9 +3,6 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { Character, InventoryItem, ItemState } from '@/types/character';
 import { calculateEncumbrance, calculateSpeedFromEquipped } from '@/utils/calculations';
 import {
-  getEquippedWeapons,
-  getEquippedArmor,
-  getEquippedShield,
   getWeaponData,
   getArmorData,
   getShieldData,
@@ -24,11 +21,6 @@ interface EquipmentTabProps {
 export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
-
-  // Get equipped items
-  const equippedWeapons = getEquippedWeapons(character);
-  const equippedArmor = getEquippedArmor(character);
-  const equippedShield = getEquippedShield(character);
 
   // Calculate encumbrance
   const encumbranceData = calculateEncumbrance(character);
@@ -122,63 +114,10 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
         </button>
       </div>
 
-      {/* Equipped Gear Summary */}
-      <div className="bg-slate-800 rounded-lg p-4 mb-4">
-        <h4 className="text-lg font-semibold text-white mb-3">Equipped Gear</h4>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {/* Left Column: Weapons */}
-          <div>
-            <div className="text-sm text-slate-400 mb-1">Weapons</div>
-            {equippedWeapons.length === 0 ? (
-              <div className="text-slate-500 text-sm">No weapons equipped</div>
-            ) : (
-              <div className="space-y-1">
-                {equippedWeapons.map((item) => {
-                  const weaponData = getWeaponData(item);
-                  return (
-                    <div key={item.id} className="text-sm text-white">
-                      {item.name} - {weaponData?.domain} | {weaponData?.damage} | AP {weaponData?.ap}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Right Column: Armor & Shield */}
-          <div className="space-y-3">
-            {/* Armor */}
-            <div>
-              <div className="text-sm text-slate-400 mb-1">Armor</div>
-              {!equippedArmor ? (
-                <div className="text-slate-500 text-sm">No armor equipped</div>
-              ) : (
-                <div className="text-sm text-white">
-                  {equippedArmor.name} - +{getArmorData(equippedArmor)?.bonus} Armor
-                </div>
-              )}
-            </div>
-
-            {/* Shield */}
-            <div>
-              <div className="text-sm text-slate-400 mb-1">Shield</div>
-              {!equippedShield ? (
-                <div className="text-slate-500 text-sm">No shield equipped</div>
-              ) : (
-                <div className="text-sm text-white">
-                  {equippedShield.name} - +{getShieldData(equippedShield)?.defenseBonus} Defense
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Encumbrance & Speed Section */}
       <div className="bg-slate-800 rounded-lg p-4 mb-4">
         <h4 className="text-lg font-semibold text-white mb-3">Encumbrance & Speed</h4>
-        <div className="grid grid-cols-3 gap-3 mb-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
           <div className="bg-slate-700 rounded p-2">
             <div className="text-slate-400 text-xs">Total Weight</div>
             <div className="text-white font-bold">{totalWeight.toFixed(1)} kg</div>
@@ -203,35 +142,30 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
               {level.name}
             </div>
           </div>
+          <div className="bg-slate-700 rounded p-2">
+            <div className="text-slate-400 text-xs">Speed</div>
+            <div className="text-white font-bold">
+              {(() => {
+                const speed = calculateSpeedFromEquipped(character);
+                const hasPenalty = speed.withArmor !== speed.withoutArmor;
+
+                return (
+                  <>
+                    <span>{speed.withArmor}</span>
+                    {hasPenalty && (
+                      <span className="text-slate-400 text-sm"> / {speed.withoutArmor}</span>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          </div>
         </div>
         {level.name !== 'None' && (
-          <div className="text-sm text-slate-300 mb-3">
+          <div className="text-sm text-slate-300">
             Penalties: Speed {level.speedPenalty}, Dodge {level.dodgePenalty}
           </div>
         )}
-
-        {/* Speed Display */}
-        <div className="bg-slate-700 rounded p-3 mt-3">
-          <div className="text-slate-400 text-xs mb-1">Speed</div>
-          <div className="text-white font-bold text-lg">
-            {(() => {
-              const speed = calculateSpeedFromEquipped(character);
-              const hasPenalty = speed.withArmor !== speed.withoutArmor;
-
-              return (
-                <>
-                  <span className="text-2xl">{speed.withArmor}</span>
-                  <span className="text-slate-400 text-base"> / {speed.withoutArmor}</span>
-                  {hasPenalty && (
-                    <div className="text-slate-400 text-xs mt-1">
-                      Current / Max (without armor)
-                    </div>
-                  )}
-                </>
-              );
-            })()}
-          </div>
-        </div>
       </div>
 
       {/* Inventory List */}

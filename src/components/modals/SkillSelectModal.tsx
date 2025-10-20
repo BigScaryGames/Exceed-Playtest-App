@@ -51,7 +51,7 @@ export const SkillSelectModal: React.FC<SkillSelectModalProps> = ({
         <h3 className="text-xl font-bold text-white p-6 pb-4 text-center flex-shrink-0">
           Add New Skill
           <div className="text-sm text-slate-400 font-normal mt-1">
-            Available Social XP: {availableCP} CP
+            Available Skill XP: {availableCP} CP
           </div>
           {!canAffordSkill && (
             <div className="text-sm text-red-400 font-normal">

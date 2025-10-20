@@ -379,7 +379,7 @@ export const upgradeSpellToAdvanced = (
     return {
       success: false,
       character,
-      reason: `Not enough ${xpType === 'combat' ? 'Combat' : 'Social'} XP. Need ${upgradeCost}, have ${availableXP}`
+      reason: `Not enough ${xpType === 'combat' ? 'Combat' : 'Skill'} XP. Need ${upgradeCost}, have ${availableXP}`
     };
   }
 
