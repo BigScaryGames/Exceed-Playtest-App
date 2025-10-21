@@ -68,12 +68,28 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onU
           style={{ maxHeight: isExpanded ? '200px' : '0px' }}
         >
           <div className="grid grid-cols-4 gap-2 p-3">
-            {Object.entries(character.stats).map(([stat, value]) => (
-              <div key={stat} className="bg-slate-800 rounded px-2 py-1 flex justify-between items-center">
-                <span className="text-xs font-semibold text-white">{stat}</span>
-                <span className="text-base font-bold text-white">{value}</span>
-              </div>
-            ))}
+            {Object.entries(character.stats).map(([stat, value]) => {
+              const fullNames: Record<string, string> = {
+                MG: 'Might',
+                EN: 'Endurance',
+                AG: 'Agility',
+                DX: 'Dexterity',
+                WT: 'Wit',
+                WI: 'Will',
+                PR: 'Perception',
+                CH: 'Charisma'
+              };
+
+              return (
+                <div key={stat} className="bg-slate-800 rounded px-2 py-1 flex justify-between items-center">
+                  <span className="text-xs font-semibold text-white">
+                    <span className="hidden sm:inline">{fullNames[stat] || stat}</span>
+                    <span className="sm:hidden">{stat}</span>
+                  </span>
+                  <span className="text-base font-bold text-white">{value}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

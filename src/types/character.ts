@@ -114,6 +114,8 @@ export interface Character {
   extraWoundCount: number;
   // Unified Inventory System (new)
   inventory?: InventoryItem[]; // Optional for backward compatibility
+  stowedWeightReduction?: number; // Weight reduction for stowed items (e.g., bag of holding)
+  money?: number; // Currency/gold carried
   // Magic System (new)
   knownSpells?: KnownSpell[];
   attunedSpells?: string[]; // Array of spell IDs currently attuned

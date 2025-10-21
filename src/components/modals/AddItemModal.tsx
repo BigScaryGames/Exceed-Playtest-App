@@ -274,19 +274,26 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
               Item State
             </label>
             <div className="grid grid-cols-3 gap-2">
-              {(['equipped', 'stowed', 'packed'] as ItemState[]).map(state => (
-                <button
-                  key={state}
-                  onClick={() => setItemState(state)}
-                  className={`py-2 px-3 rounded font-semibold capitalize ${
-                    itemState === state
-                      ? 'bg-blue-700 text-white'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                  }`}
-                >
-                  {state}
-                </button>
-              ))}
+              {(['equipped', 'stowed', 'packed'] as ItemState[]).map(state => {
+                const getStateLabel = (s: ItemState) => {
+                  if (s === 'stowed') return 'On Self';
+                  if (s === 'packed') return 'Stored';
+                  return 'Equipped';
+                };
+                return (
+                  <button
+                    key={state}
+                    onClick={() => setItemState(state)}
+                    className={`py-2 px-3 rounded font-semibold ${
+                      itemState === state
+                        ? 'bg-blue-700 text-white'
+                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                    }`}
+                  >
+                    {getStateLabel(state)}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

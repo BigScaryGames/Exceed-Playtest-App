@@ -200,28 +200,25 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
         <div className="grid grid-cols-2 gap-4 mb-4">
           {/* Spellcraft */}
           <div>
-            <h4 className="text-lg font-bold text-white mb-2">Spellcraft</h4>
             <div className="bg-slate-700 rounded p-3 text-center">
-              <div className="text-3xl font-bold text-blue-400">{spellcraft}</div>
-              <div className="text-xs text-slate-400 mt-1">Level 0-5</div>
+              <div className="text-2xl font-bold">
+                <span className="text-slate-400">Spellcraft - </span>
+                <span className="text-blue-400">{hasMagePerk ? spellcraft : '-'}</span>
+              </div>
             </div>
             {!hasMagePerk && spellcraft === 0 && (
               <div className="text-xs text-amber-400 mt-2">
                 Requires Mage perk for Tier 0 access
               </div>
             )}
-            <div className="text-xs text-slate-400 mt-2">
-              Combat XP: {character.combatXP} | Skill XP: {character.socialXP}
-            </div>
           </div>
 
           {/* Limit */}
           <div>
-            <h4 className="text-lg font-bold text-white mb-2">Limit</h4>
             <div className="bg-slate-700 rounded p-3">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-white font-semibold">{currentLimit} / {totalLimit}</span>
-                <span className="text-xs text-slate-400">{usedLimit} used</span>
+              <div className="text-xl font-bold mb-2">
+                <span className="text-slate-400">Limit </span>
+                <span className="text-white">{currentLimit}/{totalLimit}</span>
               </div>
               <div className="relative h-4 bg-slate-600 rounded-full overflow-hidden">
                 <div
@@ -255,16 +252,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
             </div>
           </div>
         )}
-
-        <div className="flex justify-end">
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 rounded px-4 py-2 text-white font-semibold"
-          >
-            <Plus size={20} />
-            Learn Spell
-          </button>
-        </div>
       </div>
 
       {/* Magic Perks Section */}
@@ -328,7 +315,16 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
 
       {/* Known Spells Section */}
       <div className="bg-slate-800 rounded-lg p-4">
-        <h4 className="text-lg font-bold text-white mb-3">Known Spells</h4>
+        <div className="flex justify-between items-center mb-3">
+          <h4 className="text-lg font-bold text-white">Known Spells</h4>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 rounded px-4 py-2 text-white font-semibold"
+          >
+            <Plus size={20} />
+            Learn Spell
+          </button>
+        </div>
 
         {character.knownSpells.length === 0 ? (
           <div className="text-center py-12">

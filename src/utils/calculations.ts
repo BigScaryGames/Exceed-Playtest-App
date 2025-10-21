@@ -195,13 +195,20 @@ export const calculateEncumbrance = (character: Character) => {
 
   // Use new inventory system if available
   if (character.inventory && character.inventory.length > 0) {
-    // Calculate from unified inventory - stowed items don't count toward encumbrance
+    // Calculate from unified inventory
+    // Equipped items count toward weight
     equippedWeight = character.inventory
       .filter(item => item.state === 'equipped')
       .reduce((sum, item) => sum + (item.weight * item.quantity), 0);
-    inventoryWeight = character.inventory
-      .filter(item => item.state === 'packed')
+
+    // Stowed items count toward weight, with weight reduction applied
+    const stowedWeight = character.inventory
+      .filter(item => item.state === 'stowed')
       .reduce((sum, item) => sum + (item.weight * item.quantity), 0);
+    const weightReduction = character.stowedWeightReduction || 0;
+
+    // Packed items DON'T count toward encumbrance (stored elsewhere)
+    inventoryWeight = Math.max(0, stowedWeight - weightReduction);
     totalWeight = equippedWeight + inventoryWeight;
   } else {
     // Fallback to old system

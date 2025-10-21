@@ -127,7 +127,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
                 : 'text-slate-500'
             }`}
           >
-            Skills
+            📖 Skills
           </button>
           <button
             onClick={() => setActiveTab('combat')}
@@ -137,7 +137,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
                 : 'text-slate-500'
             }`}
           >
-            Combat
+            ⚔️ Combat
           </button>
           <button
             onClick={() => setActiveTab('equipment')}
@@ -147,7 +147,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
                 : 'text-slate-500'
             }`}
           >
-            Equipment
+            🎒 Equipment
           </button>
           <button
             onClick={() => setActiveTab('magic')}
@@ -157,7 +157,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
                 : 'text-slate-500'
             }`}
           >
-            Magic
+            🧙 Magic
           </button>
           <button
             onClick={() => setActiveTab('list')}
@@ -167,7 +167,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
                 : 'text-slate-500'
             }`}
           >
-            Notes
+            📓 Notes
           </button>
         </div>
       </div>
