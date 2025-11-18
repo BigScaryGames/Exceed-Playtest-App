@@ -5,7 +5,6 @@ import {
   InventoryItem,
   ItemType,
   ItemState,
-  WeaponDomain,
   CustomWeaponData,
   CustomArmorData,
   CustomShieldData
@@ -39,7 +38,6 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
   const [selectedDataRef, setSelectedDataRef] = useState('');
 
   // Custom weapon fields
-  const [weaponDomain, setWeaponDomain] = useState<WeaponDomain>('1H');
   const [finesse, setFinesse] = useState(false);
   const [damage, setDamage] = useState('d6');
   const [ap, setAp] = useState('2');
@@ -89,7 +87,6 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
       // Create custom item
       if (itemType === 'weapon') {
         const customWeaponData: CustomWeaponData = {
-          domain: weaponDomain,
           finesse,
           damage,
           ap: parseInt(ap) || 0,
@@ -312,7 +309,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
                 {itemType === 'weapon' &&
                   Object.keys(WEAPONS).map(key => (
                     <option key={key} value={key}>
-                      {key} - {WEAPONS[key].domain} - {WEAPONS[key].damage}
+                      {key} - {WEAPONS[key].damage}
                     </option>
                   ))}
                 {itemType === 'armor' &&
@@ -379,21 +376,6 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
                   <h4 className="text-sm font-semibold text-slate-300">Weapon Properties</h4>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Domain</label>
-                      <select
-                        value={weaponDomain}
-                        onChange={(e) => setWeaponDomain(e.target.value as WeaponDomain)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                      >
-                        <option value="1H">1H - One Handed</option>
-                        <option value="2H">2H - Two Handed</option>
-                        <option value="SaS">SaS - Staves and Spears</option>
-                        <option value="Sh">Sh - Shield</option>
-                        <option value="Ar">Ar - Archery</option>
-                      </select>
-                    </div>
-
                     <div>
                       <label className="block text-xs text-slate-400 mb-1">Damage</label>
                       <input

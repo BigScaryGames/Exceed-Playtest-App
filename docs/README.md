@@ -31,11 +31,11 @@ The `rules/` directory is a symlink to the official EXCEED ruleset located at:
 - Level 5: 10 CP (30 total)
 
 #### Martial Domain Progression
-- Level 1: 5 CP
-- Level 2: 15 CP total
-- Level 3: 30 CP total
-- Level 4: 50 CP total
-- Level 5: 75 CP total
+- Level 1: 10 CP
+- Level 2: 30 CP total
+- Level 3: 60 CP total
+- Level 4: 100 CP total
+- Level 5: 150 CP total
 
 #### HP System
 - **Stamina** = (Armor + Endurance) × Max Wounds

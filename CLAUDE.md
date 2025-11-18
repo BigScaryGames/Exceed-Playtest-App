@@ -91,9 +91,9 @@ src/
 ### Combat System
 - **HP System**: Stamina + Health with draggable UI
 - **Wounds**: Base wounds + extra wounds (from 5 Extra HP purchases)
-- **Weapon Domains**: 1H, 2H, SaS (Staves/Spears), Sh (Shield), Ar (Archery)
-- **Domain Levels**: 0-5 based on Combat Perk CP (5/15/30/50/75)
-- **Combat Perks**: Tied to weapon domains, affects parry and attack
+- **Martial Domain**: Single domain for all combat abilities
+- **Domain Levels**: 0-5 based on Combat Perk CP (10/30/60/100/150)
+- **Combat Perks**: All contribute to Martial domain, affects parry and attack
 - **Defense Stats**: Parry, Dodge, Block, Endure (auto-calculated)
 - **Armor**: 9 types with Might requirements and penalties
 
@@ -152,10 +152,10 @@ src/
 
 #### Adding Combat Perks
 1. User clicks "+" in Combat Perks section
-2. CombatPerkModal opens with form (name, cost, domain, attribute, description)
-3. On save: adds to `combatPerks[]`, adds to `progressionLog` with domain
-4. Domain CP totals recalculated via `calculateWeaponDomains()`
-5. Domain level auto-updates based on CP thresholds (5/15/30/50/75)
+2. CombatPerkModal opens with form (name, cost, attribute, description)
+3. On save: adds to `combatPerks[]`, adds to `progressionLog` with Martial domain
+4. Martial domain CP total recalculated via `calculateWeaponDomains()`
+5. Domain level auto-updates based on CP thresholds (10/30/60/100/150)
 
 ### Adding New Game Content
 

@@ -18,11 +18,7 @@ export const createEmptyCharacter = (): Character => ({
   customItems: [],
   progressionLog: [],
   weaponDomains: {
-    '1H': 0,
-    '2H': 0,
-    'SaS': 0,
-    'Sh': 0,
-    'Ar': 0,
+    'Martial': 0,
     'Spell': 0
   },
   maxWounds: 2,

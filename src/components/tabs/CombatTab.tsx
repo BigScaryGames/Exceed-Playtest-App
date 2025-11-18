@@ -38,8 +38,8 @@ const WeaponRollSection: React.FC<WeaponRollSectionProps> = ({
   onOpenRoller
 }) => {
 
-  // Get domain level
-  const domainLevel = weaponData.domain ? character.weaponDomains[weaponData.domain] : 0;
+  // All weapons use Martial domain
+  const domainLevel = character.weaponDomains['Martial'] || 0;
 
   // Calculate attack attribute using utility function
   const attackAttr = calculateAttackAttribute(character, weaponData);
@@ -60,12 +60,15 @@ const WeaponRollSection: React.FC<WeaponRollSectionProps> = ({
     });
   };
 
+  // Get weapon category from traits (1H, 2H, SaS, Ar)
+  const category = weaponData.traits.find(t => ['1H', '2H', 'SaS', 'Ar'].includes(t)) || '';
+
   return (
     <div className="bg-slate-700 rounded p-3">
       <div className="flex justify-between items-start mb-2">
         <div>
           <div className="text-white font-medium text-sm">{weaponName}</div>
-          <div className="text-slate-400 text-xs">{label} • {weaponData.domain || 'No Domain'} {domainLevel}</div>
+          <div className="text-slate-400 text-xs">{label}{category && ` • ${category}`}</div>
         </div>
       </div>
 
@@ -252,33 +255,24 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
     const perk = character.combatPerks[index];
     const updatedPerks = character.combatPerks.filter((_, i) => i !== index);
 
-    // Recalculate domain level after removing this perk
-    const remainingDomainXP = character.progressionLog
+    // Recalculate Martial domain level after removing this perk
+    const remainingMartialXP = character.progressionLog
       .filter(entry => entry.type === 'combatPerk' &&
-                      entry.domain === perk.domain &&
                       !(entry.name === perk.name && entry.cost === perk.cost))
       .reduce((sum, entry) => sum + (entry.cost || 0), 0);
 
-    // Domain thresholds differ between Spell and weapon domains
+    // Martial domain thresholds: 10/30/60/100/150
     let newLevel = 0;
-    if (perk.domain === 'Spell') {
-      // Spell domain thresholds: 10/30/60/100/150
-      if (remainingDomainXP >= 150) newLevel = 5;
-      else if (remainingDomainXP >= 100) newLevel = 4;
-      else if (remainingDomainXP >= 60) newLevel = 3;
-      else if (remainingDomainXP >= 30) newLevel = 2;
-      else if (remainingDomainXP >= 10) newLevel = 1;
-    } else {
-      // Weapon domain thresholds: 5/15/30/50/75
-      if (remainingDomainXP >= 75) newLevel = 5;
-      else if (remainingDomainXP >= 50) newLevel = 4;
-      else if (remainingDomainXP >= 30) newLevel = 3;
-      else if (remainingDomainXP >= 15) newLevel = 2;
-      else if (remainingDomainXP >= 5) newLevel = 1;
-    }
+    if (remainingMartialXP >= 150) newLevel = 5;
+    else if (remainingMartialXP >= 100) newLevel = 4;
+    else if (remainingMartialXP >= 60) newLevel = 3;
+    else if (remainingMartialXP >= 30) newLevel = 2;
+    else if (remainingMartialXP >= 10) newLevel = 1;
 
-    const newDomains = { ...character.weaponDomains };
-    newDomains[perk.domain] = newLevel;
+    const newDomains = {
+      'Martial': newLevel,
+      'Spell': character.weaponDomains['Spell'] || 0
+    };
 
     // Remove from progression log
     const updatedLog = [...character.progressionLog];
@@ -570,17 +564,13 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
         </div>
       </div>
 
-      {/* Weapon Domains Block - Compact */}
+      {/* Martial Domain Block */}
       <div className="bg-slate-800 rounded-lg p-4 mb-4">
-        <h4 className="text-lg font-bold text-white mb-3">Weapon Domains</h4>
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-          {Object.entries(character.weaponDomains).map(([domain, level]) => (
-            <div key={domain} className="bg-slate-700 rounded px-2 py-1 text-center">
-              <div className="text-white text-sm">
-                <span className="text-slate-400">{domain}</span> {level}
-              </div>
-            </div>
-          ))}
+        <h4 className="text-lg font-bold text-white mb-3">Martial Domain</h4>
+        <div className="bg-slate-700 rounded px-4 py-3 text-center">
+          <div className="text-white text-2xl font-bold">
+            Level {character.weaponDomains['Martial'] || 0}
+          </div>
         </div>
       </div>
 
@@ -608,8 +598,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
                     <span className="text-white font-medium">{perk.name}</span>
                     <div className="text-sm mt-1">
                       <span className="text-green-400">{perk.cost} XP</span>
-                      <span className="text-slate-400 mx-2">•</span>
-                      <span className="text-blue-400">{perk.domain}</span>
                       <span className="text-slate-400 mx-2">•</span>
                       <span className="text-purple-400">{perk.attribute}</span>
                     </div>

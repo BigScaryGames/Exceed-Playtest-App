@@ -25,14 +25,14 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
   const [selectedPerkId, setSelectedPerkId] = useState('');
   const [xpTypeChoice, setXpTypeChoice] = useState<'combat' | 'social'>('combat');
   const [selectedPredefinedAttribute, setSelectedPredefinedAttribute] = useState<string>('');
-  const [selectedDomain, setSelectedDomain] = useState<WeaponDomain>('1H');
+  const [selectedDomain, setSelectedDomain] = useState<WeaponDomain>('Martial');
 
   // Custom perk fields
   const [customName, setCustomName] = useState('');
   const [customCost, setCustomCost] = useState('');
   const [customAttribute, setCustomAttribute] = useState('');
   const [customDescription, setCustomDescription] = useState('');
-  const [customDomain, setCustomDomain] = useState<WeaponDomain>('1H');
+  const [customDomain, setCustomDomain] = useState<WeaponDomain>('Martial');
 
   if (!isOpen) return null;
 
@@ -87,12 +87,12 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     setSelectedPerkId('');
     setXpTypeChoice('combat');
     setSelectedPredefinedAttribute('');
-    setSelectedDomain('1H');
+    setSelectedDomain('Martial');
     setCustomName('');
     setCustomCost('');
     setCustomAttribute('');
     setCustomDescription('');
-    setCustomDomain('1H');
+    setCustomDomain('Martial');
     onClose();
   };
 
@@ -440,26 +440,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 
               {selectedPerk && (
                 <>
-                  {/* Domain Selection for Combat Perks */}
-                  {selectedPerk.type === 'combat' && (
-                    <div>
-                      <label className="block text-sm font-semibold text-slate-300 mb-2">
-                        Select Domain *
-                      </label>
-                      <select
-                        value={selectedDomain}
-                        onChange={(e) => setSelectedDomain(e.target.value as WeaponDomain)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
-                      >
-                        <option value="1H">One-Handed (1H)</option>
-                        <option value="2H">Two-Handed (2H)</option>
-                        <option value="SaS">Staves & Spears (SaS)</option>
-                        <option value="Sh">Shield (Sh)</option>
-                        <option value="Ar">Archery (Ar)</option>
-                        <option value="Spell">Spellcraft (Spell)</option>
-                      </select>
-                    </div>
-                  )}
+                  {/* Note: Combat perks now always use Martial domain */}
 
                   {/* Attribute Selection for Perks with Multiple Attributes */}
                   {hasMultipleAttributes && (
@@ -579,25 +560,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
                 </div>
               </div>
 
-              {category === 'combat' && (
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    Domain *
-                  </label>
-                  <select
-                    value={customDomain}
-                    onChange={(e) => setCustomDomain(e.target.value as WeaponDomain)}
-                    className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
-                  >
-                    <option value="1H">One-Handed (1H)</option>
-                    <option value="2H">Two-Handed (2H)</option>
-                    <option value="SaS">Staves & Spears (SaS)</option>
-                    <option value="Sh">Shield (Sh)</option>
-                    <option value="Ar">Archery (Ar)</option>
-                    <option value="Spell">Spellcraft (Spell)</option>
-                  </select>
-                </div>
-              )}
+              {/* Note: Combat perks now always use Martial domain */}
 
               <div>
                 <label className="block text-sm font-semibold text-slate-300 mb-2">

@@ -4,7 +4,7 @@ import type { Perk as DatabasePerk, PerkSource } from './perks';
 
 export type AttributeCode = 'MG' | 'EN' | 'AG' | 'DX' | 'WT' | 'WI' | 'PR' | 'CH';
 
-export type WeaponDomain = '1H' | '2H' | 'SaS' | 'Sh' | 'Ar' | 'Spell';
+export type WeaponDomain = 'Martial' | 'Spell';
 
 export interface Stats {
   MG: number; // Might
@@ -18,12 +18,8 @@ export interface Stats {
 }
 
 export interface WeaponDomains {
-  '1H': number;  // One Handed
-  '2H': number;  // Two Handed
-  'SaS': number; // Staves and Spears
-  'Sh': number;  // Shield
-  'Ar': number;  // Archery
-  'Spell': number; // Spellcraft
+  'Martial': number; // All combat abilities
+  'Spell': number;   // Spellcraft
 }
 
 export interface Skill {
@@ -145,7 +141,6 @@ export interface Shield {
 }
 
 export interface Weapon {
-  domain: WeaponDomain | null;
   finesse: boolean;
   damage: string;
   ap: number;
@@ -169,7 +164,6 @@ export type ItemType = 'weapon' | 'armor' | 'shield' | 'item';
 export type ItemState = 'equipped' | 'stowed' | 'packed';
 
 export interface CustomWeaponData {
-  domain: WeaponDomain;
   finesse: boolean;
   damage: string;
   ap: number;

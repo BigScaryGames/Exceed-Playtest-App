@@ -138,12 +138,86 @@ export const needsMigration = (character: Character): boolean => {
 };
 
 /**
+ * Migrate character from old multi-domain system to single Martial domain
+ */
+export const migrateCharacterToSingleDomain = (character: Character): Character => {
+  // Check if character uses old multi-domain system
+  const weaponDomains = character.weaponDomains as any;
+  const hasOldDomains = weaponDomains && (
+    '1H' in weaponDomains ||
+    '2H' in weaponDomains ||
+    'SaS' in weaponDomains ||
+    'Sh' in weaponDomains ||
+    'Ar' in weaponDomains
+  );
+
+  if (!hasOldDomains) {
+    return character; // Already migrated or new character
+  }
+
+  console.log('Migrating character to single Martial domain system...');
+
+  // Combine all old martial domains into single Martial domain
+  // Take the highest level from any martial domain
+  const martialLevel = Math.max(
+    weaponDomains['1H'] || 0,
+    weaponDomains['2H'] || 0,
+    weaponDomains['SaS'] || 0,
+    weaponDomains['Sh'] || 0,
+    weaponDomains['Ar'] || 0
+  );
+
+  // Update progression log entries - convert old domains to Martial
+  const updatedLog = character.progressionLog.map(entry => {
+    if (entry.type === 'combatPerk' && entry.domain) {
+      // Convert old weapon domains to Martial
+      if (['1H', '2H', 'SaS', 'Sh', 'Ar'].includes(entry.domain)) {
+        return { ...entry, domain: 'Martial' as const };
+      }
+    }
+    return entry;
+  });
+
+  return {
+    ...character,
+    weaponDomains: {
+      'Martial': martialLevel,
+      'Spell': weaponDomains['Spell'] || 0
+    },
+    progressionLog: updatedLog
+  };
+};
+
+/**
+ * Check if character needs domain migration
+ */
+export const needsDomainMigration = (character: Character): boolean => {
+  const weaponDomains = character.weaponDomains as any;
+  return weaponDomains && (
+    '1H' in weaponDomains ||
+    '2H' in weaponDomains ||
+    'SaS' in weaponDomains ||
+    'Sh' in weaponDomains ||
+    'Ar' in weaponDomains
+  );
+};
+
+/**
  * Migrate character if needed (safe wrapper)
  */
 export const migrateCharacterIfNeeded = (character: Character): Character => {
-  if (needsMigration(character)) {
+  let migratedCharacter = character;
+
+  // Apply inventory migration if needed
+  if (needsMigration(migratedCharacter)) {
     console.log('Migrating character to new inventory system...');
-    return migrateCharacterToInventory(character);
+    migratedCharacter = migrateCharacterToInventory(migratedCharacter);
   }
-  return character;
+
+  // Apply domain migration if needed
+  if (needsDomainMigration(migratedCharacter)) {
+    migratedCharacter = migrateCharacterToSingleDomain(migratedCharacter);
+  }
+
+  return migratedCharacter;
 };

@@ -2,7 +2,7 @@ import { Character, AttributeCode, ProgressionLogEntry, WeaponDomain, Weapon } f
 import { ARMOR_TYPES } from '@/data/armor';
 import { WEAPONS } from '@/data/weapons';
 import { SHIELDS } from '@/data/shields';
-import { ATTRIBUTE_CP_THRESHOLDS, DOMAIN_CP_THRESHOLDS, ENCUMBRANCE_LEVELS } from './constants';
+import { ATTRIBUTE_CP_THRESHOLDS, MARTIAL_DOMAIN_CP_THRESHOLDS, ENCUMBRANCE_LEVELS } from './constants';
 import {
   getEquippedWeapons,
   getEquippedArmor,
@@ -64,64 +64,43 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
 
 // Calculate weapon domain levels from combat perks
 export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]) => {
-  const cpByDomain: Record<string, number> = {
-    '1H': 0,
-    '2H': 0,
-    'SaS': 0,
-    'Sh': 0,
-    'Ar': 0,
-    'Spell': 0
-  };
+  let martialCP = 0;
+  let spellCP = 0;
 
   // Sum up CP for each domain
   progressionLog.forEach(entry => {
-    // Combat perks contribute to their specified domain (excluding Spell domain)
-    if (entry.type === 'combatPerk' && entry.domain && entry.domain !== 'Spell') {
-      cpByDomain[entry.domain] += entry.cost;
+    // Combat perks contribute to Martial domain
+    // Support legacy domains (1H, 2H, SaS, Sh, Ar) by treating them as Martial
+    if (entry.type === 'combatPerk') {
+      if (!entry.domain || entry.domain === 'Martial' ||
+          ['1H', '2H', 'SaS', 'Sh', 'Ar'].includes(entry.domain)) {
+        martialCP += entry.cost;
+      }
     }
     // Spells contribute to Spell domain
     else if (entry.type === 'spell') {
-      cpByDomain['Spell'] += entry.cost;
+      spellCP += entry.cost;
     }
     // Magic perks contribute to Spell domain
     else if (entry.type === 'magicPerk') {
-      cpByDomain['Spell'] += entry.cost;
+      spellCP += entry.cost;
     }
   });
 
-  // Convert CP to domain levels
-  const domains = {
-    '1H': 0,
-    '2H': 0,
-    'SaS': 0,
-    'Sh': 0,
-    'Ar': 0,
-    'Spell': 0
+  // Convert CP to domain levels using thresholds: 10, 30, 60, 100, 150
+  const getDomainLevel = (cp: number): number => {
+    if (cp >= 150) return 5;
+    if (cp >= 100) return 4;
+    if (cp >= 60) return 3;
+    if (cp >= 30) return 2;
+    if (cp >= 10) return 1;
+    return 0;
   };
 
-  Object.keys(cpByDomain).forEach(domain => {
-    const cp = cpByDomain[domain];
-    let level = 0;
-
-    // Spell domain has different thresholds: 10, 30, 60, 100, 150
-    if (domain === 'Spell') {
-      if (cp >= 150) level = 5;
-      else if (cp >= 100) level = 4;
-      else if (cp >= 60) level = 3;
-      else if (cp >= 30) level = 2;
-      else if (cp >= 10) level = 1;
-    } else {
-      // Weapon domains use standard thresholds: 5, 15, 30, 50, 75
-      for (let i = 0; i < DOMAIN_CP_THRESHOLDS.length; i++) {
-        if (cp >= DOMAIN_CP_THRESHOLDS[i]) {
-          level = i + 1;
-        }
-      }
-    }
-    domains[domain as WeaponDomain] = level;
-  });
-
-  return domains;
+  return {
+    'Martial': getDomainLevel(martialCP),
+    'Spell': getDomainLevel(spellCP)
+  };
 };
 
 // Calculate HP values (stamina and health)
@@ -164,25 +143,19 @@ export const calculateSpeed = (agility: number, endurance: number, armorPenalty:
 
 // Calculate parry value
 export const calculateParry = (character: Character): number | null => {
-  const weapon1 = WEAPONS[character.equippedWeapon1];
-  const weapon2 = WEAPONS[character.equippedWeapon2];
+  const weapon1 = character.equippedWeapon1;
+  const weapon2 = character.equippedWeapon2;
 
-  // Check if either weapon can parry (has a valid domain)
-  const canParry = (weapon1 && weapon1.domain) || (weapon2 && weapon2.domain);
+  // Check if either weapon can parry (not 'None')
+  const canParry = (weapon1 && weapon1 !== 'None') || (weapon2 && weapon2 !== 'None');
 
   if (!canParry) return null;
 
-  // Find the highest weapon domain level
-  let highestDomain = 0;
-  if (weapon1 && weapon1.domain) {
-    highestDomain = Math.max(highestDomain, character.weaponDomains[weapon1.domain]);
-  }
-  if (weapon2 && weapon2.domain) {
-    highestDomain = Math.max(highestDomain, character.weaponDomains[weapon2.domain]);
-  }
+  // All weapons use Martial domain
+  const martialLevel = character.weaponDomains['Martial'] || 0;
 
-  // Parry = Might + Perception + highest weapon domain
-  return character.stats.MG + character.stats.PR + highestDomain;
+  // Parry = Might + Perception + Martial domain
+  return character.stats.MG + character.stats.PR + martialLevel;
 };
 
 // Calculate encumbrance
@@ -288,8 +261,8 @@ export const parseDamageString = (damageStr: string, might: number): { die: numb
 export const calculateAttackAttribute = (character: Character, weapon: Weapon): number => {
   let attackAttr = character.stats.AG; // Default: Agility
 
-  if (weapon.domain === 'Ar') {
-    // Bows use Perception
+  if (weapon.traits.includes('Ar')) {
+    // Bows/Archery weapons use Perception
     attackAttr = character.stats.PR;
   } else if (weapon.finesse && character.stats.DX > character.stats.AG) {
     // Finesse weapons use Dexterity if higher
@@ -304,16 +277,16 @@ export const calculateAttackAttribute = (character: Character, weapon: Weapon): 
 
 // Calculate parry for a specific weapon
 export const calculateParryForWeapon = (character: Character, weapon: Weapon): number => {
-  if (!weapon.domain) return 0;
-  // Can't parry with bows (Archery domain)
-  if (weapon.domain === 'Ar') return 0;
+  // Can't parry with bows (Archery weapons)
+  if (weapon.traits.includes('Ar')) return 0;
 
-  const weaponDomain = character.weaponDomains[weapon.domain] || 0;
+  // All melee weapons use Martial domain
+  const martialDomain = character.weaponDomains['Martial'] || 0;
   const parryBase = weapon.finesse && character.stats.DX > character.stats.AG
     ? character.stats.DX
     : character.stats.AG;
 
-  return parryBase + weaponDomain;
+  return parryBase + martialDomain;
 };
 
 // Calculate best parry value from all equipped weapons

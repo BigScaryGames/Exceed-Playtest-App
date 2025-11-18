@@ -39,7 +39,10 @@ export const normalizeAttributeName = (attribute: string): string => {
 // CP thresholds for attribute progression (CP → Attribute Value)
 export const ATTRIBUTE_CP_THRESHOLDS = [10, 30, 60, 100, 150];
 
-// Combat Perk CP thresholds for weapon domain levels
+// Martial Domain CP thresholds (same as Spellcraft and Attributes)
+export const MARTIAL_DOMAIN_CP_THRESHOLDS = [10, 30, 60, 100, 150];
+
+// Legacy: old weapon domain thresholds (deprecated)
 export const DOMAIN_CP_THRESHOLDS = [5, 15, 30, 50, 75];
 
 // Skill progression costs (level * 2 CP)
