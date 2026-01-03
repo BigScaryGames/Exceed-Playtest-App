@@ -83,18 +83,31 @@ export function filterPerksByTags(database: PerkDatabase, tags: string[]): Perk[
 
 /**
  * Filter perks by requirements (check if character meets requirements)
+ * MS5: Domain requirements removed - only Martial and Spellcraft exist
  */
 export function filterPerksByRequirements(
   database: PerkDatabase,
   filter: {
     hasSkills?: string[];
-    hasDomains?: string[];
     hasPerks?: string[];
+    tier?: { martial?: number; spellcraft?: number };
   }
 ): Perk[] {
   const allPerks = getAllPerks(database);
 
   return allPerks.filter(perk => {
+    // Check tier requirement (MS5)
+    if (perk.requirements.tier && filter.tier) {
+      const requiredTier = perk.requirements.tier;
+      const domainLevel = perk.type === 'magic'
+        ? (filter.tier.spellcraft || 0)
+        : (filter.tier.martial || 0);
+
+      if (domainLevel < requiredTier) {
+        return false;
+      }
+    }
+
     // Check skill requirements
     if (perk.requirements.skills && filter.hasSkills) {
       const meetsSkillReqs = perk.requirements.skills.every(reqSkill => {
@@ -121,33 +134,6 @@ export function filterPerksByRequirements(
       });
 
       if (!meetsSkillReqs) return false;
-    }
-
-    // Check domain requirements
-    if (perk.requirements.domains && filter.hasDomains) {
-      const meetsDomainReqs = perk.requirements.domains.every(reqDomain => {
-        // Parse requirement like "SH2"
-        const match = reqDomain.match(/^([A-Z]+)(\d+)$/i);
-        if (!match) return true;
-
-        const [, domainCode, levelStr] = match;
-        const requiredLevel = parseInt(levelStr, 10);
-
-        return filter.hasDomains!.some(charDomain => {
-          const charMatch = charDomain.match(/^([A-Z]+)(\d+)$/i);
-          if (!charMatch) return false;
-
-          const [, charDomainCode, charLevelStr] = charMatch;
-          const charLevel = parseInt(charLevelStr, 10);
-
-          return (
-            charDomainCode.toLowerCase() === domainCode.toLowerCase() &&
-            charLevel >= requiredLevel
-          );
-        });
-      });
-
-      if (!meetsDomainReqs) return false;
     }
 
     // Check perk prerequisites

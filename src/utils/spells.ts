@@ -2,10 +2,11 @@ import {
   Character,
   KnownSpell,
   Spell,
+  LegacySpell,
   SpellTier,
   SpellType
 } from '@/types/character';
-import { SPELLS, SPELL_XP_COSTS, SPELLCRAFT_XP_REQUIREMENTS, SPELL_UPGRADES } from '@/data/spells';
+import { SPELLS, SPELL_XP_COSTS, SPELLCRAFT_XP_REQUIREMENTS, getSpellByName } from '@/data/spells';
 
 /**
  * Calculate the character's total Limit capacity
@@ -61,10 +62,11 @@ export const calculateCastingDC = (tier: SpellTier): number => {
 
 /**
  * Get spell data from a KnownSpell (resolves custom or database)
+ * Returns LegacySpell format for backwards compatibility
  */
-export const getSpellData = (spell: KnownSpell): Spell | null => {
+export const getSpellData = (spell: KnownSpell): LegacySpell | null => {
   if (spell.isCustom && spell.customSpellData) {
-    // Return custom spell data as a Spell object
+    // Return custom spell data as a LegacySpell object
     return {
       tier: spell.customSpellData.tier,
       type: spell.customSpellData.type,
@@ -81,6 +83,22 @@ export const getSpellData = (spell: KnownSpell): Spell | null => {
 
   if (spell.dataRef && SPELLS[spell.dataRef]) {
     return SPELLS[spell.dataRef];
+  }
+
+  return null;
+};
+
+/**
+ * Get the new format Spell data from a KnownSpell
+ * Use this when you need access to basic/advanced versions
+ */
+export const getFullSpellData = (spell: KnownSpell): Spell | null => {
+  if (spell.isCustom) {
+    return null; // Custom spells don't have the new format
+  }
+
+  if (spell.dataRef) {
+    return getSpellByName(spell.dataRef) || null;
   }
 
   return null;
@@ -119,11 +137,12 @@ export const getSpellcraftXPRequirement = (level: number): number => {
 };
 
 /**
- * Calculate total XP spent on Spell domain from progression log
+ * MS5: Calculate total XP spent on Spellcraft domain from progression log
+ * Spellcraft XP comes from spells and magic perks
  */
 export const calculateSpellDomainXP = (character: Character): number => {
   return character.progressionLog
-    .filter(entry => entry.type === 'combatPerk' && entry.domain === 'Spell')
+    .filter(entry => entry.type === 'spell' || entry.type === 'magicPerk')
     .reduce((sum, entry) => sum + entry.cost, 0);
 };
 
@@ -146,10 +165,10 @@ export const calculateSpellcraftLevel = (spellDomainXP: number): number => {
 };
 
 /**
- * Get spellcraft level for a character
+ * MS5: Get spellcraft level for a character
  */
 export const getSpellcraft = (character: Character): number => {
-  return character.weaponDomains['Spell'] || 0;
+  return character.weaponDomains.Spellcraft || 0;
 };
 
 /**
@@ -338,7 +357,10 @@ export const canUpgradeSpell = (spell: KnownSpell): boolean => {
   if (spell.type !== 'basic') return false;
   if (spell.isCustom) return false; // Custom spells can't be auto-upgraded
   if (!spell.dataRef) return false;
-  return spell.dataRef in SPELL_UPGRADES;
+
+  // MS5: Check if the spell has an advanced version in the new format
+  const fullSpell = getSpellByName(spell.dataRef);
+  return fullSpell?.advanced !== undefined;
 };
 
 /**
@@ -383,9 +405,18 @@ export const upgradeSpellToAdvanced = (
     };
   }
 
-  // Get upgrade data
-  const upgradeData = SPELL_UPGRADES[spell.dataRef!];
+  // MS5: Get full spell data with advanced version
+  const fullSpellData = getSpellByName(spell.dataRef!);
   const originalSpellData = SPELLS[spell.dataRef!];
+
+  if (!fullSpellData?.advanced) {
+    return { success: false, character, reason: 'No advanced version available' };
+  }
+
+  // Parse advanced limit cost
+  const advancedLimitCost = typeof fullSpellData.advanced.limitCost === 'number'
+    ? fullSpellData.advanced.limitCost
+    : 0;
 
   // Create upgraded custom spell data
   const upgradedSpell: KnownSpell = {
@@ -397,14 +428,14 @@ export const upgradeSpellToAdvanced = (
     customSpellData: {
       tier: originalSpellData.tier,
       type: 'advanced',
-      apCost: upgradeData.apCost || originalSpellData.apCost,
-      attributes: upgradeData.attributes || originalSpellData.attributes,
-      limitCost: upgradeData.limitCost !== undefined ? upgradeData.limitCost : originalSpellData.limitCost,
-      traits: upgradeData.traits || originalSpellData.traits,
-      effect: upgradeData.effect || originalSpellData.effect,
-      distance: upgradeData.distance || originalSpellData.distance,
-      duration: upgradeData.duration || originalSpellData.duration,
-      damage: upgradeData.damage || originalSpellData.damage
+      apCost: originalSpellData.apCost,
+      attributes: originalSpellData.attributes,
+      limitCost: advancedLimitCost,
+      traits: originalSpellData.traits,
+      effect: fullSpellData.advanced.effect,
+      distance: fullSpellData.advanced.distance || fullSpellData.basic.distance || '-',
+      duration: fullSpellData.duration || '-',
+      damage: fullSpellData.advanced.damage
     }
   };
 

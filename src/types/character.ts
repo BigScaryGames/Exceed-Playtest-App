@@ -4,7 +4,8 @@ import type { Perk as DatabasePerk, PerkSource } from './perks';
 
 export type AttributeCode = 'MG' | 'EN' | 'AG' | 'DX' | 'WT' | 'WI' | 'PR' | 'CH';
 
-export type WeaponDomain = '1H' | '2H' | 'SaS' | 'Sh' | 'Ar' | 'Spell';
+// MS5: Consolidated domains - all weapon types merged into Martial
+export type WeaponDomain = 'Martial' | 'Spellcraft';
 
 export interface Stats {
   MG: number; // Might
@@ -17,13 +18,10 @@ export interface Stats {
   CH: number; // Charisma
 }
 
+// MS5: Simplified to two domains
 export interface WeaponDomains {
-  '1H': number;  // One Handed
-  '2H': number;  // Two Handed
-  'SaS': number; // Staves and Spears
-  'Sh': number;  // Shield
-  'Ar': number;  // Archery
-  'Spell': number; // Spellcraft
+  Martial: number;    // All combat perks contribute here
+  Spellcraft: number; // All magic perks and spells contribute here
 }
 
 export interface Skill {
@@ -50,7 +48,6 @@ export interface Perk {
 export interface CombatPerk {
   name: string;
   cost: number;
-  domain: WeaponDomain;
   attribute: string;
   description: string;
   // New fields for database perk snapshot system
@@ -59,6 +56,23 @@ export interface CombatPerk {
   source?: PerkSource; // 'database', 'archived', or 'custom'
   perkSnapshot?: DatabasePerk; // Full snapshot of perk data from database
   addedAt?: number; // Timestamp when added to character
+}
+
+// MS5: Staged perks (conditioning perks with 5 levels)
+export interface StagedPerkLevel {
+  level: number;
+  attribute: string;
+  cost: number;
+}
+
+export interface StagedPerk {
+  id: string;
+  name: string;
+  level: number;           // Current level 1-5
+  attribute: string;       // Last attribute chosen
+  levelHistory: StagedPerkLevel[];
+  perkSnapshot?: DatabasePerk;
+  addedAt?: number;
 }
 
 
@@ -74,15 +88,15 @@ export interface ExtraHPEntry {
 }
 
 export interface ProgressionLogEntry {
-  type: 'skill' | 'perk' | 'combatPerk' | 'magicPerk' | 'extraHP' | 'extraWound' | 'spell';
+  type: 'skill' | 'perk' | 'combatPerk' | 'magicPerk' | 'stagedPerk' | 'extraHP' | 'extraWound' | 'spell';
   name?: string;
   level?: number;
   attribute?: string;
   cost: number;
-  domain?: WeaponDomain;
   tier?: number; // For spells
   spellType?: 'basic' | 'advanced'; // For spells
   xpType?: 'combat' | 'social'; // Track which XP pool was used
+  stagedLevel?: number; // For staged perks: which level was purchased
 }
 
 export interface Character {
@@ -125,6 +139,8 @@ export interface Character {
   reputation?: string;
   // Timestamp tracking
   lastOpened?: number; // Timestamp when character was last opened
+  // MS5: Staged perks (conditioning perks)
+  stagedPerks?: StagedPerk[];
 }
 
 export interface ArmorType {
@@ -145,7 +161,7 @@ export interface Shield {
 }
 
 export interface Weapon {
-  domain: WeaponDomain | null;
+  domain: 'Martial' | null;  // MS5: All melee/ranged weapons use Martial domain
   finesse: boolean;
   damage: string;
   ap: number;
@@ -169,7 +185,7 @@ export type ItemType = 'weapon' | 'armor' | 'shield' | 'item';
 export type ItemState = 'equipped' | 'stowed' | 'packed';
 
 export interface CustomWeaponData {
-  domain: WeaponDomain;
+  domain: 'Martial' | null;
   finesse: boolean;
   damage: string;
   ap: number;
@@ -210,17 +226,42 @@ export interface InventoryItem {
 export type SpellTier = 0 | 1 | 2 | 3 | 4 | 5;
 export type SpellType = 'basic' | 'advanced';
 
+// MS5: Version data for basic/advanced spell variants
+export interface SpellVersionData {
+  limitCost: number | string;  // Can be "Self 0 / Party 1" format
+  effect: string;
+  distance?: string;
+  damage?: string;
+}
+
+// MS5: Updated spell structure with separate basic/advanced versions
 export interface Spell {
+  id: string;
+  name: string;
+  tier: SpellTier;
+  type: SpellType;  // Whether spell has advanced version
+  apCost: string;   // e.g., "2", "R", "3", "1m", "-"
+  attributes: string; // e.g., "AG/WT", "EN/DX"
+  traits: string[];
+  shortDescription: string;
+  basic: SpellVersionData;
+  advanced?: SpellVersionData;
+  description?: string;
+  duration?: string;
+}
+
+// Legacy spell format for backwards compatibility
+export interface LegacySpell {
   tier: SpellTier;
   type: SpellType;
-  apCost: string; // e.g., "2", "R", "3", "1m"
-  attributes: string; // e.g., "AG/WT", "EN/DX"
-  limitCost: number; // 0 if no limit cost, otherwise the limit consumed
-  traits: string[]; // e.g., ["Spell", "Offensive", "Strike"]
-  effect: string; // Description of the effect
-  distance: string; // e.g., "3m", "Touch", "10m"
-  duration: string; // e.g., "Instant", "1 minute", "-"
-  damage?: string; // e.g., "Spellcraft * 4d", optional for damage spells
+  apCost: string;
+  attributes: string;
+  limitCost: number;
+  traits: string[];
+  effect: string;
+  distance: string;
+  duration: string;
+  damage?: string;
 }
 
 export interface CustomSpellData {

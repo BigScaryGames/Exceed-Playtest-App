@@ -1,8 +1,8 @@
-import { Character, AttributeCode, ProgressionLogEntry, WeaponDomain, Weapon } from '@/types/character';
+import { Character, AttributeCode, ProgressionLogEntry, Weapon, WeaponDomains } from '@/types/character';
 import { ARMOR_TYPES } from '@/data/armor';
 import { WEAPONS } from '@/data/weapons';
 import { SHIELDS } from '@/data/shields';
-import { ATTRIBUTE_CP_THRESHOLDS, DOMAIN_CP_THRESHOLDS, ENCUMBRANCE_LEVELS } from './constants';
+import { ATTRIBUTE_CP_THRESHOLDS, MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS, ENCUMBRANCE_LEVELS } from './constants';
 import {
   getEquippedWeapons,
   getEquippedArmor,
@@ -32,7 +32,11 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
   };
 
   // Sum up all CP spent on each attribute
+  // Note: stagedPerk (conditioning) contributes to Martial domain but NOT to attribute totals
   progressionLog.forEach(entry => {
+    // Skip staged perks - they contribute to Martial domain, not attributes
+    if (entry.type === 'stagedPerk') return;
+
     if (entry.attribute) {
       // Map full attribute name to code
       const attrCode = ATTRIBUTE_NAME_TO_CODE[entry.attribute] || entry.attribute;
@@ -62,66 +66,51 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
   return stats;
 };
 
-// Calculate weapon domain levels from combat perks
-export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]) => {
-  const cpByDomain: Record<string, number> = {
-    '1H': 0,
-    '2H': 0,
-    'SaS': 0,
-    'Sh': 0,
-    'Ar': 0,
-    'Spell': 0
-  };
+// MS5: Calculate weapon domain levels (consolidated to Martial + Spellcraft)
+export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]): WeaponDomains => {
+  let martialCP = 0;
+  let spellcraftCP = 0;
 
   // Sum up CP for each domain
   progressionLog.forEach(entry => {
-    // Combat perks contribute to their specified domain (excluding Spell domain)
-    if (entry.type === 'combatPerk' && entry.domain && entry.domain !== 'Spell') {
-      cpByDomain[entry.domain] += entry.cost;
+    // Combat perks contribute to Martial domain
+    if (entry.type === 'combatPerk') {
+      martialCP += entry.cost;
     }
-    // Spells contribute to Spell domain
+    // Staged perks (conditioning) contribute to Martial domain
+    else if (entry.type === 'stagedPerk') {
+      martialCP += entry.cost;
+    }
+    // Spells contribute to Spellcraft domain
     else if (entry.type === 'spell') {
-      cpByDomain['Spell'] += entry.cost;
+      spellcraftCP += entry.cost;
     }
-    // Magic perks contribute to Spell domain
+    // Magic perks contribute to Spellcraft domain
     else if (entry.type === 'magicPerk') {
-      cpByDomain['Spell'] += entry.cost;
+      spellcraftCP += entry.cost;
     }
   });
 
-  // Convert CP to domain levels
-  const domains = {
-    '1H': 0,
-    '2H': 0,
-    'SaS': 0,
-    'Sh': 0,
-    'Ar': 0,
-    'Spell': 0
+  // Calculate Martial domain level (thresholds: 5, 15, 30, 50, 75)
+  let martialLevel = 0;
+  for (let i = 0; i < MARTIAL_CP_THRESHOLDS.length; i++) {
+    if (martialCP >= MARTIAL_CP_THRESHOLDS[i]) {
+      martialLevel = i + 1;
+    }
+  }
+
+  // Calculate Spellcraft domain level (thresholds: 10, 30, 60, 100, 150)
+  let spellcraftLevel = 0;
+  for (let i = 0; i < SPELLCRAFT_CP_THRESHOLDS.length; i++) {
+    if (spellcraftCP >= SPELLCRAFT_CP_THRESHOLDS[i]) {
+      spellcraftLevel = i + 1;
+    }
+  }
+
+  return {
+    Martial: martialLevel,
+    Spellcraft: spellcraftLevel
   };
-
-  Object.keys(cpByDomain).forEach(domain => {
-    const cp = cpByDomain[domain];
-    let level = 0;
-
-    // Spell domain has different thresholds: 10, 30, 60, 100, 150
-    if (domain === 'Spell') {
-      if (cp >= 150) level = 5;
-      else if (cp >= 100) level = 4;
-      else if (cp >= 60) level = 3;
-      else if (cp >= 30) level = 2;
-      else if (cp >= 10) level = 1;
-    } else {
-      // Weapon domains use standard thresholds: 5, 15, 30, 50, 75
-      for (let i = 0; i < DOMAIN_CP_THRESHOLDS.length; i++) {
-        if (cp >= DOMAIN_CP_THRESHOLDS[i]) {
-          level = i + 1;
-        }
-      }
-    }
-    domains[domain as WeaponDomain] = level;
-  });
-
-  return domains;
 };
 
 // Calculate HP values (stamina and health)
@@ -162,27 +151,21 @@ export const calculateSpeed = (agility: number, endurance: number, armorPenalty:
   return Math.max(0, baseSpeed + armorPenalty);
 };
 
-// Calculate parry value
+// Calculate parry value (MS5: uses Martial domain)
 export const calculateParry = (character: Character): number | null => {
   const weapon1 = WEAPONS[character.equippedWeapon1];
   const weapon2 = WEAPONS[character.equippedWeapon2];
 
-  // Check if either weapon can parry (has a valid domain)
-  const canParry = (weapon1 && weapon1.domain) || (weapon2 && weapon2.domain);
+  // Check if either weapon can parry (has Martial domain)
+  const canParry = (weapon1 && weapon1.domain === 'Martial') || (weapon2 && weapon2.domain === 'Martial');
 
   if (!canParry) return null;
 
-  // Find the highest weapon domain level
-  let highestDomain = 0;
-  if (weapon1 && weapon1.domain) {
-    highestDomain = Math.max(highestDomain, character.weaponDomains[weapon1.domain]);
-  }
-  if (weapon2 && weapon2.domain) {
-    highestDomain = Math.max(highestDomain, character.weaponDomains[weapon2.domain]);
-  }
+  // MS5: All weapons use Martial domain
+  const martialLevel = character.weaponDomains.Martial || 0;
 
-  // Parry = Might + Perception + highest weapon domain
-  return character.stats.MG + character.stats.PR + highestDomain;
+  // Parry = Might + Perception + Martial domain
+  return character.stats.MG + character.stats.PR + martialLevel;
 };
 
 // Calculate encumbrance
@@ -288,8 +271,9 @@ export const parseDamageString = (damageStr: string, might: number): { die: numb
 export const calculateAttackAttribute = (character: Character, weapon: Weapon): number => {
   let attackAttr = character.stats.AG; // Default: Agility
 
-  if (weapon.domain === 'Ar') {
-    // Bows use Perception
+  // MS5: Check weapon traits for ranged
+  if (weapon.traits.includes('Ranged') || weapon.traits.includes('Bow')) {
+    // Ranged weapons use Perception
     attackAttr = character.stats.PR;
   } else if (weapon.finesse && character.stats.DX > character.stats.AG) {
     // Finesse weapons use Dexterity if higher
@@ -302,18 +286,19 @@ export const calculateAttackAttribute = (character: Character, weapon: Weapon): 
   return attackAttr;
 };
 
-// Calculate parry for a specific weapon
+// Calculate parry for a specific weapon (MS5: uses Martial domain)
 export const calculateParryForWeapon = (character: Character, weapon: Weapon): number => {
   if (!weapon.domain) return 0;
-  // Can't parry with bows (Archery domain)
-  if (weapon.domain === 'Ar') return 0;
+  // Can't parry with ranged weapons
+  if (weapon.traits.includes('Ranged') || weapon.traits.includes('Bow')) return 0;
 
-  const weaponDomain = character.weaponDomains[weapon.domain] || 0;
+  // MS5: All weapons use Martial domain
+  const martialLevel = character.weaponDomains.Martial || 0;
   const parryBase = weapon.finesse && character.stats.DX > character.stats.AG
     ? character.stats.DX
     : character.stats.AG;
 
-  return parryBase + weaponDomain;
+  return parryBase + martialLevel;
 };
 
 // Calculate best parry value from all equipped weapons
@@ -341,7 +326,7 @@ export const calculateParryFromEquipped = (character: Character): number => {
   return Math.max(0, ...equippedWeapons.map(w => calculateParryForWeapon(character, w)));
 };
 
-// Calculate block value from equipped shield
+// Calculate block value from equipped shield (MS5: uses Martial domain)
 export const calculateBlockFromEquipped = (character: Character): number => {
   // Get equipped shield - with backward compatibility
   const equippedShieldItem = getEquippedShield(character);
@@ -349,7 +334,8 @@ export const calculateBlockFromEquipped = (character: Character): number => {
     ? (getShieldData(equippedShieldItem) || SHIELDS['None'])
     : (character.equippedShield ? SHIELDS[character.equippedShield] : SHIELDS['None']);
 
-  const shieldDomain = character.weaponDomains['Sh'];
+  // MS5: Shields use Martial domain
+  const martialLevel = character.weaponDomains.Martial || 0;
   let block = 0;
 
   if (shieldData.defenseBonus > 0) {
@@ -360,7 +346,7 @@ export const calculateBlockFromEquipped = (character: Character): number => {
     } else if (shieldData.type === 'Heavy') {
       blockBase = character.stats.MG;
     }
-    block = blockBase + shieldDomain + shieldData.defenseBonus;
+    block = blockBase + martialLevel + shieldData.defenseBonus;
   }
 
   return block;
@@ -380,9 +366,29 @@ export const calculateDodgeFromEquipped = (character: Character): number => {
   return character.stats.AG + character.stats.PR + (armorPenalty || 0);
 };
 
+// MS5: Calculate max wounds based on completed conditioning perks
+// Max Wounds = 2 (base) + number of completed conditioning perks
+export const calculateMaxWounds = (character: Character): number => {
+  const baseWounds = 2;
+
+  // Get all completed staged perks (level 5 = completed)
+  const completedStagedPerks = character.stagedPerks?.filter(
+    sp => sp.level >= 5
+  ) || [];
+
+  // Count how many of those have #Conditioning tag (from perkSnapshot)
+  const completedConditioning = completedStagedPerks.filter(
+    sp => sp.perkSnapshot?.tags?.includes('Conditioning')
+  ).length;
+
+  return baseWounds + completedConditioning;
+};
+
 // Calculate comprehensive HP values with bar percentages
 export const calculateHPValues = (character: Character) => {
-  const effectiveMaxWounds = character.maxWounds - character.markedWounds;
+  // MS5: Use calculated max wounds from completed conditioning perks
+  const calculatedMaxWounds = calculateMaxWounds(character);
+  const effectiveMaxWounds = calculatedMaxWounds - character.markedWounds;
 
   // Get armor bonus
   const equippedArmor = getEquippedArmor(character);
@@ -399,7 +405,7 @@ export const calculateHPValues = (character: Character) => {
   const totalMax = maxStamina + maxHealth;
   const totalCurrent = currentStamina + currentHealth;
   const isNegative = totalCurrent < 0;
-  const maxNegativeHP = character.maxWounds * character.hpPerWound;
+  const maxNegativeHP = calculatedMaxWounds * character.hpPerWound;
 
   // Calculate bar percentages
   let healthPercent = 0;

@@ -3,10 +3,32 @@
 export type PerkType = 'combat' | 'magic' | 'skill';
 export type PerkSource = 'database' | 'archived' | 'custom';
 
+// Ability - Active/usable mechanics granted by perks
+export interface Ability {
+  id: string;           // Kebab-case identifier
+  name: string;         // Display name (e.g., "Shield Block")
+  effect: string;       // The mechanical effect description
+  tags: string[];       // e.g., ["Reaction", "Defense", "Shield"]
+}
+
+// Effect - Passive/always-on mechanics granted by perks
+export interface Effect {
+  id: string;           // Kebab-case identifier
+  name: string;         // Display name (e.g., "Extra HP")
+  effect: string;       // The passive effect description
+  tags: string[];       // e.g., ["Passive", "Defense"]
+}
+
+// What a perk grants when purchased
+export interface PerkGrants {
+  abilities: string[];  // IDs of abilities granted
+  effects: string[];    // IDs of effects granted
+}
+
 export interface PerkRequirements {
   text: string; // Original text from markdown
+  tier?: number; // MS5: Tier requirement (1-5) for domain level
   skills?: string[]; // e.g., ["Medicine 2", "Biology 1"]
-  domains?: string[]; // e.g., ["SH1", "OH2"]
   perks?: string[]; // Prerequisite perk names
   special?: string[]; // e.g., ["GM permission"]
 }
@@ -35,6 +57,9 @@ export interface Perk {
   effect: string;
   description?: string; // Flavor text (optional)
 
+  // Granted abilities and effects (MS5)
+  grants: PerkGrants;
+
   // Metadata
   addedToCharacterAt?: number; // Timestamp when added to character
   snapshotVersion?: string; // Version/commit when snapshot was taken
@@ -48,6 +73,8 @@ export interface PerkDatabase {
     magic: Perk[];
     skill: Perk[];
   };
+  abilities: Ability[];  // All parsed abilities (MS5)
+  effects: Effect[];     // All parsed effects (MS5)
 }
 
 export interface PerkCache {

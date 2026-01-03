@@ -14,6 +14,7 @@ import { RulesTab } from '@/components/tabs/RulesTab';
 import { SideMenu } from '@/components/SideMenu';
 import { RenameCharacterModal } from '@/components/modals/RenameCharacterModal';
 import { loadPerks } from '@/services/perkSync';
+import { loadSpellDatabase } from '@/data/spells';
 import type { PerkDatabase } from '@/types/perks';
 
 type ViewState = 'landing' | 'create' | 'characterList' | 'characterSheet' | 'rules';
@@ -37,8 +38,9 @@ export default function App() {
     setCharacters(loadedCharacters);
   }, []);
 
-  // Load perk database on mount
+  // Load perk and spell databases on mount
   useEffect(() => {
+    // Load perks
     loadPerks()
       .then((database) => {
         setPerkDatabase(database);
@@ -51,6 +53,12 @@ export default function App() {
       })
       .catch((err) => {
         console.error('[App] Failed to load perk database:', err);
+      });
+
+    // Load spells (MS5)
+    loadSpellDatabase()
+      .catch((err) => {
+        console.error('[App] Failed to load spell database:', err);
       });
 
     // Listen for perk updates

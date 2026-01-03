@@ -270,6 +270,96 @@ export function getCacheStats(): {
 }
 
 /**
+ * Fetch a nested/embedded file from Core Rules subdirectory
+ * @param embedPath - Path like "Mechanics/Action Points" or "References/Primary Traits"
+ */
+async function fetchEmbeddedFile(embedPath: string): Promise<string> {
+  // Add .md extension if not present
+  const filePath = embedPath.endsWith('.md') ? embedPath : `${embedPath}.md`;
+  const cacheKey = `embed_${filePath}`;
+
+  // Check cache first
+  const cached = getCachedRule(cacheKey);
+  if (cached) {
+    return cached.content;
+  }
+
+  // Fetch from GitHub
+  const url = `${GITHUB_RAW_BASE}/${CORE_RULES_PATH}/${encodeURIComponent(filePath).replace(/%2F/g, '/')}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.warn(`Failed to fetch embedded file ${filePath}: ${response.statusText}`);
+      return `> *[Could not load: ${embedPath}]*`;
+    }
+
+    const content = await response.text();
+    cacheRule(cacheKey, content, url);
+    return content;
+  } catch (error) {
+    console.warn(`Error fetching embedded file ${filePath}:`, error);
+    return `> *[Could not load: ${embedPath}]*`;
+  }
+}
+
+/**
+ * Resolve all Obsidian embeds (![[path]]) in content
+ * Recursively resolves embeds up to a max depth
+ */
+export async function resolveObsidianEmbeds(
+  content: string,
+  maxDepth: number = 3,
+  currentDepth: number = 0
+): Promise<string> {
+  if (currentDepth >= maxDepth) {
+    return content;
+  }
+
+  // Match Obsidian embed syntax: ![[path/to/file]]
+  const embedRegex = /!\[\[([^\]]+)\]\]/g;
+  const matches = [...content.matchAll(embedRegex)];
+
+  if (matches.length === 0) {
+    return content;
+  }
+
+  // Fetch all embedded files in parallel
+  const embedPromises = matches.map(async (match) => {
+    const embedPath = match[1];
+    const embedContent = await fetchEmbeddedFile(embedPath);
+    // Recursively resolve embeds in the fetched content
+    const resolvedContent = await resolveObsidianEmbeds(embedContent, maxDepth, currentDepth + 1);
+    return { original: match[0], resolved: resolvedContent };
+  });
+
+  const resolvedEmbeds = await Promise.all(embedPromises);
+
+  // Replace all embeds with their resolved content
+  let resolvedContent = content;
+  for (const { original, resolved } of resolvedEmbeds) {
+    resolvedContent = resolvedContent.replace(original, resolved);
+  }
+
+  return resolvedContent;
+}
+
+/**
+ * Convert Obsidian wikilinks [[page]] and [[page|alias]] to markdown links
+ * Links become [text](#rule:pagename) for internal handling
+ */
+export function convertWikilinks(content: string): string {
+  // Match [[path|alias]] or [[path]]
+  // Also handle [[path#section|alias]] and [[path#section]]
+  return content.replace(/\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]/g, (_match, path, alias) => {
+    const displayText = alias || path;
+    // Normalize the path: remove leading numbers/dots, get base filename
+    const normalizedPath = path.trim();
+    return `[${displayText}](#rule:${encodeURIComponent(normalizedPath)})`;
+  });
+}
+
+/**
  * Format cache age for display
  */
 export function formatCacheAge(timestamp: number): string {

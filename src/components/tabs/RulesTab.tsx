@@ -7,14 +7,17 @@ import {
   getRule,
   clearRulesCache,
   formatCacheAge,
+  resolveObsidianEmbeds,
+  convertWikilinks,
   RuleFile
 } from '@/services/rulesService';
 
 interface Section {
   id: string;
   title: string;
-  content: string;
+  content: string;  // Content before any subsections
   level: number;
+  children: Section[];  // Nested subsections
 }
 
 export const RulesTab: React.FC = () => {
@@ -26,7 +29,7 @@ export const RulesTab: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [cacheTimestamp, setCacheTimestamp] = useState<number | null>(null);
   const [isCached, setIsCached] = useState(false);
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
   // Load file list on mount
   useEffect(() => {
@@ -52,7 +55,11 @@ export const RulesTab: React.FC = () => {
     setError(null);
     try {
       const result = await getRule(file.name, forceRefresh);
-      setRuleContent(result.content);
+      // Resolve Obsidian embeds (![[path/to/file]])
+      const resolvedContent = await resolveObsidianEmbeds(result.content);
+      // Convert wikilinks [[page]] to clickable links
+      const withLinks = convertWikilinks(resolvedContent);
+      setRuleContent(withLinks);
       setCacheTimestamp(result.timestamp);
       setIsCached(result.cached);
     } catch (err) {
@@ -61,6 +68,68 @@ export const RulesTab: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle clicking on internal rule links
+  const handleRuleLink = async (href: string) => {
+    if (href.startsWith('#rule:')) {
+      const targetPath = decodeURIComponent(href.replace('#rule:', ''));
+      console.log('Navigating to rule:', targetPath);
+
+      // Ensure files are loaded
+      let fileList = files;
+      if (fileList.length === 0) {
+        console.log('Files not loaded, fetching...');
+        fileList = await fetchRuleFileList();
+        setFiles(fileList);
+      }
+      console.log('Available files:', fileList.map(f => f.name));
+
+      // Find matching file - try exact match first, then fuzzy match
+      let targetFile = fileList.find(f =>
+        f.name.replace('.md', '') === targetPath ||
+        f.name === targetPath ||
+        f.name === `${targetPath}.md`
+      );
+      console.log('Exact match result:', targetFile);
+
+      // Fuzzy match: find file that ends with the target path
+      if (!targetFile) {
+        targetFile = fileList.find(f =>
+          f.name.replace('.md', '').endsWith(targetPath) ||
+          f.name.replace('.md', '').toLowerCase().includes(targetPath.toLowerCase())
+        );
+        console.log('Fuzzy match result:', targetFile);
+      }
+
+      if (targetFile) {
+        console.log('Loading file:', targetFile.name);
+        loadRuleContent(targetFile);
+      } else {
+        console.warn(`Rule not found: ${targetPath}`);
+        console.warn('Searched in files:', fileList.map(f => f.name));
+      }
+    }
+  };
+
+  // Custom link component for ReactMarkdown
+  const LinkRenderer = ({ href, children }: { href?: string; children?: React.ReactNode }) => {
+    if (href?.startsWith('#rule:')) {
+      return (
+        <button
+          onClick={() => handleRuleLink(href)}
+          className="text-blue-400 hover:text-blue-300 underline cursor-pointer"
+        >
+          {children}
+        </button>
+      );
+    }
+    // External links
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
+        {children}
+      </a>
+    );
   };
 
   const handleRefresh = async () => {
@@ -88,54 +157,163 @@ export const RulesTab: React.FC = () => {
     return filename.replace('.md', '');
   };
 
-  // Parse markdown into sections based on headings
+  // Parse markdown into hierarchical sections based on headings
   const sections = useMemo((): Section[] => {
     if (!ruleContent) return [];
 
     const lines = ruleContent.split('\n');
-    const parsedSections: Section[] = [];
-    let currentSection: Section | null = null;
-    let sectionContent: string[] = [];
+    const rootSections: Section[] = [];
+    let currentH2: Section | null = null;
+    let currentH3: Section | null = null;
+    let contentBuffer: string[] = [];
+
+    const flushContent = () => {
+      const content = contentBuffer.join('\n').trim();
+      contentBuffer = [];
+      return content;
+    };
 
     for (const line of lines) {
-      const headingMatch = line.match(/^(#{2,3})\s+(.+)$/);
+      // Match ## or ### headings
+      const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
 
       if (headingMatch) {
-        // Save previous section if exists
-        if (currentSection) {
-          currentSection.content = sectionContent.join('\n').trim();
-          parsedSections.push(currentSection);
-        }
-
-        // Start new section
         const level = headingMatch[1].length;
         const title = headingMatch[2];
-        const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const id = `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${rootSections.length}`;
 
-        currentSection = { id, title, content: '', level };
-        sectionContent = [];
-      } else if (currentSection) {
-        // Add line to current section
-        sectionContent.push(line);
+        if (level <= 2) {
+          // Save previous H3's content
+          if (currentH3) {
+            currentH3.content = flushContent();
+          } else if (currentH2) {
+            currentH2.content = flushContent();
+          }
+          // Save previous H2
+          if (currentH2) {
+            rootSections.push(currentH2);
+          }
+          // Start new H2
+          currentH2 = { id, title, content: '', level: 2, children: [] };
+          currentH3 = null;
+        } else if (level === 3 && currentH2) {
+          // Save previous H3's content or H2's pre-children content
+          if (currentH3) {
+            currentH3.content = flushContent();
+          } else {
+            currentH2.content = flushContent();
+          }
+          // Start new H3 as child of current H2
+          currentH3 = { id, title, content: '', level: 3, children: [] };
+          currentH2.children.push(currentH3);
+        } else if (level === 4 && currentH3) {
+          // H4 becomes child of H3
+          const prevContent = flushContent();
+          if (currentH3.children.length === 0) {
+            currentH3.content = prevContent;
+          } else if (currentH3.children.length > 0) {
+            currentH3.children[currentH3.children.length - 1].content = prevContent;
+          }
+          const h4Section: Section = { id, title, content: '', level: 4, children: [] };
+          currentH3.children.push(h4Section);
+        } else {
+          // Fallback: treat as content
+          contentBuffer.push(line);
+        }
+      } else {
+        contentBuffer.push(line);
       }
     }
 
-    // Add last section
-    if (currentSection) {
-      currentSection.content = sectionContent.join('\n').trim();
-      parsedSections.push(currentSection);
+    // Flush remaining content
+    const remainingContent = flushContent();
+    if (currentH3) {
+      if (currentH3.children.length > 0) {
+        currentH3.children[currentH3.children.length - 1].content = remainingContent;
+      } else {
+        currentH3.content = remainingContent;
+      }
+    } else if (currentH2) {
+      currentH2.content = remainingContent;
     }
 
-    // Auto-expand first section
-    if (parsedSections.length > 0 && !expandedSection) {
-      setExpandedSection(parsedSections[0].id);
+    // Push last H2
+    if (currentH2) {
+      rootSections.push(currentH2);
     }
 
-    return parsedSections;
-  }, [ruleContent, expandedSection]);
+    // Auto-expand first section on new content
+    if (rootSections.length > 0 && expandedSections.size === 0) {
+      setExpandedSections(new Set([rootSections[0].id]));
+    }
+
+    return rootSections;
+  }, [ruleContent]);
 
   const toggleSection = (sectionId: string) => {
-    setExpandedSection(expandedSection === sectionId ? null : sectionId);
+    setExpandedSections(prev => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) {
+        next.delete(sectionId);
+      } else {
+        next.add(sectionId);
+      }
+      return next;
+    });
+  };
+
+  // Recursive section renderer
+  const renderSection = (section: Section, depth: number = 0) => {
+    const isExpanded = expandedSections.has(section.id);
+    const hasContent = section.content.length > 0;
+    const hasChildren = section.children.length > 0;
+    const indent = depth > 0 ? 'ml-4' : '';
+
+    return (
+      <div key={section.id} className={`border border-slate-700 rounded-lg overflow-hidden ${indent} ${depth > 0 ? 'mt-2' : ''}`}>
+        {/* Section header */}
+        <button
+          onClick={() => toggleSection(section.id)}
+          className={`w-full flex items-center justify-between p-3 hover:bg-slate-700 transition-colors text-left ${
+            depth === 0 ? 'bg-slate-750' : 'bg-slate-800'
+          }`}
+        >
+          <h2 className={`font-semibold text-white ${
+            depth === 0 ? 'text-lg' : depth === 1 ? 'text-base' : 'text-sm'
+          }`}>
+            {section.title}
+          </h2>
+          {(hasContent || hasChildren) && (
+            isExpanded ? (
+              <ChevronDown size={18} className="text-slate-400 flex-shrink-0" />
+            ) : (
+              <ChevronRight size={18} className="text-slate-400 flex-shrink-0" />
+            )
+          )}
+        </button>
+
+        {/* Section content (accordion) */}
+        {isExpanded && (hasContent || hasChildren) && (
+          <div className={`bg-slate-800 border-t border-slate-700 ${hasContent ? 'p-4' : 'p-2'}`}>
+            {hasContent && (
+              <div className="prose prose-invert prose-slate max-w-none text-left prose-sm">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{ a: LinkRenderer }}
+                >
+                  {section.content}
+                </ReactMarkdown>
+              </div>
+            )}
+            {hasChildren && (
+              <div className={hasContent ? 'mt-3' : ''}>
+                {section.children.map(child => renderSection(child, depth + 1))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -224,42 +402,15 @@ export const RulesTab: React.FC = () => {
               <h1 className="text-2xl font-bold text-white mb-4">
                 {getDisplayTitle(selectedFile.name)}
               </h1>
-              {sections.map((section) => (
-                <div key={section.id} className="border border-slate-700 rounded-lg overflow-hidden">
-                  {/* Section header */}
-                  <button
-                    onClick={() => toggleSection(section.id)}
-                    className="w-full flex items-center justify-between p-4 bg-slate-750 hover:bg-slate-700 transition-colors text-left"
-                  >
-                    <h2 className={`font-semibold text-white ${
-                      section.level === 2 ? 'text-lg' : 'text-base'
-                    }`}>
-                      {section.title}
-                    </h2>
-                    {expandedSection === section.id ? (
-                      <ChevronDown size={20} className="text-slate-400 flex-shrink-0" />
-                    ) : (
-                      <ChevronRight size={20} className="text-slate-400 flex-shrink-0" />
-                    )}
-                  </button>
-
-                  {/* Section content (accordion) */}
-                  {expandedSection === section.id && (
-                    <div className="p-4 bg-slate-800 border-t border-slate-700">
-                      <div className="prose prose-invert prose-slate max-w-none text-left">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {section.content}
-                        </ReactMarkdown>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+              {sections.map(section => renderSection(section, 0))}
             </div>
           ) : ruleContent ? (
             /* Fallback for rules without sections */
             <div className="prose prose-invert prose-slate max-w-none text-left">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{ a: LinkRenderer }}
+              >
                 {ruleContent}
               </ReactMarkdown>
             </div>

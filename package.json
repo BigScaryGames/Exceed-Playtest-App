@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "parse-perks": "tsx scripts/parse-perks.ts",
-    "prebuild": "npm run parse-perks",
+    "parse-spells": "tsx scripts/parse-spells.ts",
+    "prebuild": "npm run parse-perks && npm run parse-spells",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

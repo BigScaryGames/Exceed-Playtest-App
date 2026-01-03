@@ -5,7 +5,6 @@ import {
   InventoryItem,
   ItemType,
   ItemState,
-  WeaponDomain,
   CustomWeaponData,
   CustomArmorData,
   CustomShieldData
@@ -38,8 +37,8 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
   const [quantity, setQuantity] = useState('1');
   const [selectedDataRef, setSelectedDataRef] = useState('');
 
-  // Custom weapon fields
-  const [weaponDomain, setWeaponDomain] = useState<WeaponDomain>('1H');
+  // Custom weapon fields - MS5: Weapons use 'Martial' domain or null
+  const [weaponDomain, setWeaponDomain] = useState<'Martial' | null>('Martial');
   const [finesse, setFinesse] = useState(false);
   const [damage, setDamage] = useState('d6');
   const [ap, setAp] = useState('2');
@@ -65,8 +64,8 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
     setSelectedDataRef('');
     setIsCustom(false);
     setItemState('stowed');
-    // Reset custom fields
-    setWeaponDomain('1H');
+    // Reset custom fields - MS5
+    setWeaponDomain('Martial');
     setFinesse(false);
     setDamage('d6');
     setAp('2');
@@ -382,15 +381,12 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
                     <div>
                       <label className="block text-xs text-slate-400 mb-1">Domain</label>
                       <select
-                        value={weaponDomain}
-                        onChange={(e) => setWeaponDomain(e.target.value as WeaponDomain)}
+                        value={weaponDomain || ''}
+                        onChange={(e) => setWeaponDomain(e.target.value === '' ? null : 'Martial')}
                         className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
                       >
-                        <option value="1H">1H - One Handed</option>
-                        <option value="2H">2H - Two Handed</option>
-                        <option value="SaS">SaS - Staves and Spears</option>
-                        <option value="Sh">Sh - Shield</option>
-                        <option value="Ar">Ar - Archery</option>
+                        <option value="Martial">Martial</option>
+                        <option value="">None (Improvised)</option>
                       </select>
                     </div>
 

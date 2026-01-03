@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Character, KnownSpell } from '@/types/character';
-import { SPELLS } from '@/data/spells';
+import { SPELLS, getSpellEntries } from '@/data/spells';
 import { addSpellToKnown, generateSpellId, calculateCastingDC } from '@/utils/spells';
 
 interface MagePerkSpellModalProps {
@@ -20,7 +20,7 @@ export const MagePerkSpellModal: React.FC<MagePerkSpellModalProps> = ({
   const [selectedSpellName, setSelectedSpellName] = useState('');
 
   // Get Tier 0 spells that aren't already known
-  const tier0Spells = Object.entries(SPELLS).filter(([name, spell]) => {
+  const tier0Spells = getSpellEntries().filter(([name, spell]) => {
     const alreadyKnown = character.knownSpells?.some(s => s.dataRef === name);
     return spell.tier === 0 && !alreadyKnown;
   });

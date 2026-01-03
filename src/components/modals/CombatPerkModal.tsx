@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Character, WeaponDomain } from '@/types/character';
+import { Character } from '@/types/character';
 import { Modal } from '@/components/shared';
+import { MARTIAL_CP_THRESHOLDS } from '@/utils/constants';
 
 interface CombatPerkModalProps {
   isOpen: boolean;
@@ -21,16 +22,6 @@ const ATTRIBUTE_MAP = {
   'CH': 'Charisma'
 };
 
-// Domain name mapping
-const DOMAIN_NAMES = {
-  '1H': 'One-Handed',
-  '2H': 'Two-Handed',
-  'SaS': 'Staves & Spears',
-  'Sh': 'Shield',
-  'Ar': 'Archery',
-  'Spell': 'Spellcraft'
-};
-
 export const CombatPerkModal: React.FC<CombatPerkModalProps> = ({
   isOpen,
   onClose,
@@ -40,79 +31,73 @@ export const CombatPerkModal: React.FC<CombatPerkModalProps> = ({
   const [newCombatPerk, setNewCombatPerk] = useState({
     name: '',
     cost: '',
-    domain: '' as WeaponDomain | '',
     attribute: '',
     description: ''
   });
 
-  // Calculate current domain XP for the selected domain
-  const currentDomainXP = newCombatPerk.domain
-    ? character.progressionLog
-        .filter(entry => entry.type === 'combatPerk' && entry.domain === newCombatPerk.domain)
-        .reduce((sum, entry) => sum + (entry.cost || 0), 0)
-    : 0;
+  // MS5: Calculate current Martial domain XP from all combat perks
+  const currentMartialXP = character.progressionLog
+    .filter(entry => entry.type === 'combatPerk' || entry.type === 'stagedPerk')
+    .reduce((sum, entry) => sum + (entry.cost || 0), 0);
+
+  // Calculate next threshold
+  const getNextThreshold = () => {
+    for (const threshold of MARTIAL_CP_THRESHOLDS) {
+      if (currentMartialXP < threshold) {
+        return { threshold, remaining: threshold - currentMartialXP };
+      }
+    }
+    return null; // Max level
+  };
+
+  const nextThreshold = getNextThreshold();
 
   const handleAddCombatPerk = () => {
     const cost = parseInt(newCombatPerk.cost);
-    if (newCombatPerk.name.trim() && cost && newCombatPerk.domain && newCombatPerk.attribute && character.combatXP >= cost) {
+    if (newCombatPerk.name.trim() && cost && newCombatPerk.attribute && character.combatXP >= cost) {
       const perkData = {
         name: newCombatPerk.name.trim(),
         cost: cost,
-        domain: newCombatPerk.domain as WeaponDomain,
         attribute: newCombatPerk.attribute,
         description: newCombatPerk.description.trim()
       };
 
-      // Calculate new domain level based on cumulative XP
-      const newDomainXP = currentDomainXP + cost;
-
-      // Domain thresholds differ between Spell and weapon domains
+      // MS5: Calculate new Martial domain level based on cumulative XP
+      const newMartialXP = currentMartialXP + cost;
       let newLevel = 0;
-      if (newCombatPerk.domain === 'Spell') {
-        // Spell domain thresholds: 10/30/60/100/150
-        if (newDomainXP >= 150) newLevel = 5;
-        else if (newDomainXP >= 100) newLevel = 4;
-        else if (newDomainXP >= 60) newLevel = 3;
-        else if (newDomainXP >= 30) newLevel = 2;
-        else if (newDomainXP >= 10) newLevel = 1;
-      } else {
-        // Weapon domain thresholds: 5/15/30/50/75
-        if (newDomainXP >= 75) newLevel = 5;
-        else if (newDomainXP >= 50) newLevel = 4;
-        else if (newDomainXP >= 30) newLevel = 3;
-        else if (newDomainXP >= 15) newLevel = 2;
-        else if (newDomainXP >= 5) newLevel = 1;
+      for (let i = 0; i < MARTIAL_CP_THRESHOLDS.length; i++) {
+        if (newMartialXP >= MARTIAL_CP_THRESHOLDS[i]) {
+          newLevel = i + 1;
+        }
       }
-
-      const newDomains = { ...character.weaponDomains };
-      newDomains[newCombatPerk.domain] = newLevel;
 
       onUpdate({
         ...character,
         combatPerks: [...character.combatPerks, perkData],
-        weaponDomains: newDomains,
+        weaponDomains: {
+          ...character.weaponDomains,
+          Martial: newLevel
+        },
         combatXP: character.combatXP - cost,
         progressionLog: [...character.progressionLog, {
           type: 'combatPerk',
           name: perkData.name,
-          domain: perkData.domain,
           attribute: perkData.attribute,
           cost: perkData.cost
         }]
       });
-      setNewCombatPerk({ name: '', cost: '', domain: '', attribute: '', description: '' });
+      setNewCombatPerk({ name: '', cost: '', attribute: '', description: '' });
       onClose();
     }
   };
 
   const handleClose = () => {
-    setNewCombatPerk({ name: '', cost: '', domain: '', attribute: '', description: '' });
+    setNewCombatPerk({ name: '', cost: '', attribute: '', description: '' });
     onClose();
   };
 
   const isFormValid = newCombatPerk.name.trim() &&
                       newCombatPerk.cost &&
-                      newCombatPerk.domain &&
                       newCombatPerk.attribute &&
                       character.combatXP >= parseInt(newCombatPerk.cost || '0');
 
@@ -142,47 +127,12 @@ export const CombatPerkModal: React.FC<CombatPerkModalProps> = ({
           placeholder="Enter XP cost (multiples of 5)"
           className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
         />
-        {newCombatPerk.domain && (
-          <div className="text-xs text-slate-400 mt-1">
-            Next threshold: {
-              newCombatPerk.domain === 'Spell' ? (
-                currentDomainXP < 10 ? `10 XP (${10 - currentDomainXP} more)` :
-                currentDomainXP < 30 ? `30 XP (${30 - currentDomainXP} more)` :
-                currentDomainXP < 60 ? `60 XP (${60 - currentDomainXP} more)` :
-                currentDomainXP < 100 ? `100 XP (${100 - currentDomainXP} more)` :
-                currentDomainXP < 150 ? `150 XP (${150 - currentDomainXP} more)` :
-                'Max level (5)'
-              ) : (
-                currentDomainXP < 5 ? `5 XP (${5 - currentDomainXP} more)` :
-                currentDomainXP < 15 ? `15 XP (${15 - currentDomainXP} more)` :
-                currentDomainXP < 30 ? `30 XP (${30 - currentDomainXP} more)` :
-                currentDomainXP < 50 ? `50 XP (${50 - currentDomainXP} more)` :
-                currentDomainXP < 75 ? `75 XP (${75 - currentDomainXP} more)` :
-                'Max level (5)'
-              )
-            }
-          </div>
-        )}
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-semibold text-white mb-2">
-          Domain {newCombatPerk.domain && <span className="text-blue-400">({DOMAIN_NAMES[newCombatPerk.domain as keyof typeof DOMAIN_NAMES]})</span>}
-        </label>
-        <div className="grid grid-cols-3 gap-2">
-          {Object.entries(DOMAIN_NAMES).map(([abbr]) => (
-            <button
-              key={abbr}
-              onClick={() => setNewCombatPerk({...newCombatPerk, domain: abbr as WeaponDomain})}
-              className={`py-2 rounded font-semibold transition-colors ${
-                newCombatPerk.domain === abbr
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-              }`}
-            >
-              {abbr}
-            </button>
-          ))}
+        <div className="text-xs text-slate-400 mt-1">
+          Martial Domain: Level {character.weaponDomains.Martial || 0} ({currentMartialXP} XP)
+          {nextThreshold && (
+            <span className="text-blue-400"> • Next level at {nextThreshold.threshold} XP ({nextThreshold.remaining} more)</span>
+          )}
+          {!nextThreshold && <span className="text-green-400"> • Max level (5)</span>}
         </div>
       </div>
 
@@ -227,7 +177,7 @@ export const CombatPerkModal: React.FC<CombatPerkModalProps> = ({
             : 'bg-slate-700 hover:bg-slate-600'
         }`}
       >
-        {!newCombatPerk.name.trim() || !newCombatPerk.cost || !newCombatPerk.domain || !newCombatPerk.attribute
+        {!newCombatPerk.name.trim() || !newCombatPerk.cost || !newCombatPerk.attribute
           ? 'Add'
           : character.combatXP < parseInt(newCombatPerk.cost || '0')
             ? 'Not Enough XP'

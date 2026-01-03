@@ -3,8 +3,8 @@ import { Plus } from 'lucide-react';
 import { Character, Weapon, InventoryItem } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import { WEAPONS } from '@/data/weapons';
-import { Modal } from '@/components/shared';
 import { AddPerkModal } from '@/components/modals/AddPerkModal';
+import { ConditioningPerkModal } from '@/components/modals/ConditioningPerkModal';
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
 import {
   getEquippedWeapons,
@@ -38,8 +38,8 @@ const WeaponRollSection: React.FC<WeaponRollSectionProps> = ({
   onOpenRoller
 }) => {
 
-  // Get domain level
-  const domainLevel = weaponData.domain ? character.weaponDomains[weaponData.domain] : 0;
+  // MS5: All weapons use Martial domain
+  const domainLevel = weaponData.domain ? character.weaponDomains.Martial : 0;
 
   // Calculate attack attribute using utility function
   const attackAttr = calculateAttackAttribute(character, weaponData);
@@ -65,7 +65,7 @@ const WeaponRollSection: React.FC<WeaponRollSectionProps> = ({
       <div className="flex justify-between items-start mb-2">
         <div>
           <div className="text-white font-medium text-sm">{weaponName}</div>
-          <div className="text-slate-400 text-xs">{label} • {weaponData.domain || 'No Domain'} {domainLevel}</div>
+          <div className="text-slate-400 text-xs">{label} • Martial {domainLevel}</div>
         </div>
       </div>
 
@@ -90,7 +90,7 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragStartHP, setDragStartHP] = useState(0);
-  const [showExtraHPAttributeModal, setShowExtraHPAttributeModal] = useState(false);
+  const [showConditioningModal, setShowConditioningModal] = useState(false);
   const [showAddCombatPerkModal, setShowAddCombatPerkModal] = useState(false);
   const [expandedCombatPerkIndex, setExpandedCombatPerkIndex] = useState<number | null>(null);
   const [isRollerOpen, setIsRollerOpen] = useState(false);
@@ -98,62 +98,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
 
   // Calculate HP values using utility function
   const hp = calculateHPValues(character);
-
-  const handleBuyExtraHP = (attribute: string) => {
-    const cost = character.maxWounds;
-
-    if (character.combatXP >= cost) {
-      const newExtraHPCount = character.extraHPCount + 1;
-      const newExtraHPHistory = [...character.extraHPHistory, { attribute, cost }];
-
-      // Check if we need to consolidate
-      if (newExtraHPCount >= 5) {
-        const newExtraWoundCount = character.extraWoundCount + 1;
-        const extraWoundName = `Extra Wound[${newExtraWoundCount}]`;
-
-        // Remove ExtraHP entries from progression log
-        const updatedLog = character.progressionLog.filter(entry => entry.type !== 'extraHP');
-
-        // Add 5 Extra Wound entries (one for each ExtraHP purchase)
-        const extraWoundEntries = newExtraHPHistory.map((hp, index) => ({
-          type: 'extraWound' as const,
-          name: extraWoundName,
-          level: index + 1,
-          attribute: hp.attribute,
-          cost: hp.cost
-        }));
-
-        onUpdate({
-          ...character,
-          combatXP: character.combatXP - cost,
-          maxWounds: character.maxWounds + 1,
-          extraHP: 0,
-          extraHPCount: 0,
-          extraHPHistory: [],
-          extraWoundCount: newExtraWoundCount,
-          progressionLog: [...updatedLog, ...extraWoundEntries]
-        });
-      } else {
-        // Just add ExtraHP
-        onUpdate({
-          ...character,
-          combatXP: character.combatXP - cost,
-          extraHP: character.extraHP + 1,
-          extraHPCount: newExtraHPCount,
-          extraHPHistory: newExtraHPHistory,
-          progressionLog: [...character.progressionLog, {
-            type: 'extraHP',
-            name: 'Extra HP',
-            level: newExtraHPCount,
-            attribute: attribute,
-            cost: cost
-          }]
-        });
-      }
-
-      setShowExtraHPAttributeModal(false);
-    }
-  };
 
   const setTotalHP = (newTotal: number) => {
     // Clamp at negative (max wounds × hp per wound)
@@ -252,51 +196,68 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
     const perk = character.combatPerks[index];
     const updatedPerks = character.combatPerks.filter((_, i) => i !== index);
 
-    // Recalculate domain level after removing this perk
-    const remainingDomainXP = character.progressionLog
-      .filter(entry => entry.type === 'combatPerk' &&
-                      entry.domain === perk.domain &&
-                      !(entry.name === perk.name && entry.cost === perk.cost))
+    // Check if this is a completed conditioning perk
+    const isConditioningPerk = perk.perkSnapshot?.tags?.includes('Conditioning') ||
+      perk.name.includes('(Completed)');
+
+    // Get the base perk name (without "(Completed)" suffix)
+    const basePerkName = perk.name.replace(' (Completed)', '');
+
+    let updatedLog = [...character.progressionLog];
+    let totalRefund = 0;
+    let shouldDecrementWounds = false;
+
+    if (isConditioningPerk) {
+      // For conditioning perks: remove ALL stagedPerk entries with this name
+      // and the completion combatPerk entry
+      updatedLog = character.progressionLog.filter(entry => {
+        if (entry.type === 'stagedPerk' && entry.name === basePerkName) {
+          totalRefund += entry.cost || 0;
+          return false; // Remove this entry
+        }
+        if (entry.type === 'combatPerk' &&
+            (entry.name === perk.name || entry.name === `${basePerkName} (Completed)`)) {
+          return false; // Remove completion entry (cost is 0)
+        }
+        return true;
+      });
+      shouldDecrementWounds = true;
+    } else {
+      // Regular combat perk: just remove the single entry
+      for (let i = updatedLog.length - 1; i >= 0; i--) {
+        if (updatedLog[i].type === 'combatPerk' &&
+            updatedLog[i].name === perk.name &&
+            updatedLog[i].cost === perk.cost &&
+            updatedLog[i].attribute === perk.attribute) {
+          updatedLog.splice(i, 1);
+          break;
+        }
+      }
+      totalRefund = perk.cost;
+    }
+
+    // MS5: Recalculate Martial domain level from remaining perks
+    const remainingMartialXP = updatedLog
+      .filter(entry => entry.type === 'combatPerk' || entry.type === 'stagedPerk')
       .reduce((sum, entry) => sum + (entry.cost || 0), 0);
 
-    // Domain thresholds differ between Spell and weapon domains
+    // Martial domain thresholds: 10/30/60/100/150
     let newLevel = 0;
-    if (perk.domain === 'Spell') {
-      // Spell domain thresholds: 10/30/60/100/150
-      if (remainingDomainXP >= 150) newLevel = 5;
-      else if (remainingDomainXP >= 100) newLevel = 4;
-      else if (remainingDomainXP >= 60) newLevel = 3;
-      else if (remainingDomainXP >= 30) newLevel = 2;
-      else if (remainingDomainXP >= 10) newLevel = 1;
-    } else {
-      // Weapon domain thresholds: 5/15/30/50/75
-      if (remainingDomainXP >= 75) newLevel = 5;
-      else if (remainingDomainXP >= 50) newLevel = 4;
-      else if (remainingDomainXP >= 30) newLevel = 3;
-      else if (remainingDomainXP >= 15) newLevel = 2;
-      else if (remainingDomainXP >= 5) newLevel = 1;
-    }
-
-    const newDomains = { ...character.weaponDomains };
-    newDomains[perk.domain] = newLevel;
-
-    // Remove from progression log
-    const updatedLog = [...character.progressionLog];
-    for (let i = updatedLog.length - 1; i >= 0; i--) {
-      if (updatedLog[i].type === 'combatPerk' &&
-          updatedLog[i].name === perk.name &&
-          updatedLog[i].cost === perk.cost &&
-          updatedLog[i].attribute === perk.attribute) {
-        updatedLog.splice(i, 1);
-        break;
-      }
-    }
+    if (remainingMartialXP >= 150) newLevel = 5;
+    else if (remainingMartialXP >= 100) newLevel = 4;
+    else if (remainingMartialXP >= 60) newLevel = 3;
+    else if (remainingMartialXP >= 30) newLevel = 2;
+    else if (remainingMartialXP >= 10) newLevel = 1;
 
     onUpdate({
       ...character,
       combatPerks: updatedPerks,
-      weaponDomains: newDomains,
-      combatXP: character.combatXP + perk.cost,
+      weaponDomains: {
+        ...character.weaponDomains,
+        Martial: newLevel
+      },
+      maxWounds: shouldDecrementWounds ? character.maxWounds - 1 : character.maxWounds,
+      combatXP: character.combatXP + totalRefund,
       progressionLog: updatedLog
     });
 
@@ -455,26 +416,45 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
                 />
               </div>
 
-              {/* Extra HP */}
-              <div className="bg-slate-700 rounded p-2">
+              {/* Conditioning Perks */}
+              <div
+                className="bg-slate-700 rounded p-2 cursor-pointer hover:bg-slate-600 transition-colors"
+                onClick={() => setShowConditioningModal(true)}
+              >
                 <div className="flex justify-between items-center mb-1">
-                  <div className="text-slate-400 text-xs">Extra HP</div>
-                  <div className="text-green-400 text-sm font-bold">{character.extraHP}</div>
+                  <div className="text-slate-400 text-xs">Conditioning</div>
+                  <div className="bg-green-700 rounded p-1">
+                    <Plus size={14} />
+                  </div>
                 </div>
-                <div className="text-slate-400 text-xs mb-2">
-                  {character.extraHPCount}/5 to wound
-                </div>
-                <button
-                  onClick={() => setShowExtraHPAttributeModal(true)}
-                  disabled={character.combatXP < character.maxWounds}
-                  className={`w-full rounded py-1 text-white text-xs font-semibold ${
-                    character.combatXP < character.maxWounds
-                      ? 'bg-slate-600 cursor-not-allowed opacity-50'
-                      : 'bg-green-700 hover:bg-green-600'
-                  }`}
-                >
-                  Buy ({character.maxWounds} CP)
-                </button>
+                {(character.stagedPerks && character.stagedPerks.length > 0) ? (
+                  <div className="space-y-1">
+                    {character.stagedPerks.slice(0, 1).map((perk) => (
+                      <div key={perk.id}>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-white text-xs truncate flex-1">{perk.name}</span>
+                          <div className="flex gap-0.5">
+                            {[1, 2, 3, 4, 5].map(n => (
+                              <div
+                                key={n}
+                                className={`w-1.5 h-1.5 rounded-full ${
+                                  n <= perk.level ? 'bg-green-500' : 'bg-slate-600'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        {character.extraHP > 0 && (
+                          <div className="text-blue-400 text-xs mt-0.5">
+                            +{character.extraHP} HP
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-slate-500 text-xs">Tap to start</div>
+                )}
               </div>
             </div>
 
@@ -570,20 +550,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
         </div>
       </div>
 
-      {/* Weapon Domains Block - Compact */}
-      <div className="bg-slate-800 rounded-lg p-4 mb-4">
-        <h4 className="text-lg font-bold text-white mb-3">Weapon Domains</h4>
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-          {Object.entries(character.weaponDomains).map(([domain, level]) => (
-            <div key={domain} className="bg-slate-700 rounded px-2 py-1 text-center">
-              <div className="text-white text-sm">
-                <span className="text-slate-400">{domain}</span> {level}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Combat Perks Section */}
       <div className="bg-slate-800 rounded-lg p-4 mb-4">
         <div className="flex justify-between items-center mb-3">
@@ -597,44 +563,55 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
           </button>
         </div>
         <div className="space-y-2">
-          {character.combatPerks.map((perk, index) => (
-            <div key={index} className="bg-slate-700 rounded overflow-hidden">
-              <div
-                className="p-3 cursor-pointer hover:bg-slate-600 transition-colors"
-                onClick={() => toggleCombatPerkExpand(index)}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <span className="text-white font-medium">{perk.name}</span>
-                    <div className="text-sm mt-1">
-                      <span className="text-green-400">{perk.cost} XP</span>
-                      <span className="text-slate-400 mx-2">•</span>
-                      <span className="text-blue-400">{perk.domain}</span>
-                      <span className="text-slate-400 mx-2">•</span>
-                      <span className="text-purple-400">{perk.attribute}</span>
+          {character.combatPerks.map((perk, index) => {
+            // Calculate refund amount - for conditioning perks, sum all stagedPerk entries
+            const isConditioningPerk = perk.perkSnapshot?.tags?.includes('Conditioning') ||
+              perk.name.includes('(Completed)');
+            const basePerkName = perk.name.replace(' (Completed)', '');
+
+            const refundAmount = isConditioningPerk
+              ? character.progressionLog
+                  .filter(entry => entry.type === 'stagedPerk' && entry.name === basePerkName)
+                  .reduce((sum, entry) => sum + (entry.cost || 0), 0)
+              : perk.cost;
+
+            return (
+              <div key={index} className="bg-slate-700 rounded overflow-hidden">
+                <div
+                  className="p-3 cursor-pointer hover:bg-slate-600 transition-colors"
+                  onClick={() => toggleCombatPerkExpand(index)}
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <span className="text-white font-medium">{perk.name}</span>
+                      <div className="text-sm mt-1">
+                        <span className="text-green-400">{refundAmount} XP</span>
+                        <span className="text-slate-400 mx-2">•</span>
+                        <span className="text-purple-400">{perk.attribute}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              {expandedCombatPerkIndex === index && (
-                <div className="px-3 pb-3 border-t border-slate-600">
-                  {perk.description && (
-                    <p className="text-slate-300 text-sm mt-2 mb-3">{perk.description}</p>
-                  )}
+                {expandedCombatPerkIndex === index && (
+                  <div className="px-3 pb-3 border-t border-slate-600">
+                    {perk.description && (
+                      <p className="text-slate-300 text-sm mt-2 mb-3">{perk.description}</p>
+                    )}
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteCombatPerk(index);
-                    }}
-                    className="w-full bg-red-700 hover:bg-red-600 rounded py-2 text-white font-semibold"
-                  >
-                    Delete (Refund {perk.cost} XP)
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCombatPerk(index);
+                      }}
+                      className="w-full bg-red-700 hover:bg-red-600 rounded py-2 text-white font-semibold"
+                    >
+                      Delete (Refund {refundAmount} XP{isConditioningPerk ? ', -1 Wound' : ''})
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -655,47 +632,14 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
         perkDatabase={perkDatabase}
       />
 
-      {/* ExtraHP Attribute Selection Modal */}
-      <Modal
-        isOpen={showExtraHPAttributeModal}
-        onClose={() => setShowExtraHPAttributeModal(false)}
-        title="Buy Extra HP"
-      >
-        <p className="text-slate-400 text-sm mb-2 text-center">
-          Select which attribute to apply points to:
-        </p>
-        <p className="text-slate-400 text-xs mb-4 text-center">
-          Cost: {character.maxWounds} CP
-          <span className="ml-2">
-            ({character.combatXP} → {character.combatXP - character.maxWounds} Combat XP)
-          </span>
-        </p>
-        <p className="text-blue-400 text-xs mb-4 text-center">
-          Progress: {character.extraHPCount + 1}/5 to Extra Wound
-        </p>
-
-        <div className="space-y-2 mb-4">
-          <button
-            onClick={() => handleBuyExtraHP('Endurance')}
-            className="w-full bg-slate-700 hover:bg-slate-600 rounded py-3 text-white font-semibold transition-colors"
-          >
-            Endurance
-          </button>
-          <button
-            onClick={() => handleBuyExtraHP('Will')}
-            className="w-full bg-slate-700 hover:bg-slate-600 rounded py-3 text-white font-semibold transition-colors"
-          >
-            Will
-          </button>
-        </div>
-
-        <button
-          onClick={() => setShowExtraHPAttributeModal(false)}
-          className="w-full bg-slate-600 hover:bg-slate-500 rounded py-2 text-white font-semibold"
-        >
-          Cancel
-        </button>
-      </Modal>
+      {/* Conditioning Perk Modal */}
+      <ConditioningPerkModal
+        isOpen={showConditioningModal}
+        onClose={() => setShowConditioningModal(false)}
+        character={character}
+        onUpdate={onUpdate}
+        perkDatabase={perkDatabase}
+      />
     </div>
   );
 };

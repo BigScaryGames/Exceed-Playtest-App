@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Minus, Plus } from 'lucide-react';
 import {
   Character,
-  InventoryItem,
-  WeaponDomain
+  InventoryItem
 } from '@/types/character';
 import { updateItemInInventory, getWeaponData, getArmorData, getShieldData } from '@/utils/inventory';
 
@@ -27,8 +26,8 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
   const [weight, setWeight] = useState('1');
   const [quantity, setQuantity] = useState(1);
 
-  // Weapon fields
-  const [weaponDomain, setWeaponDomain] = useState<WeaponDomain>('1H');
+  // Weapon fields - MS5: Weapons use 'Martial' domain or null
+  const [weaponDomain, setWeaponDomain] = useState<'Martial' | null>('Martial');
   const [finesse, setFinesse] = useState(false);
   const [damage, setDamage] = useState('d6');
   const [ap, setAp] = useState('2');
@@ -59,7 +58,7 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
     if (item.type === 'weapon') {
       const weaponData = getWeaponData(item);
       if (weaponData) {
-        setWeaponDomain(weaponData.domain || '1H');
+        setWeaponDomain(weaponData.domain);
         setFinesse(weaponData.finesse);
         setDamage(weaponData.damage);
         setAp(weaponData.ap.toString());
@@ -219,15 +218,12 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
                 <div>
                   <label className="block text-xs text-slate-400 mb-1">Domain</label>
                   <select
-                    value={weaponDomain}
-                    onChange={(e) => setWeaponDomain(e.target.value as WeaponDomain)}
+                    value={weaponDomain || ''}
+                    onChange={(e) => setWeaponDomain(e.target.value === '' ? null : 'Martial')}
                     className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
                   >
-                    <option value="1H">1H - One Handed</option>
-                    <option value="2H">2H - Two Handed</option>
-                    <option value="SaS">SaS - Staves and Spears</option>
-                    <option value="Sh">Sh - Shield</option>
-                    <option value="Ar">Ar - Archery</option>
+                    <option value="Martial">Martial</option>
+                    <option value="">None (Improvised)</option>
                   </select>
                 </div>
 

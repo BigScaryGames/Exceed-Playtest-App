@@ -4,7 +4,7 @@
 
 The `rules/` directory is a symlink to the official EXCEED ruleset located at:
 ```
-/home/rvh/Obsidian/ExceedV/Ruleset/
+/home/r/Exceed/ExceedV/Ruleset/
 ```
 
 ### Core Rules Files

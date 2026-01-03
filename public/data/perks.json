@@ -1,272 +1,539 @@
 {
-  "version": "2025-10-21T00:08:11.260Z",
-  "lastUpdated": 1761005291260,
+  "version": "2026-01-03T17:07:32.904Z",
+  "lastUpdated": 1767460052905,
   "perks": {
     "combat": [
       {
-        "id": "all-the-birds",
-        "name": "All the Birds",
+        "id": "artillery",
+        "name": "Artillery",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "MD4+MG4, Two birds",
+          "text": "Martial 4, [[Tower]]",
+          "skills": [
+            "Martial 4"
+          ],
           "perks": [
-            "MD4+MG4",
-            "Two birds"
+            "Tower"
           ]
         },
         "attributes": [
-          "Might",
           "Agility",
-          "Melee"
+          "Dexterity"
         ],
         "cost": {
-          "xp": 15,
+          "xp": 0,
           "variable": false
         },
-        "apCost": 6,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
-        "shortDescription": "Strike all targets within reach simultaneously.",
-        "effect": "Make a melee strike with +4 AP cost against all targets within your reach. Resolve strikes one after another. Roll Attack and Damage once.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Standing still greatly extends weapon range based on aim.",
+        "effect": "",
+        "description": "As long as you didn't move this or previous turn, your weapon range = Aim, double your aim X.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
-        "id": "behind-the-shield-strike",
-        "name": "Behind the Shield strike",
+        "id": "close-quarters-shooter",
+        "name": "Close Quarters Shooter",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "SH2",
-          "domains": [
-            "SH2"
+          "text": "Martial 3",
+          "skills": [
+            "Martial 3"
           ]
         },
         "attributes": [
           "Agility",
-          "Charisma",
-          "Shield"
+          "Dexterity"
         ],
         "cost": {
-          "xp": 3,
+          "xp": 0,
           "variable": false
         },
-        "apCost": 3,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Shield"
+          "Combat"
         ],
-        "shortDescription": "Strike from behind shield with enemy penalties to defense.",
-        "effect": "Strike from behind the shield - Enemy takes -2 to parry and dodge against this attack. +1 AP",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Aimed shots at close range deal extra damage.",
+        "effect": "",
+        "description": "When you aim, but strike a target within your close range your attack deals extra damage equal to your archery level.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
-        "id": "calf-strike",
-        "name": "Calf Strike",
+        "id": "defensive-archer",
+        "name": "Defensive Archer",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "SaS1",
-          "domains": [
-            "SAS1"
+          "text": "Martial 1, [[Bow Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Bow Training"
           ]
         },
         "attributes": [
-          "Might",
           "Agility",
-          "StavesAndSpears"
+          "Dexterity"
         ],
         "cost": {
           "xp": 5,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "StavesSpears"
+          "Combat"
         ],
-        "shortDescription": "Strike enemy's leg with blunt end to reduce their speed.",
-        "effect": "Strike with the blunt part at enemy's calve - if you succeed, enemy rolls endurance against your might. On a failure, they halve their speed until the end of their turn.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "[[Parry]] with a bow without risking breaking it.",
+        "effect": "",
+        "description": "You can parry with a bow without risking to break it.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
-        "id": "dodge-behind-your-back",
-        "name": "Dodge behind your back",
+        "id": "don-t-turn-your-back-on-me",
+        "name": "Don't Turn Your Back On Me",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "AG 4, Dodging Step, Stealth 4",
-          "perks": [
-            "AG 4",
-            "Dodging Step"
-          ],
+          "text": "Martial 2",
           "skills": [
-            "Stealth 4"
+            "Martial 2"
           ]
         },
         "attributes": [
           "Agility",
-          "Dexterity",
-          "Stealth"
+          "Dexterity"
         ],
         "cost": {
           "xp": 10,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
-        "shortDescription": "Use superior dodging to disappear and reappear behind enemies.",
-        "effect": "When using Dodging step and succeed, roll stealth against enemy's perception. If you succeed you are hidden from that enemy, and appear behind their backs.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Count as flanking partner within weapon's first range.",
+        "effect": "",
+        "description": "You count as a flanking partner within range of your weapon, as if your range was your reach.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
-        "id": "dodge-roll",
-        "name": "Dodge-Roll",
+        "id": "double-shot",
+        "name": "Double Shot",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "AG 3, Dodging Step",
-          "perks": [
-            "AG 3",
-            "Dodging Step"
+          "text": "Martial 2",
+          "skills": [
+            "Martial 2"
           ]
         },
         "attributes": [
           "Agility",
-          "Might"
+          "Dexterity"
         ],
         "cost": {
           "xp": 10,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
-        "shortDescription": "Use an acrobatic roll to avoid area attacks.",
-        "effect": "An AOE is coming, and you know just the right thing. Fall prone in a space within 2 tiles away from you and gain +3 to the dodge attempt.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Shoot two different targets with one attack.(+2 AP)",
+        "effect": "",
+        "description": "Shoot two different targets, second at -2 to hit.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
-        "id": "dodging-step",
-        "name": "Dodging Step",
+        "id": "fast-archer",
+        "name": "Fast Archer",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "AG 2",
+          "text": "Martial 1, [[Bow Training]]",
+          "skills": [
+            "Martial 1"
+          ],
           "perks": [
-            "AG 2"
+            "Bow Training"
           ]
         },
         "attributes": [
           "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Aim as a free action during a [[Stride]]  (max Aim1).",
+        "effect": "",
+        "description": "You can aim as a free action while you move to a maximum of Aim1.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
+      },
+      {
+        "id": "hair-trigger",
+        "name": "Hair Trigger",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2",
+          "skills": [
+            "Martial 2"
+          ]
+        },
+        "attributes": [
+          "Perception",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Ready a strike that triggers without spending a Reaction.",
+        "effect": "",
+        "description": "You keep an arrow nocked and ready, prepared to loose it the instant a target appears.",
+        "grants": {
+          "abilities": [
+            "hair-trigger"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "mobile-draw",
+        "name": "Mobile Draw",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 4, [[Fast Archer]]",
+          "skills": [
+            "Martial 4"
+          ],
+          "perks": [
+            "Fast Archer"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Move and shoot at the same time.",
+        "effect": "",
+        "description": "You've mastered the technique of shooting on the move, loosing arrows mid-stride without breaking pace.",
+        "grants": {
+          "abilities": [
+            "mobile-draw"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "overpowered-draw",
+        "name": "Overpowered Draw",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3",
+          "skills": [
+            "Martial 3"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Each aim action adds an extra die of damage?",
+        "effect": "",
+        "description": "Each aim action adds a +1 cumulative to the next strike.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
+      },
+      {
+        "id": "spell-shot",
+        "name": "Spell Shot",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Mage]], [[Bow Training]],",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Mage",
+            "Bow Training"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Store offensive spell in arrow for later delivery.",
+        "effect": "",
+        "description": "When casting a single target offensive spell, you can store it in the knocked arrow until the end of your next turn, using your bow strike to resolve both the spells.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
+      },
+      {
+        "id": "tower-defender",
+        "name": "Tower Defender",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Hair Trigger]], [[Tower]]",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Hair Trigger",
+            "Tower"
+          ]
+        },
+        "attributes": [
+          "Perception",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 15,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Shoot at everything that moves.",
+        "effect": "",
+        "description": "You keep your tower stance and wait for the enemies to arrive, meeting them with utmost contempt.",
+        "grants": {
+          "abilities": [
+            "tower-defender"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "tower",
+        "name": "Tower",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2",
+          "skills": [
+            "Martial 2"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Standing still grants all attacks Aim1.",
+        "effect": "",
+        "description": "As long as you didn't move previous and this turns - all your attacks are getting Aim1.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
+      },
+      {
+        "id": "zen-archer",
+        "name": "Zen Archer",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Bow Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Bow Training"
+          ]
+        },
+        "attributes": [
           "Perception"
         ],
         "cost": {
           "xp": 5,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
-        "shortDescription": "Improve your dodge by taking a tactical step.",
-        "effect": "When dodging, make a step and take +1 to dodge. If it is against a melee strike, dodge within attacker's reach if possible.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Change attacking attribute of bows from Dexterity to Perception.",
+        "effect": "",
+        "description": "You can change the attacking attribute of the bow from Dexterity to Perception.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
-        "id": "double-strike",
-        "name": "Double Strike",
+        "id": "wip-ricochet-shot",
+        "name": "wip Ricochet Shot",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "1H1",
-          "domains": [
-            "1H1"
+          "text": "Martial 4",
+          "skills": [
+            "Martial 4"
+          ]
+        },
+        "attributes": [
+          "Wit",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Bounce arrows off surfaces to hit targets behind cover.",
+        "effect": "",
+        "description": "Through careful study of angles and arrow trajectories, you can bank shots off hard surfaces to reach targets that would otherwise be protected. This trick shot requires creativity and spatial awareness, but allows you to ignore cover and strike around corners.",
+        "grants": {
+          "abilities": [
+            "ricochet-shot"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "wip-storm-of-arrows",
+        "name": "wip Storm of Arrows",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 5, [[Mobile Draw]], AG 3",
+          "skills": [
+            "Martial 5"
+          ],
+          "perks": [
+            "Mobile Draw"
+          ],
+          "special": [
+            "AG 3"
           ]
         },
         "attributes": [
           "Agility",
-          "Might",
-          "OneHanded"
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 20,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Fire three rapid-draw shots at -2 to hit, each dealing -1 damage die.",
+        "effect": "",
+        "description": "You unleash a devastating barrage of arrows in rapid succession, your hands moving almost too fast to see. Three arrows fly toward your enemies in the time most archers take for two shots. While individually less powerful, the sheer volume of projectiles overwhelms defenses and multiplies the effects of poisons and magical enhancements.",
+        "grants": {
+          "abilities": [
+            "storm-of-arrows"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "backstab",
+        "name": "Backstab",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, DX 2",
+          "skills": [
+            "Martial 2"
+          ],
+          "special": [
+            "DX 2"
+          ]
+        },
+        "attributes": [
+          "Dexterity"
         ],
         "cost": {
           "xp": 5,
           "variable": false
         },
-        "apCost": 0,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "OneHanded"
+          "Combat"
         ],
-        "shortDescription": "Strike with both weapons, but second misses if first is blocked.",
-        "effect": "Strike with both weapons with -2 AP. If the enemy successfully defends against the first strike, the second misses automatically.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "follow-up-strike",
-        "name": "Follow-Up Strike",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "1H2",
-          "domains": [
-            "1H2"
+        "shortDescription": "Add your Dexterity to damage when striking vulnerable foes.",
+        "effect": "",
+        "description": "When attacking a flanked or off-guard target with a Light weapon, add your Dexterity modifier to the damage roll.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "backstab"
           ]
-        },
-        "attributes": [
-          "Agility",
-          "Dexterity",
-          "OneHanded"
-        ],
-        "cost": {
-          "xp": 5,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "OneHanded"
-        ],
-        "shortDescription": "Reduce AP cost for consecutive attacks on same target.",
-        "effect": "After hitting a target, your next attack this turn against the same target costs -1 AP.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "grip-switch",
-        "name": "Grip Switch",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SaS1",
-          "domains": [
-            "SAS1"
-          ]
-        },
-        "attributes": [
-          "Dexterity",
-          "Agility",
-          "StavesAndSpears"
-        ],
-        "cost": {
-          "xp": 2,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "StavesSpears"
-        ],
-        "shortDescription": "Switch weapon grip freely during offensive actions.",
-        "effect": "Switch the grip between long reach and reach for free at the beginning of an offensive action.",
-        "description": "[Flavor text to be written]"
+        }
       },
       {
         "id": "long-knives",
@@ -274,411 +541,35 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "1H1",
-          "domains": [
-            "1H1"
+          "text": "Martial 1, [[Blades Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Blades Training"
           ]
         },
         "attributes": [
           "Agility",
-          "Dexterity",
-          "OneHanded"
+          "Dexterity"
         ],
         "cost": {
           "xp": 2,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "OneHanded"
+          "Combat"
         ],
         "shortDescription": "Increase damage with knives and daggers.",
-        "effect": "Knives and daggers deal 1d6 damage in your hands.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "monkey-king-strike",
-        "name": "Monkey King Strike",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SAS3, AG3, Staff arobat",
-          "domains": [
-            "SAS3"
-          ],
-          "perks": [
-            "AG3",
-            "Staff arobat"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "enhanced-knives"
           ]
-        },
-        "attributes": [
-          "Agility",
-          "Might",
-          "StavesAndSpears"
-        ],
-        "cost": {
-          "xp": 15,
-          "variable": false
-        },
-        "apCost": 4,
-        "tags": [
-          "Combat",
-          "StavesSpears"
-        ],
-        "shortDescription": "Climb your weapon to jump and strike enemies in a line.",
-        "effect": "+2AP Climb up your weapon, jump and strike enemies in a line (length of the line =reach+1).",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "multipurpose-shield",
-        "name": "Multipurpose Shield",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SH1",
-          "domains": [
-            "SH1"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Might",
-          "Shield"
-        ],
-        "cost": {
-          "xp": 3,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Shield"
-        ],
-        "shortDescription": "Strike with shield boss without losing defensive bonus.",
-        "effect": "You can strike with the shield boss without losing the defense bonus from it.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "painful-parry",
-        "name": "Painful Parry",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "1H2, Twin Parry",
-          "domains": [
-            "1H2"
-          ],
-          "perks": [
-            "Twin Parry"
-          ]
-        },
-        "attributes": [
-          "Dexterity",
-          "Perception",
-          "OneHanded"
-        ],
-        "cost": {
-          "xp": 5,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "OneHanded"
-        ],
-        "shortDescription": "Counter-attack with light weapon after critical parry success.",
-        "effect": "when critically succeeding against a melee attack, make a free light weapon strike as a reaction.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "parry-this-parry-that",
-        "name": "Parry This, Parry that",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "MD 3, Projectile parry",
-          "perks": [
-            "MD 3",
-            "Projectile parry"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Dexterity",
-          "Melee"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Parry magical effects and protect those behind you.",
-        "effect": "You can parry Lines, Rays, Bursts and cones on a success - targets behind you are unaffected.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "perfect-block",
-        "name": "Perfect block",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SH2",
-          "domains": [
-            "SH2"
-          ]
-        },
-        "attributes": [
-          "Might",
-          "Endurance",
-          "Shield"
-        ],
-        "cost": {
-          "xp": 5,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Shield"
-        ],
-        "shortDescription": "Make attacker off-guard after critical block success.",
-        "effect": "when critically succeeding against a melee attack, the attacker becomes off-guard until the start of their next turn.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "piranha-strike",
-        "name": "Piranha Strike",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "1H2",
-          "domains": [
-            "1H2"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Dexterity",
-          "OneHanded"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "OneHanded"
-        ],
-        "shortDescription": "Deal extra damage when striking off guard targets.",
-        "effect": "When striking off guard targets deal +2 damage per damage die",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "plot-armor",
-        "name": "Plot Armor",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "GM",
-          "special": [
-            "GM"
-          ]
-        },
-        "attributes": [
-          "Endurance"
-        ],
-        "cost": {
-          "xp": 50,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Heroic destiny grants supernatural protection.",
-        "effect": "You are the shining hope, The hero with a destiny. You gain the Plot Armor.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "pointy-stick",
-        "name": "Pointy stick",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SaS2",
-          "domains": [
-            "SAS2"
-          ]
-        },
-        "attributes": [
-          "Perception",
-          "Might",
-          "StavesAndSpears"
-        ],
-        "cost": {
-          "xp": 5,
-          "variable": false
-        },
-        "apCost": 3,
-        "tags": [
-          "Combat",
-          "StavesSpears"
-        ],
-        "shortDescription": "Prepare to strike enemies entering your reach.",
-        "effect": "1AP. Designate a target outside your reach. If the target enters your reach with an action that provokes a reaction, make a strike against them. You can substitute this strike other strikes that don't require extra actions.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "projectile-parry",
-        "name": "Projectile Parry",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "Melee MD",
-          "perks": [
-            "Melee MD"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Dexterity",
-          "Melee"
-        ],
-        "cost": {
-          "xp": 5,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Parry ranged physical attacks with melee weapons.",
-        "effect": "You can parry physical ranged attacks and thrown weapons without penalty.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "pushing-strike",
-        "name": "Pushing Strike",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SaS2, MG1",
-          "domains": [
-            "SAS2"
-          ],
-          "perks": [
-            "MG1"
-          ]
-        },
-        "attributes": [
-          "Might",
-          "StavesAndSpears"
-        ],
-        "cost": {
-          "xp": 3,
-          "variable": false
-        },
-        "apCost": 3,
-        "tags": [
-          "Combat",
-          "StavesSpears"
-        ],
-        "shortDescription": "Strike to push enemies outside your weapon's reach.",
-        "effect": "Strike at the center of the mass with +1AP price. If you succeed spend 1 AP and attempt to Shove the enemy outside the current reach of your weapon.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "quarter-staff-training",
-        "name": "Quarter-staff training",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SaS2",
-          "domains": [
-            "SAS2"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "StavesAndSpears"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "StavesSpears"
-        ],
-        "shortDescription": "Gain defensive bonuses when wielding quarterstaffs and warstaves.",
-        "effect": "Quarterstaff and WarStaves in your hands grant you +1 to all defenses.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "reactive-strike",
-        "name": "Reactive Strike",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "AG 2+MD2",
-          "perks": [
-            "AG 2+MD2"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Perception",
-          "Melee"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Strike enemies as they retreat from your reach.",
-        "effect": "When an enemy strides or runs out of your reach - make a free strike as a reaction before they leave their space.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "reactive",
-        "name": "Reactive",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "AG 3+PR3",
-          "perks": [
-            "AG 3+PR3"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Perception"
-        ],
-        "cost": {
-          "xp": 20,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Your mind and body are primed to move with lightning speed.",
-        "effect": "You gain the second reaction.",
-        "description": "[Flavor text to be written]"
+        }
       },
       {
         "id": "ready-hand",
@@ -686,377 +577,947 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "1H1 (starting perk)",
-          "perks": [
-            "1H1 (starting perk)"
-          ]
-        },
-        "attributes": [
-          "Any"
-        ],
-        "cost": {
-          "xp": 0,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "OneHanded",
-          "Starting"
-        ],
-        "shortDescription": "Draw your weapon instinctively when combat starts.",
-        "effect": "You were trained to take out your weapon instinctually. On initiative even when ambushed - draw your 1H weapon.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "repose-this-repose-that",
-        "name": "Repose This, Repose That",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "MG 5, Parry this, Parry that, WL3",
-          "perks": [
-            "MG 5",
-            "Parry this",
-            "Parry that",
-            "WL3"
-          ]
-        },
-        "attributes": [
-          "Will",
-          "Melee"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Reflect spells back at their casters on critical parries.",
-        "effect": "When you critically succeed parrying a spell - you send it back towards the sender, making him roll defense against his spell as well.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "riposte",
-        "name": "Riposte",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "AG 3+MD3",
-          "perks": [
-            "AG 3+MD3"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Dexterity",
-          "Melee"
-        ],
-        "cost": {
-          "xp": 5,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Capitalize on enemy mistakes with a quick counter-attack.",
-        "effect": "When an enemy critically fails on his attack **or** you critically succeed defending against it, make a strike against the enemy as a reaction.",
-        "description": "You know how to capitalize on enemy mistakes. In the heat of battle, when your opponent overextends or you perfectly defend against their assault, you've trained to immediately exploit these openings with a swift counter-attack."
-      },
-      {
-        "id": "shield-block",
-        "name": "Shield Block",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SH1 (starting perk)",
-          "perks": [
-            "SH1 (starting perk)"
-          ]
-        },
-        "attributes": [
-          "Any"
-        ],
-        "cost": {
-          "xp": 0,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Shield",
-          "Starting"
-        ],
-        "shortDescription": "Reduce damage from failed blocks with shield negation.",
-        "effect": "Reaction -You fail to block an attack - reduce the damage by Shield Negation",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "shield-guardian",
-        "name": "Shield Guardian",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SH2",
-          "domains": [
-            "SH2"
-          ]
-        },
-        "attributes": [
-          "Perception",
-          "Agility",
-          "Shield"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Shield"
-        ],
-        "shortDescription": "Block attacks targeting adjacent allies instead of them.",
-        "effect": "Trigger: Adjacent ally is attacked. Use your reaction to attempt block instead of them. If This is an AOE effect, you protect both of you.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "shield-rush",
-        "name": "Shield Rush",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SH1",
-          "domains": [
-            "SH1"
-          ]
-        },
-        "attributes": [
-          "Might",
-          "Endurance",
-          "Shield"
-        ],
-        "cost": {
-          "xp": 2,
-          "variable": false
-        },
-        "apCost": 4,
-        "tags": [
-          "Combat",
-          "Shield"
-        ],
-        "shortDescription": "Move and strike with shield, adding might to damage twice.",
-        "effect": "Move twice, and strike with your shield, adding Might to the damage twice. (-1 AP, 3-5 AP to use)",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "shield-warden",
-        "name": "Shield Warden",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SH1",
-          "domains": [
-            "SH1"
-          ]
-        },
-        "attributes": [
-          "Perception",
-          "Endurance",
-          "Shield"
-        ],
-        "cost": {
-          "xp": 5,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Shield"
-        ],
-        "shortDescription": "Use Shield Block to protect allies taking damage.",
-        "effect": "Trigger: Ally takes damage. Use R Shield Block for your Ally.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "spear-brothers",
-        "name": "Spear Brothers",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SaS1",
-          "domains": [
-            "SAS1"
-          ]
-        },
-        "attributes": [
-          "Charisma",
-          "Will",
-          "StavesAndSpears"
-        ],
-        "cost": {
-          "xp": 3,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "StavesSpears"
-        ],
-        "shortDescription": "Fight better when standing adjacent to another spearman.",
-        "effect": "Standing adjacent with another spearman with this feat make you gain +1 to all SaS checks.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "spear-charge",
-        "name": "Spear Charge",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SAS3, MG2",
-          "domains": [
-            "SAS3"
+          "text": "Martial 1, [[Blades Training]]",
+          "skills": [
+            "Martial 1"
           ],
           "perks": [
-            "MG2"
+            "Blades Training"
+          ]
+        },
+        "attributes": [
+          "Agility"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Draw your weapon instinctively when combat starts.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "ready-hand"
+          ]
+        }
+      },
+      {
+        "id": "the-edgelord",
+        "name": "The Edgelord",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "[[Blades Training]] GM",
+          "special": [
+            "[[Blades Training]] GM"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Master of edged weapons with a competitive edge.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "the-edgelord"
+          ]
+        }
+      },
+      {
+        "id": "all-the-birds",
+        "name": "All the Birds",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 4, MG4, [[Two Birds]]",
+          "skills": [
+            "Martial 4"
+          ],
+          "special": [
+            "MG4"
+          ],
+          "perks": [
+            "Two Birds"
           ]
         },
         "attributes": [
           "Might",
-          "Agility",
-          "StavesAndSpears"
+          "Agility"
         ],
         "cost": {
           "xp": 15,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "StavesSpears"
+          "Combat"
         ],
-        "shortDescription": "Move in a straight line and strike with bonus damage based on distance.",
-        "effect": "Move in a straight line and make a strike. Strike deals extra damage equal to the number of distance you moved.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Strike all targets within reach simultaneously.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "all-the-birds"
+          ],
+          "effects": []
+        }
       },
       {
-        "id": "spell-guard",
-        "name": "Spell Guard",
+        "id": "calf-strike",
+        "name": "Calf Strike",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "SH2",
-          "domains": [
-            "SH2"
+          "text": "Martial 1,",
+          "skills": [
+            "Martial 1"
           ]
         },
         "attributes": [
-          "Perception",
-          "Agility",
-          "Shield"
+          "Might",
+          "Agility"
         ],
         "cost": {
           "xp": 5,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Shield"
+          "Combat"
         ],
-        "shortDescription": "Block magical effects and spells with your shield.",
-        "effect": "(Passive, Limit 1)- You learn to channel magical energy through your shield, creating a defensive layer covering you. This allows you to block some of the magical effects. You can attempt to Block against Physical or Energy Line, Cone, Burst, Ray type of spells and magical effects (like dragon's breath, or a fireball). If you have Guardian Aura, the Bonus applies to your allies as well.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Strike enemy's leg with blunt end to reduce their speed.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "calf-strike"
+          ],
+          "effects": []
+        }
       },
       {
-        "id": "spinning-staff",
-        "name": "Spinning Staff",
+        "id": "follow-up-strike",
+        "name": "Follow-Up Strike",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "SAS3",
-          "domains": [
-            "SAS3"
+          "text": "Martial 2",
+          "skills": [
+            "Martial 2"
           ]
         },
         "attributes": [
           "Agility",
-          "Dexterity",
-          "StavesAndSpears"
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "After hitting the enemy, use your momentum to strike again but quicker.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "follow-up-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "mighty-charge",
+        "name": "Mighty Charge",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, MG2",
+          "skills": [
+            "Martial 3"
+          ],
+          "special": [
+            "MG2"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 15,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Move in a straight line and strike with bonus damage based on distance.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "mighty-charge"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "piranha-strike",
+        "name": "Piranha Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2",
+          "skills": [
+            "Martial 2"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Sacrifice accuracy for devastating damage against vulnerable foes with light weapons.",
+        "effect": "",
+        "description": "You know where to strike when they can't defend. Against flanked or off-guard targets, you may take a penalty to your attack roll to increase your weapon damage die.",
+        "grants": {
+          "abilities": [
+            "piranha-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "tripping-strike",
+        "name": "Tripping Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Calf Strike]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Calf Strike"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Strike enemy's leg to knock them prone.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "tripping-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "two-birds",
+        "name": "Two Birds",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, MG2",
+          "skills": [
+            "Martial 3"
+          ],
+          "special": [
+            "MG2"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Agility"
         ],
         "cost": {
           "xp": 10,
           "variable": false
         },
-        "apCost": 5,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "StavesSpears"
+          "Combat"
         ],
-        "shortDescription": "Spin your staff to create a defensive zone that strikes approaching enemies.",
-        "effect": "3AP - You spin your staff turning it into a blur. Each enemy approaching you gets a strike as a free action until the start of your next turn or until the first successful block.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Strike multiple adjacent targets with one attack.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "two-birds"
+          ],
+          "effects": []
+        }
       },
       {
-        "id": "staff-acrobat",
-        "name": "Staff acrobat",
+        "id": "battle-scarred",
+        "name": "Battle Scarred",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "SaS1",
-          "domains": [
-            "SAS1"
+          "text": "Martial 1",
+          "skills": [
+            "Martial 1"
           ]
         },
         "attributes": [
-          "Agility",
-          "Might",
-          "StavesAndSpears"
+          "Endurance",
+          "Will"
         ],
         "cost": {
-          "xp": 2,
-          "variable": false
+          "xp": 0,
+          "variable": true,
+          "formula": "Max_Wounds × level"
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
           "Combat",
-          "StavesSpears"
+          "Conditioning",
+          "Leveled"
         ],
-        "shortDescription": "Use your staff to enhance jumping and balance.",
-        "effect": "Add your weapons reach to the distance of your long jumps, and half of it to your high jumps. While holding your staff you get +2 on checks to balance.",
-        "description": "[Flavor text to be written]"
+        "shortDescription": "Learn from surviving grievous injuries; at mastery your scars tell a story of resilience.",
+        "effect": "",
+        "description": "Every scar has a story. Every near-death experience has taught you something about survival. Through combat, you've learned your body's limits and how to push beyond them. You know how wounds heal, which injuries are merely painful versus truly dangerous, and how to work with healers to maximize recovery. Your flesh bears testimony to battles survived, and that experience makes you more resilient. At the peak of this conditioning, your body has been broken and remade so many times that it knows instinctively how to survive and recover.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "extra-hp",
+            "battle-scarred"
+          ]
+        }
       },
       {
-        "id": "that-type-of-a-person",
-        "name": "That Type of a Person",
+        "id": "cold-conditioning",
+        "name": "Cold Conditioning",
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "Watching your back",
-          "perks": [
-            "Watching your back"
+          "text": "Survival 1",
+          "skills": [
+            "Survival 1"
           ]
         },
         "attributes": [
+          "Endurance",
           "Will"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": true,
+          "formula": "Max_Wounds × level"
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Conditioning",
+          "Leveled"
+        ],
+        "shortDescription": "Adapt to extreme cold through exposure; at mastery thrive in frigid environments.",
+        "effect": "",
+        "description": "Whether through necessity or deliberate training, you've spent extensive time in freezing conditions. Your body has learned to conserve heat more efficiently, your blood flows better in cold temperatures, and you've developed techniques for maintaining function when others would succumb to hypothermia. Ice baths, winter survival training, or years in arctic climates have transformed your relationship with cold. At mastery, you move through blizzards as easily as others walk through spring rain.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "extra-hp",
+            "cold-conditioning"
+          ]
+        }
+      },
+      {
+        "id": "heat-conditioning",
+        "name": "Heat Conditioning",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Survival 1",
+          "skills": [
+            "Survival 1"
+          ]
+        },
+        "attributes": [
+          "Endurance",
+          "Will"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": true,
+          "formula": "Max_Wounds × level"
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Conditioning",
+          "Leveled"
+        ],
+        "shortDescription": "Adapt to extreme heat through exposure; at mastery thrive in scorching environments.",
+        "effect": "",
+        "description": "Through forge work, desert survival, or deliberate heat exposure training, your body has adapted to function in temperatures that would prostrate others. You've learned to regulate your temperature, conserve moisture, and maintain clarity of thought when heat threatens to overwhelm. Whether from working beside blast furnaces, crossing sun-baked wastelands, or systematic sauna training, your tolerance for heat has been forged like steel. At mastery, you move through infernal heat as comfortably as others enjoy a warm summer day.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "extra-hp",
+            "heat-conditioning"
+          ]
+        }
+      },
+      {
+        "id": "magical-conditioning",
+        "name": "Magical Conditioning",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Mage, Spellcraft 1",
+          "perks": [
+            "Mage"
+          ],
+          "skills": [
+            "Spellcraft 1"
+          ]
+        },
+        "attributes": [
+          "Endurance",
+          "Will"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": true,
+          "formula": "Max_Wounds × level"
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Conditioning",
+          "Leveled",
+          "Magic"
+        ],
+        "shortDescription": "Develop resistance to transmutation through magical exposure; at mastery resist unwanted transformations.",
+        "effect": "",
+        "description": "As a mage exposed to transmutation magic and teleportation effects, your body and essence have been repeatedly subjected to magical alteration. Whether through experimental self-transformation, teleportation mishaps, or defensive training against hostile magic, you've developed a unique resistance to unwanted magical changes. Your magical nature has learned to recognize and resist foreign transmutation attempts. At mastery, your essence is so accustomed to magical forces that it instinctively rejects transmutation and forced displacement that you don't control.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "extra-hp",
+            "magical-conditioning"
+          ]
+        }
+      },
+      {
+        "id": "mental-resilience",
+        "name": "Mental Resilience",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Will 2",
+          "skills": [
+            "Will 2"
+          ]
+        },
+        "attributes": [
+          "Endurance",
+          "Will"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": true,
+          "formula": "Max_Wounds × level"
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Conditioning",
+          "Leveled"
+        ],
+        "shortDescription": "Fortify your mind through mental discipline; at mastery develop formidable mental defenses.",
+        "effect": "",
+        "description": "Through meditation, facing your fears, or controlled exposure to mind-affecting magic, you build walls around your consciousness. Mental exercises strengthen your will like physical training strengthens muscle. Whether through monastic meditation techniques, exposure to minor enchantments, or simply surviving traumatic experiences, you learn to compartmentalize and protect your thoughts. At the peak of this training, your mind becomes a fortress, resistant to intrusion and manipulation.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "extra-hp",
+            "mental-resilience"
+          ]
+        }
+      },
+      {
+        "id": "poison-resistance",
+        "name": "Poison Resistance",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Medicine 1",
+          "skills": [
+            "Medicine 1"
+          ]
+        },
+        "attributes": [
+          "Endurance",
+          "Will"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": true,
+          "formula": "Max_Wounds × level"
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Conditioning",
+          "Leveled"
+        ],
+        "shortDescription": "Develop resistance to toxins through controlled exposure; at mastery gain enhanced poison resistance.",
+        "effect": "",
+        "description": "Through careful, measured exposure to various toxins under medical supervision, you train your body to resist poisons. Starting with mild irritants and building tolerance over time, you develop both physical resilience and the ability to identify toxins through sensory examination. At the peak of this conditioning, your body has adapted to neutralize most common poisons with remarkable efficiency.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "extra-hp",
+            "poison-resistance"
+          ]
+        }
+      },
+      {
+        "id": "waterfall-training",
+        "name": "Waterfall Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Athletics 1",
+          "skills": [
+            "Athletics 1"
+          ]
+        },
+        "attributes": [
+          "Endurance",
+          "Will"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": true,
+          "formula": "Max_Wounds × level"
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Conditioning",
+          "Leveled"
+        ],
+        "shortDescription": "Train under cascading water to resist displacement; at mastery become immovable like stone.",
+        "effect": "",
+        "description": "Standing beneath a waterfall, feeling the relentless pressure trying to knock you down, you learn to root yourself against overwhelming force. Through countless hours of resisting the current's push and pull, your body learns to distribute force and maintain balance against displacement. At mastery, you stand as firm as the stones beneath the waterfall itself, unmoved by forces that would sweep others away.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "extra-hp",
+            "waterfall-training"
+          ]
+        }
+      },
+      {
+        "id": "ambidexterity",
+        "name": "Ambidexterity",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1,  DX 1,",
+          "skills": [
+            "Martial 1"
+          ],
+          "special": [
+            "DX 1"
+          ]
+        },
+        "attributes": [
+          "Dexterity",
+          "Agility"
         ],
         "cost": {
           "xp": 5,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
-        "shortDescription": "Rush to protect downed allies, taking their attacks.",
-        "effect": "When an ally is downed within your Speed distance, you run to that space as a free action. This movement doesn't provoke reactions. When you stand on your downed ally's space, all offensive actions including AOE directed at the ally will be directed at you instead. You can't leave the space until the end of the combat, or you seeing the ally losing unconscious condition.",
-        "description": "They call you selfless, but maybe deep inside you are just too selfish to lose what you care about the most."
+        "shortDescription": "You use both of your hands equally well or equally poor.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "ambidexterity"
+          ]
+        }
+      },
+      {
+        "id": "double-strike",
+        "name": "Double Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1",
+          "skills": [
+            "Martial 1"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Might"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Strike with both weapons, but second misses if first is blocked.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "double-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "twin-parry",
+        "name": "Twin Parry",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1,",
+          "skills": [
+            "Martial 1"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 3,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Gain parrying bonus when dual wielding.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "twin-parry"
+          ]
+        }
+      },
+      {
+        "id": "big-steps",
+        "name": "Big Steps",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Footwork]], AG 2",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Footwork"
+          ],
+          "special": [
+            "AG 2"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 8,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Stride covers your full speed.",
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "big-steps"
+          ]
+        }
+      },
+      {
+        "id": "dodge-behind-your-back",
+        "name": "Dodge Behind Your Back",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Dodging Step]], AG 4, Stealth 4",
+          "skills": [
+            "Martial 3",
+            "Stealth 4"
+          ],
+          "perks": [
+            "Dodging Step"
+          ],
+          "special": [
+            "AG 4"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Disappear and reappear behind enemies when you dodge.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "vanishing-step"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "dodge-roll",
+        "name": "Dodge-Roll",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Dodging Step]], AG 3",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Dodging Step"
+          ],
+          "special": [
+            "AG 3"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Roll away from burst and area effects.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "dodge-roll"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "dodging-step",
+        "name": "Dodging Step",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Light Steps]] or [[Small Steps]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Light Steps"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 8,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Step freely when you successfully dodge a melee attack.",
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "dodging-step"
+          ]
+        }
+      },
+      {
+        "id": "elusive",
+        "name": "Elusive",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Dodging Step]]",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Dodging Step"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Each successful dodge makes the next one easier.",
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "elusive"
+          ]
+        }
+      },
+      {
+        "id": "footwork",
+        "name": "Footwork",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Agility",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Foundation for mobile combat techniques.",
+        "effect": "",
+        "description": "You've trained to fight light on your feet, using movement as defense.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "footwork"
+          ]
+        }
+      },
+      {
+        "id": "light-steps",
+        "name": "Light Steps",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Footwork]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Footwork"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Step as part of your first attack each turn.",
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "light-steps"
+          ]
+        }
+      },
+      {
+        "id": "small-steps",
+        "name": "Small Steps",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Footwork]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Footwork"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Might"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "Your first Stride doesn't trigger reactions.",
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "small-steps"
+          ]
+        }
       },
       {
         "id": "the-aspiring-hero",
@@ -1080,14 +1541,19 @@
           "xp": 10,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
         "shortDescription": "Instant perk that prevents death through narrative importance.",
-        "effect": "Instant - this perk requires no training. If you die here the story ends. Lose 10CP, take a limitation, consequence or a disadvantage of GM's choice and survive.",
-        "description": "[Flavor text to be written]"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "the-aspiring-hero"
+          ]
+        }
       },
       {
         "id": "the-cult-inner-member",
@@ -1104,14 +1570,19 @@
           "xp": 0,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
         "shortDescription": "Loyal follower with enhanced mental resistance and leader protection.",
-        "effect": "You are close to The Leader and your oath is strong. Any attempt to mind control or coerce you (unless rolled by the leader) is rolled with a disadvantage. You gain \"Protect the Leader\" reaction (allowing you to take the damage of the leader if adjacent). When you are driven into fervor your attack increases by 2 and defense decreases by 3.",
-        "description": "[Flavor text to be written]"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "the-cult-inner-member"
+          ]
+        }
       },
       {
         "id": "the-cult-leader",
@@ -1119,7 +1590,7 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "GM, The Leader, Lead. 3, Manip. 3",
+          "text": "GM, [[The Leader]], Lead. 3, Manip. 3",
           "special": [
             "GM"
           ],
@@ -1136,78 +1607,19 @@
           "xp": 10,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Skill"
         ],
         "shortDescription": "Lead fanatical followers who have sworn loyalty to you.",
-        "effect": "Your team are your loyal followers, and have all sworn an oath to you. You can \"Drive into Fervor\" (2AP, lasts for 1 turn).",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "the-edgelord",
-        "name": "The Edgelord",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "1H2/2H2, GM",
-          "perks": [
-            "1H2/2H2"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "drive-into-fervor"
           ],
-          "special": [
-            "GM"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Dexterity"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Master of edged weapons with a competitive edge.",
-        "effect": "You are so edgy one can cut themselves against you. Deal +2 damage with edged weapons. If two Edgelords exist in one party they have to duel. The winner keeps the perk, the loser loses the edge.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "the-guardian-aura",
-        "name": "The Guardian Aura",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SH3, Spell Guard, Shield Warden",
-          "domains": [
-            "SH3"
-          ],
-          "perks": [
-            "Spell Guard",
-            "Shield Warden"
-          ]
-        },
-        "attributes": [
-          "Endurance",
-          "Might",
-          "Shield"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Shield"
-        ],
-        "shortDescription": "Provide defensive advantages to allies within aura range.",
-        "effect": "Limit 2, All allies within 3 tiles. Your Aura protects your allies. You can provide advantage to your allies as a reaction on any defense. When used against AOE - you provide it to all of the affected ones.",
-        "description": "[Flavor text to be written]"
+          "effects": []
+        }
       },
       {
         "id": "the-leader",
@@ -1227,14 +1639,1109 @@
           "xp": 5,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Skill"
         ],
         "shortDescription": "Lead your team's resistance against fear effects.",
-        "effect": "In the face of danger, you are the leader. When an enemy or an effect rolls to frighten you or/and your team roll an opposed leadership. Your allies can chose between your roll and their roll of resistance. Two Leaders in one team will have both of their perks suppressed.",
-        "description": "[Flavor text to be written]"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "the-leader"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "painful-parry",
+        "name": "Painful Parry",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Twin Parry]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Twin Parry"
+          ]
+        },
+        "attributes": [
+          "Dexterity",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Counter-attack with light weapon after critical parry success.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "painful-parry"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "parry-this-parry-that",
+        "name": "Parry This, Parry that",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Projectile Parry]], AG3, DX3",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Projectile Parry"
+          ],
+          "special": [
+            "AG3",
+            "DX3"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Parry magical effects and protect those behind you.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "magical-deflection"
+          ]
+        }
+      },
+      {
+        "id": "projectile-parry",
+        "name": "Projectile Parry",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, AG2, DX2",
+          "skills": [
+            "Martial 2"
+          ],
+          "special": [
+            "AG2",
+            "DX2"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Parry ranged physical attacks with melee weapons.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "projectile-deflection"
+          ]
+        }
+      },
+      {
+        "id": "repose-this-repose-that",
+        "name": "Repose This, Repose That",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 4, [[Parry This, Parry that]], WL3,",
+          "skills": [
+            "Martial 4"
+          ],
+          "perks": [
+            "[[Parry This",
+            "Parry that]]"
+          ],
+          "special": [
+            "WL3"
+          ]
+        },
+        "attributes": [
+          "Will"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Reflect spells back at their casters on critical parries.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "spell-reflection"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "riposte",
+        "name": "Riposte",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, AG 3",
+          "skills": [
+            "Martial 3"
+          ],
+          "special": [
+            "AG 3"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Capitalize on enemy mistakes with a quick counter-attack.",
+        "effect": "",
+        "description": "You know how to capitalize on enemy mistakes. In the heat of battle, when your opponent overextends or you perfectly defend against their assault, you've trained to immediately exploit these openings with a swift counter-attack.",
+        "grants": {
+          "abilities": [
+            "riposte"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "plot-armor",
+        "name": "Plot Armor",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "GM permission.",
+          "special": [
+            "GM permission."
+          ]
+        },
+        "attributes": [
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 50,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Heroic destiny grants supernatural protection.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "plot-armor"
+          ]
+        }
+      },
+      {
+        "id": "grip-switch",
+        "name": "Grip Switch",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Polearms Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Polearms Training"
+          ]
+        },
+        "attributes": [
+          "Dexterity",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 2,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Switch weapon grip freely during offensive actions.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "grip-switch"
+          ]
+        }
+      },
+      {
+        "id": "monkey-king-strike",
+        "name": "Monkey King Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, AG3, [[Staff Acrobat]]",
+          "skills": [
+            "Martial 3"
+          ],
+          "special": [
+            "AG3"
+          ],
+          "perks": [
+            "Staff Acrobat"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Might"
+        ],
+        "cost": {
+          "xp": 15,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Climb your weapon to jump and strike enemies in a line.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "monkey-king-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "pointy-stick",
+        "name": "Pointy stick",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Polearms Training]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Polearms Training"
+          ]
+        },
+        "attributes": [
+          "Perception",
+          "Might"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "You know how to use enemy's momentum against them.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "enhanced-defensive-stance"
+          ]
+        }
+      },
+      {
+        "id": "quarter-staff-adept",
+        "name": "Quarter-staff Adept",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Polearms Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Polearms Training"
+          ]
+        },
+        "attributes": [
+          "Agility"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Gain defensive bonuses when wielding quarterstaffs and warstaves.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "quarterstaff-defense"
+          ]
+        }
+      },
+      {
+        "id": "spear-brothers",
+        "name": "Spear Brothers",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Polearms Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Polearms Training"
+          ]
+        },
+        "attributes": [
+          "Charisma",
+          "Will"
+        ],
+        "cost": {
+          "xp": 3,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Fight better when standing shoulder to shoulder with a brother.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "spear-brothers"
+          ]
+        }
+      },
+      {
+        "id": "spinning-staff",
+        "name": "Spinning Staff",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3",
+          "skills": [
+            "Martial 3"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Spin your staff to create a defensive zone that strikes approaching enemies.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "spinning-staff"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "staff-acrobat",
+        "name": "Staff Acrobat",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Polearms Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Polearms Training"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Might"
+        ],
+        "cost": {
+          "xp": 2,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Use your staff to enhance jumping and balance.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "staff-acrobat"
+          ]
+        }
+      },
+      {
+        "id": "walking-stick",
+        "name": "Walking Stick",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Polearms Training]],",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Polearms Training"
+          ]
+        },
+        "attributes": [
+          "Any"
+        ],
+        "cost": {
+          "xp": 2,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Properly use your weapon to reduce encumbrance and increase carrying capacity.",
+        "effect": "",
+        "description": "Your learned to use your weapon properly.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "walking-stick"
+          ]
+        }
+      },
+      {
+        "id": "predicted-exchange",
+        "name": "Predicted Exchange",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, Wit 3, [[Predictive Strike]]",
+          "skills": [
+            "Martial 3",
+            "Wit 3"
+          ],
+          "perks": [
+            "Predictive Strike"
+          ]
+        },
+        "attributes": [
+          "Wit",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Your predictive Strike now predicts enemy's reaction as well.",
+        "effect": "",
+        "description": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "predicted-exchange"
+          ]
+        }
+      },
+      {
+        "id": "predictive-defense",
+        "name": "Predictive Defense",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, Perception 2, [[Predictive Strike]]",
+          "skills": [
+            "Martial 3",
+            "Perception 2"
+          ],
+          "perks": [
+            "Predictive Strike"
+          ]
+        },
+        "attributes": [
+          "Perception",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Preroll your next Parry or Dodge defenses using foresight.",
+        "effect": "",
+        "description": "You read your opponent's attack patterns, predicting where the strike will come before it's thrown.",
+        "grants": {
+          "abilities": [
+            "predictive-defense"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "predictive-strike",
+        "name": "Predictive Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, Wit 2",
+          "skills": [
+            "Martial 1",
+            "Wit 2"
+          ]
+        },
+        "attributes": [
+          "Wit",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 7,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Preroll your next attack using analytical prediction.",
+        "effect": "",
+        "description": "You calculate trajectories, timing, and openings before committing to an attack.",
+        "grants": {
+          "abilities": [
+            "predictive-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "reactive-prediction",
+        "name": "Reactive Prediction",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, Perception 3, [[Predictive Defense]]",
+          "skills": [
+            "Martial 3",
+            "Perception 3"
+          ],
+          "perks": [
+            "Predictive Defense"
+          ]
+        },
+        "attributes": [
+          "Perception",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "React to danger by glimpsing alternate defensive outcomes.",
+        "effect": "",
+        "description": "Your mind builds multitude of outcomes, enough to make a difference, but not enough to guarantee an outcome.",
+        "grants": {
+          "abilities": [
+            "reactive-prediction"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "reactive-strike",
+        "name": "Reactive Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, AG 2",
+          "skills": [
+            "Martial 2"
+          ],
+          "special": [
+            "AG 2"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Strike enemies as they retreat from your reach.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "reactive-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "reactive",
+        "name": "Reactive",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "AG 3, PR 3",
+          "special": [
+            "AG 3",
+            "PR 3"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 20,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Your mind and body are primed to move with lightning speed.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "second-reaction"
+          ]
+        }
+      },
+      {
+        "id": "behind-the-shield-strike",
+        "name": "Behind the Shield strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Shield Training]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Shield Training"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Charisma"
+        ],
+        "cost": {
+          "xp": 3,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Strike from behind shield with enemy penalties to defense.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "behind-the-shield-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "multipurpose-shield",
+        "name": "Multipurpose Shield",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Shield Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Shield Training"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Might"
+        ],
+        "cost": {
+          "xp": 3,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Use your shield as an off-hand weapon in dual-wielding techniques.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "multipurpose-shield"
+          ]
+        }
+      },
+      {
+        "id": "perfect-block",
+        "name": "Perfect block",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Shield Training]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Shield Training"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Make attacker off-guard after critical block success.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "perfect-block"
+          ]
+        }
+      },
+      {
+        "id": "shield-guardian",
+        "name": "Shield Guardian",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Shield Warden]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "[[Shield Warden]"
+          ]
+        },
+        "attributes": [
+          "Perception",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Block attacks targeting adjacent allies instead of them.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "shield-guardian"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "shield-rush",
+        "name": "Shield Rush",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Shield Training]],  MG1,",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Shield Training"
+          ],
+          "special": [
+            "MG1"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 2,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Move and strike with shield, adding might to damage twice.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "shield-rush"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "shield-warden",
+        "name": "Shield Warden",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Shield Training]],",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Shield Training"
+          ]
+        },
+        "attributes": [
+          "Perception",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Use Shield Block to protect allies taking damage.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "shield-warden"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "spell-guard",
+        "name": "Spell Guard",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Shield Training]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Shield Training"
+          ]
+        },
+        "attributes": [
+          "Perception",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Block magical effects and spells with your shield.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "spell-guard"
+          ]
+        }
+      },
+      {
+        "id": "the-guardian-aura",
+        "name": "The Guardian Aura",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Spell Guard]], [[Shield Warden]]",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Spell Guard",
+            "Shield Warden"
+          ]
+        },
+        "attributes": [
+          "Endurance",
+          "Might"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Provide defensive advantages to allies within aura range.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "guardian-aura"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "the-wall",
+        "name": "The Wall",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Shield Warden]]",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Shield Warden"
+          ]
+        },
+        "attributes": [
+          "Endurance",
+          "Might"
+        ],
+        "cost": {
+          "xp": 15,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Shield"
+        ],
+        "shortDescription": "Allow adjacent allies to hide behind you and your heavy shield.",
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "the-wall"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "that-type-of-a-person",
+        "name": "That Type of a Person",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "[[Watching your back]]",
+          "perks": [
+            "Watching your back"
+          ]
+        },
+        "attributes": [
+          "Will"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Rush to protect downed allies, taking their attacks.",
+        "effect": "",
+        "description": "They call you selfless, but maybe deep inside you are just too selfish to lose what you care about the most.",
+        "grants": {
+          "abilities": [
+            "that-type-of-a-person"
+          ],
+          "effects": []
+        }
       },
       {
         "id": "the-loner",
@@ -1245,52 +2752,26 @@
           "text": "-"
         },
         "attributes": [
-          "Any"
+          "Will",
+          "Endurance"
         ],
         "cost": {
           "xp": 20,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
         "shortDescription": "Fight alone with enhanced capabilities but no allies.",
-        "effect": "It's you against the world. When fighting alone you start with +2 AP. You count no-one as your allies. You can't be a willing target for a Team Ritual, if you participate in one you lose the perk. (you keep their effect on the stats though). Retraining from this perk requires GM permission.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "the-wall",
-        "name": "The Wall",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SH3, Shield Warden",
-          "domains": [
-            "SH3"
-          ],
-          "perks": [
-            "Shield Warden"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "the-loner"
           ]
-        },
-        "attributes": [
-          "Endurance",
-          "Might",
-          "Shield"
-        ],
-        "cost": {
-          "xp": 15,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "Shield"
-        ],
-        "shortDescription": "Allow adjacent allies to hide behind you and your heavy shield.",
-        "effect": "Req: You carry a heavy shield. Adjacent allies can hide behind you as a reaction, leaving the defense up to The Wall.",
-        "description": "[Flavor text to be written]"
+        }
       },
       {
         "id": "throwing-distraction",
@@ -1298,31 +2779,35 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "1H3, Throwing hand",
-          "domains": [
-            "1H3"
+          "text": "Martial 2, [[Throwing Hand]]",
+          "skills": [
+            "Martial 2"
           ],
           "perks": [
-            "Throwing hand"
+            "Throwing Hand"
           ]
         },
         "attributes": [
           "Dexterity",
-          "Perception",
-          "OneHanded"
+          "Perception"
         ],
         "cost": {
           "xp": 10,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "OneHanded"
+          "Combat"
         ],
         "shortDescription": "Throw weapon to make ally's target off guard.",
-        "effect": "An ally makes a strike, but didn't roll yet. Throw the weapon in your hand as a reaction. If you hit - you don't deal damage, but the attacker becomes off guard against the triggering attack.",
-        "description": "[Flavor text to be written]"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "throwing-distraction"
+          ],
+          "effects": []
+        }
       },
       {
         "id": "throwing-hand",
@@ -1330,28 +2815,35 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "1H1",
-          "domains": [
-            "1H1"
+          "text": "Martial 1, [[Thrown Training]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Thrown Training"
           ]
         },
         "attributes": [
           "Dexterity",
-          "Perception",
-          "OneHanded"
+          "Perception"
         ],
         "cost": {
           "xp": 2,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "OneHanded"
+          "Combat"
         ],
         "shortDescription": "Learn to throw one-handed weapons effectively.",
-        "effect": "You learn how to throw 1H weapons, if it's a thrown weapon, increase the range by 3, if not to 3. Use Dexterity for thrown attacks.",
-        "description": "[Flavor text to be written]"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "throwing-hand"
+          ]
+        }
       },
       {
         "id": "too-selfish",
@@ -1359,7 +2851,7 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "That Type of a person",
+          "text": "[[That Type of a person]]",
           "perks": [
             "That Type of a person"
           ]
@@ -1371,132 +2863,19 @@
           "xp": 0,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
         "shortDescription": "Instant perk that activates when protecting someone fails.",
-        "effect": "Instant - this perk requires no training. When you stand your ground, but fail despite being a That Type of a Person, you can attempt to strike a bargain with the Master of The Universe.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "tripping-strike",
-        "name": "Tripping Strike",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SaS2, Calfe Strike",
-          "domains": [
-            "SAS2"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [
+            "too-selfish"
           ],
-          "perks": [
-            "Calfe Strike"
-          ]
-        },
-        "attributes": [
-          "Might",
-          "Agility",
-          "StavesAndSpears"
-        ],
-        "cost": {
-          "xp": 5,
-          "variable": false
-        },
-        "apCost": 3,
-        "tags": [
-          "Combat",
-          "StavesSpears"
-        ],
-        "shortDescription": "Strike enemy's leg to knock them prone.",
-        "effect": "Make a strike with +1AP cost with the blunt part at enemy's leg. If you succeed, enemy has to roll Dodge. On a failure, they fall prone.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "twin-parry",
-        "name": "Twin Parry",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "1H1",
-          "domains": [
-            "1H1"
-          ]
-        },
-        "attributes": [
-          "Agility",
-          "Dexterity",
-          "OneHanded"
-        ],
-        "cost": {
-          "xp": 3,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "OneHanded"
-        ],
-        "shortDescription": "Gain parrying bonus when dual wielding.",
-        "effect": "Dual Wielding provides +1 circumstance bonus to parrying",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "two-birds",
-        "name": "Two Birds",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "Melee MG3+MG2",
-          "perks": [
-            "Melee MG3+MG2"
-          ]
-        },
-        "attributes": [
-          "Might",
-          "Agility",
-          "Melee"
-        ],
-        "cost": {
-          "xp": 10,
-          "variable": false
-        },
-        "apCost": 4,
-        "tags": [
-          "Combat",
-          "Universal"
-        ],
-        "shortDescription": "Strike multiple adjacent targets with one attack.",
-        "effect": "Prereq: You are holding non-light melee weapon. Make a melee Strike with +2 AP cost against adjacent targets within your reach. Resolve strikes one after another. Roll attack and damage once.",
-        "description": "[Flavor text to be written]"
-      },
-      {
-        "id": "walking-stick",
-        "name": "Walking Stick",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "SaS1 (starting perk)",
-          "perks": [
-            "SaS1 (starting perk)"
-          ]
-        },
-        "attributes": [
-          "Any"
-        ],
-        "cost": {
-          "xp": 0,
-          "variable": false
-        },
-        "apCost": 2,
-        "tags": [
-          "Combat",
-          "StavesSpears",
-          "Starting"
-        ],
-        "shortDescription": "Properly use your weapon to reduce encumbrance and increase carrying capacity.",
-        "effect": "Your Heavy SaS don't count towards your encumbrance, and Light and Medium SaS provide you with extra carrying weight.",
-        "description": "Your learned to use your weapon properly."
+          "effects": []
+        }
       },
       {
         "id": "watching-your-back",
@@ -1504,39 +2883,289 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "-"
+          "text": "Martial 2,",
+          "skills": [
+            "Martial 2"
+          ]
         },
         "attributes": [
           "Charisma",
-          "Melee"
+          "MARTIAL"
         ],
         "cost": {
           "xp": 5,
           "variable": false
         },
-        "apCost": 2,
+        "apCost": null,
         "tags": [
-          "Combat",
-          "Universal"
+          "Combat"
         ],
         "shortDescription": "Protect adjacent allies from being flanked.",
-        "effect": "While Adjacent to you your allies cannot be flanked. Because you always are watching their backs.",
-        "description": "You watch the back of someone else. Maybe you are just that type of a person who is always there."
+        "effect": "",
+        "description": "You watch the back of someone else. Maybe you are just that type of a person who is always there.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "watching-your-back"
+          ]
+        }
+      },
+      {
+        "id": "ax-training",
+        "name": "Ax Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Might",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "WeaponTraining"
+        ],
+        "shortDescription": "Ax in your hands is a weapon of block destruction.",
+        "effect": "",
+        "description": "Ax in your hands is a weapon of block destruction. Be it magic or thick skin you have the best weapon to cleave through such an obstacle.",
+        "grants": {
+          "abilities": [
+            "overswing"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "blades-training",
+        "name": "Blades Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Dexterity",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "WeaponTraining"
+        ],
+        "shortDescription": "Be it a dagger or a greatsword, your edge is aligned.",
+        "effect": "",
+        "description": "First blades were created to quickly bring the fighting to its conclusion. You have stepped on that path.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "expanded-blade-critical-range"
+          ]
+        }
+      },
+      {
+        "id": "bow-training",
+        "name": "Bow Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Perception",
+          "Dexterity"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "WeaponTraining"
+        ],
+        "shortDescription": "Shooting is not only about drawing and knocking an arrow.",
+        "effect": "",
+        "description": "Shooting is not only about drawing and knocking an arrow. Well, on short distances it might be. Longer ones require you to take a breather and adjust where you shoot.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
+      },
+      {
+        "id": "brawling-training",
+        "name": "Brawling Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Might",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "WeaponTraining"
+        ],
+        "shortDescription": "Your body is your weapon.",
+        "effect": "",
+        "description": "Honing a body you had yours hardened. While not as efficient as a quick slice of a dagger or a strike from a staff, you are never truly unarmed.",
+        "grants": {
+          "abilities": [
+            "unarmed-combat"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "impact-training",
+        "name": "Impact Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Dexterity",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "WeaponTraining"
+        ],
+        "shortDescription": "Its not sharp, but its heavy. Heavy enough to move your enemies away.",
+        "effect": "",
+        "description": "Its not sharp, but its heavy. Heavy enough to move your enemies away.\nImpact weapons don't require finesse, most require pure might to smash and force your foes back.",
+        "grants": {
+          "abilities": [
+            "shoving-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "polearms-training",
+        "name": "Polearms Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Agility",
+          "Might"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "WeaponTraining"
+        ],
+        "shortDescription": "Staff, spear, or halberd - you made a point where to point the point.",
+        "effect": "",
+        "description": "Pointy stick or just a stick, it does't matter. You are trained to anyone who dares to approach you, why sticks are the bread and butter of any army.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "defensive-stance"
+          ]
+        }
+      },
+      {
+        "id": "shield-training",
+        "name": "Shield Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "WeaponTraining"
+        ],
+        "shortDescription": "You learn to wield a shield, allowing you to negate some of the damage.",
+        "effect": "",
+        "description": "You have learned the hard way that having something between you and the enemy is a godsend. Some find it not worth the effort. You know better.",
+        "grants": {
+          "abilities": [
+            "shield-block"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "thrown-training",
+        "name": "Thrown Training",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "-"
+        },
+        "attributes": [
+          "Dexterity",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "WeaponTraining"
+        ],
+        "shortDescription": "Like a kite in the sky, you were born to move with wind.",
+        "effect": "",
+        "description": "The whole point of thrown weapons is to be away from the enemy just enough not to get killed. You have learned the basics.",
+        "grants": {
+          "abilities": [
+            "skirmisher-s-strike"
+          ],
+          "effects": []
+        }
       }
     ],
     "magic": [
       {
         "id": "elemental-mage",
-        "name": "[Title Missing]",
+        "name": "Elemental Mage",
         "type": "magic",
         "source": "database",
         "requirements": {
           "text": "Spellcraft 1,",
           "skills": [
             "Spellcraft 1"
-          ],
-          "perks": [
-            ""
           ]
         },
         "attributes": [
@@ -1554,7 +3183,11 @@
           "Spellshape"
         ],
         "shortDescription": "",
-        "effect": ""
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
         "id": "mage",
@@ -1580,21 +3213,24 @@
           "Magic"
         ],
         "shortDescription": "Awaken your magical talent and unlock spellcasting.",
-        "effect": "- Select one Tier 0 spell and add it to your repertoire (this spell doesn't contribute to attribute advancement)\n- You unlock Tier 0 spells for learning\n- You can learn Team Ritual in one day with written guidance or one shift with help\n- This perk requires GM permission and no time to learn\n- Can be selected as part of character background (GM may require Magical Theory 1/Theology 1 and a magical instructor)",
-        "description": "Everyone wants to bend reality to their will. Unlike most, you can, because you are a mage.\n\nPerhaps you were trained by a journeyman or master mage, paid to try to awaken your talent. Or maybe, like most mages, during a pivotal moment in your life, your talent awakened.\n\nYou might have been a child lost in the darkness who summoned light or adapted your eyes to see in it, a pilgrim whose legs were so tired that all you wanted was for your backpack to become weightless or the mud less clingy, or maybe you saw your loved ones dying and willed their wounds to stop bleeding."
+        "effect": "",
+        "description": "Everyone wants to bend reality to their will. Unlike most, you can, because you are a mage.\n\nPerhaps you were trained by a journeyman or master mage, paid to try to awaken your talent. Or maybe, like most mages, during a pivotal moment in your life, your talent awakened.\n\nYou might have been a child lost in the darkness who summoned light or adapted your eyes to see in it, a pilgrim whose legs were so tired that all you wanted was for your backpack to become weightless or the mud less clingy, or maybe you saw your loved ones dying and willed their wounds to stop bleeding.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "mage"
+          ]
+        }
       },
       {
         "id": "minor-elemental-affinity",
-        "name": "[Title Missing]",
+        "name": "Minor Elemental Affinity",
         "type": "magic",
         "source": "database",
         "requirements": {
           "text": "Spellcraft 1,",
           "skills": [
             "Spellcraft 1"
-          ],
-          "perks": [
-            ""
           ]
         },
         "attributes": [
@@ -1612,7 +3248,11 @@
           "Spellshape"
         ],
         "shortDescription": "",
-        "effect": ""
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       }
     ],
     "skill": [
@@ -1641,7 +3281,11 @@
         ],
         "shortDescription": "From the birds eye view you can see the hints of ruins undergound.",
         "effect": "",
-        "description": "While airborne you can scan 200m radius on the ground underneath for potential remains buried underground. Roll History+PR against GM set DC. You are limited by the speed of your flight or flying device."
+        "description": "While airborne you can scan 200m radius on the ground underneath for potential remains buried underground. Roll History+PR against GM set DC. You are limited by the speed of your flight or flying device.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
         "id": "anatomical-knowledge",
@@ -1650,7 +3294,7 @@
         "source": "database",
         "requirements": {
           "text": "Medicine 2/Biology 2",
-          "skills": [
+          "perks": [
             "Medicine 2/Biology 2"
           ]
         },
@@ -1667,8 +3311,14 @@
           "Skill"
         ],
         "shortDescription": "Deduce monster weaknesses through anatomical knowledge.",
-        "effect": "Roll [Deduce] against enemy using Biology or Medicine. On success you learn enemy's weaknesses and resistances.",
-        "description": "Your comprehensive study of anatomy across various species allows you to quickly assess living creatures and identify potential weak points, resistances, and anatomical peculiarities that can be exploited tactically."
+        "effect": "",
+        "description": "Your comprehensive study of anatomy across various species allows you to quickly assess living creatures and identify potential weak points, resistances, and anatomical peculiarities that can be exploited tactically.",
+        "grants": {
+          "abilities": [
+            "anatomical-knowledge"
+          ],
+          "effects": []
+        }
       },
       {
         "id": "animal-affinity",
@@ -1694,8 +3344,14 @@
           "Skill"
         ],
         "shortDescription": "You and your team have a short window to negotiate with Animals to prevent combat.",
-        "effect": "Animals' starting attitude with you is increased by 2.",
-        "description": "One day you noticed that cats and dogs love you more then others. Unless on a guarding duty they never bark at you or try to harm you, horses generally don't throw you off, even wild animals don't attack you instantly on sight, and may allow you to walk away.."
+        "effect": "",
+        "description": "One day you noticed that cats and dogs love you more then others. Unless on a guarding duty they never bark at you or try to harm you, horses generally don't throw you off, even wild animals don't attack you instantly on sight, and may allow you to walk away..",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "animal-affinity"
+          ]
+        }
       },
       {
         "id": "arcane-mind",
@@ -1704,15 +3360,17 @@
         "source": "database",
         "requirements": {
           "text": "Magical Theory 3, Spellcraft 1",
+          "perks": [
+            "Magical Theory 3"
+          ],
           "skills": [
-            "Magical Theory 3",
             "Spellcraft 1"
           ]
         },
         "attributes": [
           "Will",
           "Wit",
-          "Spellcraft"
+          "SPELLCRAFT"
         ],
         "cost": {
           "xp": 7,
@@ -1723,8 +3381,14 @@
           "Skill"
         ],
         "shortDescription": "Your knowledge in magic aids you in protecting your mind against it.",
-        "effect": "Before rolling against a #Mind spell, spend a reaction to add +2 Competence bonus to your Endure roll.",
-        "description": "Your deep understanding of mental magic allows you to recognize and defend against such threats with your own magic."
+        "effect": "",
+        "description": "Your deep understanding of mental magic allows you to recognize and defend against such threats with your own magic.",
+        "grants": {
+          "abilities": [
+            "arcane-mind"
+          ],
+          "effects": []
+        }
       },
       {
         "id": "arcane-sight",
@@ -1733,17 +3397,17 @@
         "source": "database",
         "requirements": {
           "text": "Magical Theory 2, Detect Magic, Spellcraft 2",
-          "skills": [
-            "Magical Theory 2",
-            "Spellcraft 2"
-          ],
           "perks": [
+            "Magical Theory 2",
             "Detect Magic"
+          ],
+          "skills": [
+            "Spellcraft 2"
           ]
         },
         "attributes": [
           "Perception",
-          "Spellcraft"
+          "SPELLCRAFT"
         ],
         "cost": {
           "xp": 7,
@@ -1755,8 +3419,14 @@
           "Scrying"
         ],
         "shortDescription": "Enhance your ability to perceive magic.",
-        "effect": "Detect Magic's **Limit cost** is now 0. **Range** = 10m * Spellcraft Tier.\nYou can identify creature's Spellcraft Tier on sight within range by spending 3AP. You know tiers of spells cast in your sight and range.",
-        "description": "Arcane sight had its moment of glory among nobles and mages alike upon its invention two centuries ago. People passed the quite painful ritual to gain the knowledge on whom to challenge and whom to avoid.\nThe boom ended overnight with the invention of #Illusion enchantments mimicking the Spellcraft Tier. [[Mislieading Rings]] are mass produced ever since."
+        "effect": "",
+        "description": "Arcane sight had its moment of glory among nobles and mages alike upon its invention two centuries ago. People passed the quite painful ritual to gain the knowledge on whom to challenge and whom to avoid.\nThe boom ended overnight with the invention of #Illusion enchantments mimicking the Spellcraft Tier. [[Mislieading Rings]] are mass produced ever since.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "arcane-sight"
+          ]
+        }
       },
       {
         "id": "arcane-veil",
@@ -1765,8 +3435,10 @@
         "source": "database",
         "requirements": {
           "text": "Magical Theory 1, Stealth 3",
+          "perks": [
+            "Magical Theory 1"
+          ],
           "skills": [
-            "Magical Theory 1",
             "Stealth 3"
           ]
         },
@@ -1784,17 +3456,23 @@
           "Illusion"
         ],
         "shortDescription": "Skill to hide from scrying.",
-        "effect": "When a #Scrying is attempted against you, roll Stealth +2 against the scrier's Spell DC or Ward's DC. On success the spell doesn't register you.",
-        "description": "You have learned specialized techniques to mask your magical presence and emanations, making it difficult for creatures relying on magical senses, and wards to detect you."
+        "effect": "",
+        "description": "You have learned specialized techniques to mask your magical presence and emanations, making it difficult for creatures relying on magical senses, and wards to detect you.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "arcane-veil"
+          ]
+        }
       },
       {
         "id": "avid-gosspier",
-        "name": "Avid Gossiper",
+        "name": "Avid Gosspier",
         "type": "skill",
         "source": "database",
         "requirements": {
           "text": "-  Gossip 2",
-          "skills": [
+          "perks": [
             "-  Gossip 2"
           ]
         },
@@ -1810,8 +3488,14 @@
           "Skill"
         ],
         "shortDescription": "When gathering information throug gossip, your interest in target subject remains hidden.",
-        "effect": "- When gathering information, you can chose to spend double the time to do so covertly. WHen you do roll Gossip+5 against the highest level of target who is activly conducting counter intelligence.",
-        "description": "As an Avid Gossiper you know that to gather what you need without being detected, you also need to Gossip about things that are completely irrelevant. By spending more time gossping about different topic you can hide the topics you really gather information about."
+        "effect": "",
+        "description": "As an Avid Gossiper you know that to gather what you need without being detected, you also need to Gossip about things that are completely irrelevant. By spending more time gossping about different topic you can hide the topics you really gather information about.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "avid-gossiper"
+          ]
+        }
       },
       {
         "id": "bribery-expert",
@@ -1837,8 +3521,14 @@
           "Skill"
         ],
         "shortDescription": "You are an expert in corruption.",
-        "effect": "You can deduce if an official is corruptible or if you can ask for a bribe with +3. You know appropriate amounts for different 'favors'.",
-        "description": "A silken shirt, a silver sword hilt that isn't an old heirloom, the attitude. They don't need to rub their hands for you to sense corruption. You sense it when it's in front of you, and know when to offer people to participate in it. You know the words and hints to suggest it in the most vague forms. How do you use that knowledge is a different question."
+        "effect": "",
+        "description": "A silken shirt, a silver sword hilt that isn't an old heirloom, the attitude. They don't need to rub their hands for you to sense corruption. You sense it when it's in front of you, and know when to offer people to participate in it. You know the words and hints to suggest it in the most vague forms. How do you use that knowledge is a different question.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "bribery-expert"
+          ]
+        }
       },
       {
         "id": "cartographer-s-mind",
@@ -1865,7 +3555,13 @@
           "Skill"
         ],
         "shortDescription": "You have perfect recall of routes and distances.",
-        "effect": "- Recall without a roll all roads and routes you have taken during the last month.\n- During downtime, can create accurate maps of traveled areas.\n- Perfect memory includes landmarks, distances, and navigation details"
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "cartographer-s-mind"
+          ]
+        }
       },
       {
         "id": "cheat",
@@ -1892,8 +3588,14 @@
           "GM"
         ],
         "shortDescription": "Others have a hard time detecting the falsehoods in your words.",
-        "effect": "- When someone with neutral or better attitude that might find you attractive rolls to [[8. Social Interactions#Detect falsehood]] they roll with #Disadvantage .",
-        "description": "With a pretty face like yours getting away with lying is just too easy."
+        "effect": "",
+        "description": "With a pretty face like yours getting away with lying is just too easy.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "cheat"
+          ]
+        }
       },
       {
         "id": "comedian",
@@ -1902,8 +3604,10 @@
         "source": "database",
         "requirements": {
           "text": "Fast-Talk 2, Charisma 1",
+          "perks": [
+            "Fast-Talk 2"
+          ],
           "skills": [
-            "Fast-Talk 2",
             "Charisma 1"
           ]
         },
@@ -1920,8 +3624,14 @@
           "Skill"
         ],
         "shortDescription": "You know how to turn everything into a joke.",
-        "effect": "Whenever words lead to a decrease in an attitude roll Fast-Talk against GM set DC (based on the offense level) attempting to turn it into a joke. On a success the offense taken doesn't decrease the attitude.",
-        "description": "Your natural comedic timing and charismatic delivery can frame some offensive statements or requests as harmless jokes, but each time you do you get the reputation of a [[Jester]]."
+        "effect": "",
+        "description": "Your natural comedic timing and charismatic delivery can frame some offensive statements or requests as harmless jokes, but each time you do you get the reputation of a [[Jester]].",
+        "grants": {
+          "abilities": [
+            "comedian"
+          ],
+          "effects": []
+        }
       },
       {
         "id": "cultural-explorer",
@@ -1947,8 +3657,14 @@
           "Skill"
         ],
         "shortDescription": "You learn about a culture, its norms, history, and language.",
-        "effect": "- Choose one specific culture when taking this perk\n- Learn cultural norms, social expectations, and taboos\n- Gain basic language skills for communication\n- Know commonly known historical facts and cultural references\n- Can take this perk multiple times for different cultures",
-        "description": "When taking this perk, select a specific culture you've studied. You gain knowledge of their cultural norms, basic language skills, and commonly known historical facts about that culture."
+        "effect": "",
+        "description": "When taking this perk, select a specific culture you've studied. You gain knowledge of their cultural norms, basic language skills, and commonly known historical facts about that culture.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "cultural-explorer"
+          ]
+        }
       },
       {
         "id": "enchanter",
@@ -1957,7 +3673,7 @@
         "source": "database",
         "requirements": {
           "text": "Magical Theory 2",
-          "skills": [
+          "perks": [
             "Magical Theory 2"
           ]
         },
@@ -1973,8 +3689,14 @@
           "Skill"
         ],
         "shortDescription": "You learn Enchantement.",
-        "effect": "#TODO Enchantement(crafting) rules are TBD in 0,6 or later.",
-        "description": "Your understanding of magical theory extends to the practical application of imbuing mundane items with magical properties."
+        "effect": "",
+        "description": "Your understanding of magical theory extends to the practical application of imbuing mundane items with magical properties.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "enchanter"
+          ]
+        }
       },
       {
         "id": "environmental-grace",
@@ -1983,7 +3705,7 @@
         "source": "database",
         "requirements": {
           "text": "- Survival 3",
-          "skills": [
+          "perks": [
             "- Survival 3"
           ]
         },
@@ -1999,8 +3721,14 @@
           "Skill"
         ],
         "shortDescription": "You are good at mitigating the enviornmental effects.",
-        "effect": "- Reduce harsh environmental effects by 1 step for you and your party\n- Applies to temperature extremes, altitude effects, and similar natural hazards",
-        "description": "You prepare yourself and your party for harsh environmental conditions, reducing their effects."
+        "effect": "",
+        "description": "You prepare yourself and your party for harsh environmental conditions, reducing their effects.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "environmental-grace"
+          ]
+        }
       },
       {
         "id": "first-responder",
@@ -2026,8 +3754,14 @@
           "Skill"
         ],
         "shortDescription": "First responder training.",
-        "effect": "When rolling for first aid as the first responder (first attempt at first aid) on the target, calculate the Treatment DC as 10+(Consequence/20). [[11. Actions#First Aid]] AP cost to 3.",
-        "description": "You have seen some terrible wounds and know the best practice to handle them quickly and efficiently."
+        "effect": "",
+        "description": "You have seen some terrible wounds and know the best practice to handle them quickly and efficiently.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "first-responder"
+          ]
+        }
       },
       {
         "id": "forager",
@@ -2049,8 +3783,14 @@
           "Skill"
         ],
         "shortDescription": "Procuring food in the wilderness is a second nature.",
-        "effect": "## Description\nWhen traveling long distances in environments with present food sources you can procure 4+ Skill rations without considerably slowing down. Based on the enviornement GM determines food availability. (#TODO update when exploration rules are written)",
-        "description": "When traveling long distances in environments with present food sources you can procure 4+ Skill rations without considerably slowing down. Based on the enviornement GM determines food availability. (#TODO update when exploration rules are written)"
+        "effect": "",
+        "description": "[Flavor text to be written]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "forager"
+          ]
+        }
       },
       {
         "id": "fuck-i-m-out",
@@ -2076,8 +3816,14 @@
           "Mind"
         ],
         "shortDescription": "Your Initimidation can make enemies reconsider fighting you.",
-        "effect": "Mindful enemies that think they are weaker than you have to roll the second endure check against your DC or disengage for 1 round. GM decides if they will return to combat at all.",
-        "description": ""
+        "effect": "",
+        "description": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "fuck-i-m-out"
+          ]
+        }
       },
       {
         "id": "haggler",
@@ -2086,7 +3832,7 @@
         "source": "database",
         "requirements": {
           "text": "FastTalk 2",
-          "skills": [
+          "perks": [
             "FastTalk 2"
           ]
         },
@@ -2103,7 +3849,11 @@
         ],
         "shortDescription": "Experienced Haggler doesn't make thing worse.",
         "effect": "",
-        "description": "When bargaining, you don't worsen the bargain on a failure."
+        "description": "When bargaining, you don't worsen the bargain on a failure.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
         "id": "heraldist",
@@ -2129,11 +3879,15 @@
         ],
         "shortDescription": "You have learned of heraldic symbolism and historic context for it.",
         "effect": "",
-        "description": "When trying to identify heraldry you roll deduce with +2. When identifying unknown heraldics you can attempt to deduce the symbolism attached,"
+        "description": "When trying to identify heraldry you roll deduce with +2. When identifying unknown heraldics you can attempt to deduce the symbolism attached,",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
         "id": "herbalist-s-eye",
-        "name": "**Herbalist's Eye**",
+        "name": "Herbalist's Eye",
         "type": "skill",
         "source": "database",
         "requirements": {
@@ -2157,7 +3911,11 @@
         ],
         "shortDescription": "",
         "effect": "",
-        "description": "Your trained eye instantly distinguishes useful plants from weeds and poisonous ones.  \nYou gather herbal materials efficiently, even while traveling, keeping your pouch stocked for elixirs, salves, and poisons."
+        "description": "Your trained eye instantly distinguishes useful plants from weeds and poisonous ones.  \nYou gather herbal materials efficiently, even while traveling, keeping your pouch stocked for elixirs, salves, and poisons.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
         "id": "in-the-know",
@@ -2166,7 +3924,7 @@
         "source": "database",
         "requirements": {
           "text": "Street Wisdom 2",
-          "skills": [
+          "perks": [
             "Street Wisdom 2"
           ]
         },
@@ -2182,8 +3940,14 @@
           "Skill"
         ],
         "shortDescription": "The shadowy parts of towns are your natural habitat.",
-        "effect": "- Spending one week of downtime in a settlement you get the initial set of connections.\n- May provide access to black market, information brokers, and fixers, as well as criminal and low profile contracts.",
-        "description": "You are quick to know a guy who knows a guy, and as a fella who is quick to know people, you know the code of conduct to pass a message to someone higher in the hierarchy, learn of black markets, fences and other people operating outside the law."
+        "effect": "",
+        "description": "You are quick to know a guy who knows a guy, and as a fella who is quick to know people, you know the code of conduct to pass a message to someone higher in the hierarchy, learn of black markets, fences and other people operating outside the law.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "in-the-know"
+          ]
+        }
       },
       {
         "id": "inspirer",
@@ -2192,7 +3956,7 @@
         "source": "database",
         "requirements": {
           "text": "- Charisma 2",
-          "skills": [
+          "perks": [
             "- Charisma 2"
           ]
         },
@@ -2208,8 +3972,14 @@
           "Skill"
         ],
         "shortDescription": "After succeeding at a check, you can inspire an ally to perform better on their next similar attempt.",
-        "effect": "- After succeeding a non-hostile check, you can spend a reaction to give your allies a +2 morale bonus for the same action until the start of your next turn.\n- Bonus applies only to the next attempt, not ongoing effects\n- GM determines when checks are similar enough for the bonus to apply.",
-        "description": "After succeeding at a check, you can inspire an ally to perform better on their next similar attempt."
+        "effect": "",
+        "description": "After succeeding at a check, you can inspire an ally to perform better on their next similar attempt.",
+        "grants": {
+          "abilities": [
+            "inspirer"
+          ],
+          "effects": []
+        }
       },
       {
         "id": "liar-liar",
@@ -2239,12 +4009,18 @@
           "GM"
         ],
         "shortDescription": "Lying as second nature.",
-        "effect": "- +2 bonus on all fast talk and manipulation rolls in attempts to mislead\n- -2 penalty on leadership and negotiation checks if you are honest\n- Penalty applies when genuine honesty and sincerity are required",
-        "description": "You lie as naturally as breathing. When you speak truth it feels unnatural to you. One day when all your lies surface, you will sink. But with your skills it won't be soon."
+        "effect": "",
+        "description": "You lie as naturally as breathing. When you speak truth it feels unnatural to you. One day when all your lies surface, you will sink. But with your skills it won't be soon.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "liar-liar"
+          ]
+        }
       },
       {
         "id": "lock-consul",
-        "name": "**Lock Consul**",
+        "name": "Lock Consul",
         "type": "skill",
         "source": "database",
         "requirements": {
@@ -2268,7 +4044,11 @@
         ],
         "shortDescription": "",
         "effect": "",
-        "description": "Experience in crime tough you when to go fast as nothing can go wrong, and when to take your time to avoid complications."
+        "description": "Experience in crime tough you when to go fast as nothing can go wrong, and when to take your time to avoid complications.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
         "id": "natural-predator",
@@ -2278,7 +4058,9 @@
         "requirements": {
           "text": "Stealth 2, Survival 2 / Tracking 2",
           "skills": [
-            "Stealth 2",
+            "Stealth 2"
+          ],
+          "perks": [
             "Survival 2 / Tracking 2"
           ]
         },
@@ -2295,8 +4077,14 @@
           "Skill"
         ],
         "shortDescription": "Experience in coordinated strikes in the natural environments.",
-        "effect": "When laying ambush, or attempting to attack a target you are tracking you can use Tracking, Stealth or Survival for the initiative as the leader of the Ambush.",
-        "description": "In nature you know the timing against your prey, know the best strategies to lay an ambush and how to make a good camo to hide from humans and animals alike. You can use your stealth as the leader of the team to hide the whole team."
+        "effect": "",
+        "description": "In nature you know the timing against your prey, know the best strategies to lay an ambush and how to make a good camo to hide from humans and animals alike. You can use your stealth as the leader of the team to hide the whole team.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "natural-predator"
+          ]
+        }
       },
       {
         "id": "not-sherlock",
@@ -2322,8 +4110,14 @@
           "Skill"
         ],
         "shortDescription": "Failed Deduce checks provide conflicting information instead of nothing.",
-        "effect": "When you fail a [Deduce] check, the GM provides two pieces of information: one true, one false. You don't know which is which.",
-        "description": "Your mind fills gaps in knowledge with half-remembered details, conflicting sources, and plausible theories. Sometimes this leads to brilliant insights, sometimes to spectacular mistakes. The false information should be plausible and based on real misconceptions or incomplete understanding."
+        "effect": "",
+        "description": "Your mind fills gaps in knowledge with half-remembered details, conflicting sources, and plausible theories. Sometimes this leads to brilliant insights, sometimes to spectacular mistakes. The false information should be plausible and based on real misconceptions or incomplete understanding.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "not-sherlock"
+          ]
+        }
       },
       {
         "id": "potion-brewer",
@@ -2350,8 +4144,14 @@
           "Skill"
         ],
         "shortDescription": "Learn Potion Brewing.",
-        "effect": "#TODO Potion Brewing(crafting) rules are TBD in 0,6 or later.",
-        "description": "Your understanding of medicine and chemistry extends to the magical properties contained in them allowing to effectively brew quickly acting potions."
+        "effect": "",
+        "description": "Your understanding of medicine and chemistry extends to the magical properties contained in them allowing to effectively brew quickly acting potions.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "potion-brewer"
+          ]
+        }
       },
       {
         "id": "primeval-awareness",
@@ -2378,7 +4178,13 @@
           "Skill"
         ],
         "shortDescription": "You know of animals' habitats.",
-        "effect": "While foraging, hunting or tracking in the wilderness roll Survival to notice subtle things animals and beasts in passing, identifying the common ones without a roll. You still need [[11. Actions#Deduce]] to identify rarer species."
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "primeval-awareness"
+          ]
+        }
       },
       {
         "id": "crime-in-law",
@@ -2387,10 +4193,8 @@
         "source": "database",
         "requirements": {
           "text": "#Streetwise 2, Known in criminal upper echelons  #Rank in cri",
-          "skills": [
-            "#Streetwise 2"
-          ],
           "perks": [
+            "#Streetwise 2",
             "Known in criminal upper echelons  #Rank in cri"
           ]
         },
@@ -2407,8 +4211,14 @@
           "Rank"
         ],
         "shortDescription": "You are a respected figure in the criminal underworld, ensuring better treatment and respect from all criminal interactions.",
-        "effect": "- +2 bonus to all interactions with criminals and criminal organizations\n- Recognized status in the criminal hierarchy provides protection and respect\n- Better treatment in criminal-controlled areas (better accommodations, respect)\n- May provide protection from lower-level criminals who wouldn't dare cross you\n- Access to higher-level criminal operations and information\n- Can mediate disputes between criminal factions\n- Status must be maintained through actions and reputation\n- May create enemies among law enforcement and rival criminal organizations\n- Particularly useful for large-scale criminal operations and underworld politics",
-        "description": "You are a respected figure in the criminal underworld, ensuring better treatment and respect from all criminal interactions."
+        "effect": "",
+        "description": "You are a respected figure in the criminal underworld, ensuring better treatment and respect from all criminal interactions.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "crime-in-law"
+          ]
+        }
       },
       {
         "id": "fear-means-respect",
@@ -2417,10 +4227,8 @@
         "source": "database",
         "requirements": {
           "text": "Street Wisdom 3, Created reputation rumors about power/viciousness",
-          "skills": [
-            "Street Wisdom 3"
-          ],
           "perks": [
+            "Street Wisdom 3",
             "Created reputation rumors about power/viciousness"
           ]
         },
@@ -2436,8 +4244,14 @@
           "Skill"
         ],
         "shortDescription": "Your fearsome reputation causes people to avoid investigating your activities and look the other way when you're involved.",
-        "effect": "- People will ignore or avoid investigating activities they believe you're involved in\n- Information gathering attempts about you must overcome fear with DC based on reputation strength\n- Reputation rumors have their own DC system (to be detailed later)\n- Takes a hero-level character to openly stand against your reputation\n- Does not protect against direct evidence or witnesses to major crimes\n- May cause innocent people to be too afraid to interact with you normally\n- Can backfire if reputation is exposed as false or if defeated publicly\n- Requires maintaining the fearsome image through actions or continued rumors\n- Particularly effective for intimidation-based criminal operations",
-        "description": "Your fearsome reputation causes people to avoid investigating your activities and look the other way when you're involved."
+        "effect": "",
+        "description": "Your fearsome reputation causes people to avoid investigating your activities and look the other way when you're involved.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "fear-means-respect"
+          ]
+        }
       },
       {
         "id": "inquisitor",
@@ -2466,8 +4280,14 @@
           "Rank"
         ],
         "shortDescription": "You are a certified witch hunter with legal authority to request aid against supernatural threats.",
-        "effect": "- Certified witch hunter with official recognition\n- Can legally request local authorities provide aid or rewards against supernatural threats\n- Authority extends to non-hostile religious jurisdictions\n- Requires valid proof or prior notification to authorities\n- Can pursue supernatural threats that weren't initially requested to be removed\n- May requisition resources, manpower, or information for investigations\n- Legal protection when acting within authority against supernatural threats\n- Can identify and classify various supernatural entities and their threat levels\n- May coordinate with other religious organizations for major threats",
-        "description": "You are a certified witch hunter with legal authority to request aid against supernatural threats."
+        "effect": "",
+        "description": "You are a certified witch hunter with legal authority to request aid against supernatural threats.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "inquisitor"
+          ]
+        }
       },
       {
         "id": "jester",
@@ -2476,8 +4296,10 @@
         "source": "database",
         "requirements": {
           "text": "Fast-Talk 3, Charisma 2",
+          "perks": [
+            "Fast-Talk 3"
+          ],
           "skills": [
-            "Fast-Talk 3",
             "Charisma 2"
           ]
         },
@@ -2496,7 +4318,11 @@
         ],
         "shortDescription": "You gain the Jester immunity.",
         "effect": "",
-        "description": "You can't offend people who know of you and your reputation of a clown. At least they can't admit it publicly."
+        "description": "You can't offend people who know of you and your reputation of a clown. At least they can't admit it publicly.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
         "id": "king-on-the-hill",
@@ -2505,10 +4331,8 @@
         "source": "database",
         "requirements": {
           "text": "Street Wisdom 3, Started a criminal organization",
-          "skills": [
-            "Street Wisdom 3"
-          ],
           "perks": [
+            "Street Wisdom 3",
             "Started a criminal organization"
           ]
         },
@@ -2525,8 +4349,14 @@
           "Rank"
         ],
         "shortDescription": "Your criminal syndicate generates passive income as you establish yourself as a significant power in the underworld.",
-        "effect": "- Criminal organization generates passive income during downtime\n- Income amount determined by organization size, territory, and activities\n- Requires ongoing management and decision-making to maintain profitability\n- May involve protection rackets, smuggling, fencing operations, etc.\n- Organization can provide resources, information, and manpower\n- Attracts attention from law enforcement and rival criminal groups\n- Income may fluctuate based on successful operations and external threats\n- Can be expanded through successful criminal ventures and territorial expansion\n- Provides foundation for major criminal storylines and campaigns",
-        "description": "Your criminal syndicate generates passive income as you establish yourself as a significant power in the underworld."
+        "effect": "",
+        "description": "Your criminal syndicate generates passive income as you establish yourself as a significant power in the underworld.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "king-on-the-hill"
+          ]
+        }
       },
       {
         "id": "licensed-healer",
@@ -2556,8 +4386,14 @@
           "Rank"
         ],
         "shortDescription": "Your reputation as a court-appointed physician grants you exceptional social standing and resources.",
-        "effect": "- Gain audiences with nobility through your medical standing\n- Protection under medical immunity laws when practicing medicine\n- Access to rare ingredients through royal connections and court resources\n- Preferential treatment in legal and social situations\n- May be called upon to treat important political figures\n- Access to court libraries, laboratories, and medical facilities\n- Political influence through medical services to the powerful\n- Requires maintaining court appointment through continued service",
-        "description": "Your reputation as a court-appointed physician grants you exceptional social standing and resources."
+        "effect": "",
+        "description": "Your reputation as a court-appointed physician grants you exceptional social standing and resources.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "licensed-healer"
+          ]
+        }
       },
       {
         "id": "ordained",
@@ -2582,8 +4418,14 @@
           "Skill"
         ],
         "shortDescription": "You are a licensed priest of a deity with official standing and religious authority.",
-        "effect": "- Licensed priest status with legal religious authority\n- Can seek refuge and gain preferential treatment at churches of your deity\n- Know the tenets, rites, and ceremonies of your chosen deity\n- Authority to perform religious ceremonies: weddings, funerals, blessings\n- May provide spiritual counsel and religious guidance to followers\n- Access to religious networks and communication channels\n- Protection under religious law in many jurisdictions\n- Can identify religious symbols, practices, and beliefs of your faith\n- May be called upon to resolve religious disputes or provide guidance",
-        "description": "You are a licensed priest of a deity with official standing and religious authority."
+        "effect": "",
+        "description": "You are a licensed priest of a deity with official standing and religious authority.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "ordained"
+          ]
+        }
       },
       {
         "id": "robin-hood",
@@ -2592,10 +4434,8 @@
         "source": "database",
         "requirements": {
           "text": "Street Wisdom 3, Created reputation rumors",
-          "skills": [
-            "Street Wisdom 3"
-          ],
           "perks": [
+            "Street Wisdom 3",
             "Created reputation rumors"
           ]
         },
@@ -2612,8 +4452,14 @@
           "Rank"
         ],
         "shortDescription": "Your positive reputation as a folk hero or champion of the common people works opposite to fear-based intimidation.",
-        "effect": "- Similar mechanics to \"Fear Means Respect\" but based on positive reputation\n- People will help cover for you or provide assistance believing you're fighting for good\n- Information gathering about your activities faces resistance from sympathetic population\n- Common folk may actively hinder authorities investigating you\n- Provides protection through popular support rather than fear\n- May attract followers, informants, and allies to your cause\n- Can backfire if your actions contradict the heroic reputation\n- Requires maintaining the positive image through charitable or heroic actions\n- Particularly effective for rebellion-based storylines and protecting the innocent",
-        "description": "Your positive reputation as a folk hero or champion of the common people works opposite to fear-based intimidation."
+        "effect": "",
+        "description": "Your positive reputation as a folk hero or champion of the common people works opposite to fear-based intimidation.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "robin-hood"
+          ]
+        }
       },
       {
         "id": "since-it-is-you",
@@ -2643,8 +4489,14 @@
           "Rank"
         ],
         "shortDescription": "There is a chance you will be recognized and gain preferential treatment from scholars and nobles.",
-        "effect": "- Recognition chance in academic and noble circles\n- Preferential treatment may include offers of accommodation, audiences, or access\n- Based on your published works and conference participation\n- May open doors to private libraries, exclusive events, or scholarly discussions\n- Recognition depends on local scholarly community and your reputation\n- Can provide opportunities for funding, patronage, or collaboration\n- May attract requests for lectures, consultations, or expert opinions\n- Requires maintaining scholarly reputation through continued work\n- Particularly useful for accessing exclusive knowledge or influential contacts",
-        "description": "There is a chance you will be recognized and gain preferential treatment from scholars and nobles."
+        "effect": "",
+        "description": "There is a chance you will be recognized and gain preferential treatment from scholars and nobles.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "since-it-is-you"
+          ]
+        }
       },
       {
         "id": "silent-steps",
@@ -2671,7 +4523,11 @@
         ],
         "shortDescription": "",
         "effect": "",
-        "description": "You know how to move quickly and quietly as a second nature."
+        "description": "You know how to move quickly and quietly as a second nature.",
+        "grants": {
+          "abilities": [],
+          "effects": []
+        }
       },
       {
         "id": "sitting-on-the-fence",
@@ -2680,7 +4536,7 @@
         "source": "database",
         "requirements": {
           "text": "Street Wisdom 1",
-          "skills": [
+          "perks": [
             "Street Wisdom 1"
           ]
         },
@@ -2696,8 +4552,14 @@
           "Skill"
         ],
         "shortDescription": "You know how to work as a fence or as an information broker.",
-        "effect": "- Earn income during downtime using Streetwise skill (//TODO Earn income and investment rules)\n- Purchase stolen/illicit goods with 25-50% discount (GM discretion)\n//BUISNESS RULES ARE OUTSIDE OF SCOPE",
-        "description": "You can earn income with Streetwise and purchase illicit goods and information at significant discounts."
+        "effect": "",
+        "description": "You can earn income with Streetwise and purchase illicit goods and information at significant discounts.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "sitting-on-the-fence"
+          ]
+        }
       },
       {
         "id": "tracker",
@@ -2708,9 +4570,6 @@
           "text": "Tracking 2,",
           "skills": [
             "Tracking 2"
-          ],
-          "perks": [
-            ""
           ]
         },
         "attributes": [
@@ -2725,9 +4584,417 @@
           "Skill"
         ],
         "shortDescription": "Tracking is your second nature",
-        "effect": "When tracking you don't reduce movement speed.",
-        "description": "You have honed your skills in reading the subtle signs left by creatures passing through the wilderness, and can do so while maintaining normal movement speed without sacrificing accuracy."
+        "effect": "",
+        "description": "You have honed your skills in reading the subtle signs left by creatures passing through the wilderness, and can do so while maintaining normal movement speed without sacrificing accuracy.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "tracker"
+          ]
+        }
+      },
+      {
+        "id": "wargame-master",
+        "name": "Wargame master",
+        "type": "skill",
+        "source": "database",
+        "requirements": {
+          "text": "[Leadership 3], [Drill Master]",
+          "perks": [
+            "[Leadership 3]",
+            "[Drill Master]"
+          ]
+        },
+        "attributes": [
+          "[WIT",
+          "CHARISMA]"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [],
+        "shortDescription": "[Wargames that you organize, blend the training and reality, allowing people to progress as if during war]",
+        "effect": "",
+        "description": "[Flavor text and additional context if the Effect section isn't sufficient]",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "wargame-master"
+          ]
+        }
       }
     ]
-  }
+  },
+  "abilities": [
+    {
+      "id": "all-the-birds",
+      "name": "All the Birds",
+      "effect": "**AP Cost:** +4\n\nMake a melee strike against all targets within your reach. Resolve strikes one after another. Roll Attack and Damage once.",
+      "tags": [
+        "Strike",
+        "AoE"
+      ]
+    },
+    {
+      "id": "anatomical-knowledge",
+      "name": "Anatomical Knowledge",
+      "effect": "**AP Cost:** 1\n\nRoll [Deduce] against enemy using Biology or Medicine. On success you learn enemy's weaknesses and resistances.",
+      "tags": []
+    },
+    {
+      "id": "arcane-mind",
+      "name": "Arcane Mind",
+      "effect": "**AP Cost:** R\n\nBefore rolling against a #Mind spell, add +2 Competence bonus to your Endure roll.",
+      "tags": [
+        "Reaction",
+        "Endure"
+      ]
+    },
+    {
+      "id": "behind-the-shield-strike",
+      "name": "Behind the Shield Strike",
+      "effect": "**AP Cost:** +1\n\nStrike from behind the shield. Enemy takes -2 to Parry and Dodge against this attack.",
+      "tags": [
+        "Strike"
+      ]
+    },
+    {
+      "id": "calf-strike",
+      "name": "Calf Strike",
+      "effect": "**AP Cost:** 2\n\nStrike the blunt end of your weapon at enemy's calf. If you hit, the enemy rolls Endurance against your Might. On a failure, they halve their speed until the end of their turn.",
+      "tags": [
+        "Strike"
+      ]
+    },
+    {
+      "id": "dodge-roll",
+      "name": "Dodge-Roll",
+      "effect": "**AP Cost:** R\n\n**Trigger:** You are targeted by a #Burst or AoE effect.\n\nWhile Unencumbered, add +3 to your Dodge against the effect. On success, move up to half your Speed.",
+      "tags": [
+        "Reaction",
+        "Dodge",
+        "Movement"
+      ]
+    },
+    {
+      "id": "double-shot",
+      "name": "Double Shot",
+      "effect": "**AP Cost:** 4\n\nShoot two different targets with one action. The second shot takes -2 to hit.",
+      "tags": [
+        "Ranged",
+        "Strike"
+      ]
+    },
+    {
+      "id": "double-strike",
+      "name": "Double Strike",
+      "effect": "**AP Cost:** 0 (modifier)\n\nStrike with both weapons for -2 AP total cost. If the enemy successfully defends against the first strike, the second misses automatically.",
+      "tags": [
+        "Strike"
+      ]
+    },
+    {
+      "id": "drive-into-fervor",
+      "name": "Drive into Fervor",
+      "effect": "**AP Cost:** 2\n\nYour team are your loyal followers who have sworn an oath to you. Drive them into fervor for 1 turn.",
+      "tags": []
+    },
+    {
+      "id": "follow-up-strike",
+      "name": "Follow-Up Strike",
+      "effect": "**AP Cost:** -1\n\nRequirnment: Your previous strike was a hit.\nMake a basic strike with -1 AP cost.",
+      "tags": [
+        "Strike"
+      ]
+    },
+    {
+      "id": "guardian-aura",
+      "name": "Guardian Aura",
+      "effect": "**AP Cost:** R\n\nAll allies within 3 tiles are protected by your aura. You can provide advantage to your allies as a reaction on any defense. When used against AOE, you provide it to all affected allies.",
+      "tags": [
+        "Reaction",
+        "Aura",
+        "limit1"
+      ]
+    },
+    {
+      "id": "hair-trigger",
+      "name": "Hair Trigger",
+      "effect": "**AP Cost:** Variable (readied action)\n\n[[Ready]] a ranged strike with a trigger of \"target enters my line of sight\" or \"target enters my range,\" or both.\n\nWhen any hostile target qualifies, make the attack without spending a Reaction.",
+      "tags": [
+        "Ranged",
+        "Strike"
+      ]
+    },
+    {
+      "id": "inspirer",
+      "name": "Inspirer",
+      "effect": "**AP Cost:** R\n\nAfter succeeding a non-hostile check, you can spend a reaction to give your allies a +2 morale bonus for the same action until the start of your next turn. Bonus applies only to the next attempt, not ongoing effects. GM determines when checks are similar enough for the bonus to apply.",
+      "tags": [
+        "Reaction"
+      ]
+    },
+    {
+      "id": "mighty-charge",
+      "name": "Mighty Charge",
+      "effect": "**AP Cost:** 2 + Weapon Strike\n\nSprint in a straight line and make a strike. Strike deals extra damage equal to half the distance you moved.",
+      "tags": [
+        "Strike",
+        "Movement"
+      ]
+    },
+    {
+      "id": "mobile-draw",
+      "name": "Mobile Draw",
+      "effect": "**AP Cost:** -\n\nDeclare a ranged attack. Gain Stride AP equal to the attack's AP cost. You may Stride at any point before or after the strike, but cannot break movement actions.\n\nRequires: Not Grabbed, not Prone.",
+      "tags": [
+        "Ranged",
+        "Movement",
+        "Move"
+      ]
+    },
+    {
+      "id": "monkey-king-strike",
+      "name": "Monkey King Strike",
+      "effect": "**AP Cost:** +2\n\nClimb up your weapon, jump and strike all enemies in a line (length = reach + 1).",
+      "tags": [
+        "Strike",
+        "AoE"
+      ]
+    },
+    {
+      "id": "overswing",
+      "name": "Overswing",
+      "effect": "**AP Cost:** R\n\nWhen attacking with an axe and the defender declares a Block defense (shield, natural resilience, or magical barrier) before the roll, you can spend your reaction to gain +2 Situational bonus to hit.",
+      "tags": [
+        "Reaction",
+        "Strike"
+      ]
+    },
+    {
+      "id": "painful-parry",
+      "name": "Painful Parry",
+      "effect": "**AP Cost:** R\n\nWhen critically succeeding on a Parry defense against a melee attack, make a free light weapon strike as a reaction.",
+      "tags": [
+        "Reaction",
+        "Parry",
+        "Strike"
+      ]
+    },
+    {
+      "id": "piranha-strike",
+      "name": "Piranha Strike",
+      "effect": "When striking a flanked or off-guard target with a Light weapon, you may take a penalty to your attack roll to increase your weapon damage die.\n\n| Penalty | Damage Die Increase           |\n| ------- | ----------------------------- |\n| -1      | d4→d6, d6→d8, d8→d10, d10→d12 |\n| -2      | d4→d8, d6→d10, d8→d12         |\n| -3      | d4→d10, d6→d12                |",
+      "tags": [
+        "Attack",
+        "Strike",
+        "Melee"
+      ]
+    },
+    {
+      "id": "predictive-defense",
+      "name": "Predictive Defense",
+      "effect": "**AP Cost:** 1\n\nPreroll your next Parry or Dodge defense using Perception instead of your weapon's normal attribute. (Dodge calculates normally) After seeing the attacker's roll, choose whether to use this prediction or roll normally.\n\nUnused predictions fade at end of your turn.",
+      "tags": [
+        "Mental",
+        "Parry"
+      ]
+    },
+    {
+      "id": "predictive-strike",
+      "name": "Predictive Strike",
+      "effect": "**AP Cost:** 1\n\nPreroll your next attack using Wit instead of your weapon's normal attribute. When you make the attack, choose whether to use this prediction or roll normally. \n\nUnused predictions fade at end of your turn.",
+      "tags": [
+        "Mental",
+        "Strike"
+      ]
+    },
+    {
+      "id": "reactive-prediction",
+      "name": "Reactive Prediction",
+      "effect": "**AP Cost:** R\n\nWhen rolling Dodge or Parry, spend a Reaction to roll with Advantage.",
+      "tags": [
+        "Reaction",
+        "Defense",
+        "Mental"
+      ]
+    },
+    {
+      "id": "reactive-strike",
+      "name": "Reactive Strike",
+      "effect": "**AP Cost:** R\n\nWhen an enemy strides or runs out of your reach, make a free strike as a reaction before they leave their space.",
+      "tags": [
+        "Reaction",
+        "Strike"
+      ]
+    },
+    {
+      "id": "riposte",
+      "name": "Riposte",
+      "effect": "**AP Cost:** R\n\nWhen an enemy critically fails on their attack **or** you critically succeed defending against it, make a strike against the enemy as a reaction.",
+      "tags": [
+        "Reaction",
+        "Strike"
+      ]
+    },
+    {
+      "id": "shield-block",
+      "name": "Shield Block",
+      "effect": "**AP Cost:** R\n\n**Trigger:** You fail at a Block defense, but haven't applied damage yet.\n**Effect:** Reduce the damage by Shield Negation.",
+      "tags": [
+        "Reaction",
+        "Block"
+      ]
+    },
+    {
+      "id": "shield-guardian",
+      "name": "Shield Guardian",
+      "effect": "**AP Cost:** R\n\n**Trigger:** Adjacent ally is attacked.\n**Effect:** Use your reaction to attempt Block instead of them. If this is an AOE effect, you protect both of you.",
+      "tags": [
+        "Reaction",
+        "Block"
+      ]
+    },
+    {
+      "id": "shield-rush",
+      "name": "Shield Rush",
+      "effect": "**AP Cost:** 4\n\nMove twice and strike with your shield, adding Might to the damage twice.",
+      "tags": [
+        "Strike",
+        "Movement"
+      ]
+    },
+    {
+      "id": "shield-warden",
+      "name": "Shield Warden",
+      "effect": "**AP Cost:** R\n\n**Trigger:** Ally takes damage.\n**Effect:** Use your reaction to apply Shield Block for your ally.",
+      "tags": [
+        "Reaction",
+        "Block"
+      ]
+    },
+    {
+      "id": "shoving-strike",
+      "name": "Shoving Strike",
+      "effect": "**AP Cost:** +1\n\nWhen making a strike with an Impact weapon, you can declare a Shoving Strike. If you hit and deal damage, the target must roll Endure vs your attack roll or be shoved 1m away (2m on critical hit).",
+      "tags": [
+        "Strike"
+      ]
+    },
+    {
+      "id": "skirmisher-s-strike",
+      "name": "Skirmisher's Strike",
+      "effect": "**AP Cost:** -\n\nMake a step away from an enemy after making a thrown attack within weapon's thrown range.",
+      "tags": [
+        "Ranged",
+        "Movement"
+      ]
+    },
+    {
+      "id": "spell-reflection",
+      "name": "Spell Reflection",
+      "effect": "**AP Cost:** R\n\nWhen you critically succeed on a Parry against a spell, you send it back towards the sender, making them roll defense against their own spell.",
+      "tags": [
+        "Reaction",
+        "Parry"
+      ]
+    },
+    {
+      "id": "spinning-staff",
+      "name": "Spinning Staff",
+      "effect": "**AP Cost:** 3\n\nYou spin your staff, turning it into a blur. Each enemy approaching you gets a strike as a free action until the start of your next turn or until the first successful block.",
+      "tags": [
+        "Strike"
+      ]
+    },
+    {
+      "id": "that-type-of-a-person",
+      "name": "That Type of a Person",
+      "effect": "**AP Cost:** R\n\nWhen an ally is downed within your Speed distance, you run to that space as a free action. This movement doesn't provoke reactions. When you stand on your downed ally's space, all offensive actions including AOE directed at the ally are directed at you instead. You can't leave the space until the end of combat or until the ally loses the unconscious condition.",
+      "tags": [
+        "Reaction",
+        "Movement"
+      ]
+    },
+    {
+      "id": "the-leader",
+      "name": "The Leader",
+      "effect": "**AP Cost:** R\n\nIn the face of danger, you are the leader. When an enemy or an effect rolls to frighten you or your team, roll an opposed Leadership check. Your allies can choose between your roll and their roll of resistance. Two Leaders in one team will have both of their perks suppressed.",
+      "tags": [
+        "Reaction"
+      ]
+    },
+    {
+      "id": "the-wall",
+      "name": "The Wall",
+      "effect": "**AP Cost:** R\n**Requirement:** You carry a heavy shield.\n\nAdjacent allies can hide behind you as a reaction, leaving the defense up to The Wall.",
+      "tags": [
+        "Reaction",
+        "Block"
+      ]
+    },
+    {
+      "id": "throwing-distraction",
+      "name": "Throwing Distraction",
+      "effect": "**AP Cost:** R\n\n**Trigger:** An ally makes a strike, but didn't roll yet.\n**Effect:** Throw the weapon in your hand as a reaction. If you hit, you don't deal damage, but the target becomes off-guard against the triggering attack.",
+      "tags": [
+        "Reaction",
+        "Ranged"
+      ]
+    },
+    {
+      "id": "too-selfish",
+      "name": "Too Selfish",
+      "effect": "**AP Cost:** -\n\n**Instant** - This perk requires no training. When you stand your ground, but fail despite being a That Type of a Person, you can attempt to strike a bargain with the Master of The Universe.",
+      "tags": []
+    },
+    {
+      "id": "tower-defender",
+      "name": "Tower Defender",
+      "effect": "**AP Cost:** All\n**Requirements:** You have all AP you gained at the start of the turn.\n\nDrop your quiver to the ground next to you. Each time an enemy enters your range or line of sight, make a basic ranged strike.\n\nYou can attack a number of times equal to your Tier. You cannot shoot the same target twice.",
+      "tags": [
+        "Ranged",
+        "Strike"
+      ]
+    },
+    {
+      "id": "tripping-strike",
+      "name": "Tripping Strike",
+      "effect": "**AP Cost:** 3\n\nMake a strike with the blunt part at enemy's leg. If you succeed, enemy has to roll Dodge. On a failure, they fall prone.",
+      "tags": [
+        "Strike"
+      ]
+    },
+    {
+      "id": "two-birds",
+      "name": "Two Birds",
+      "effect": "**AP Cost:** 4\n**Requirement:** You are holding non-light melee weapon.\n\nMake a melee strike against adjacent targets within your reach. Resolve strikes one after another. Roll attack and damage once.",
+      "tags": [
+        "Strike",
+        "AoE"
+      ]
+    },
+    {
+      "id": "unarmed-combat",
+      "name": "Unarmed Combat",
+      "effect": "**AP Cost:** -\n\nYour natural attacks no longer deal 1+Might damage. You gain two unarmed attacks:\n- **Punch:** d3 damage, Light, Nonlethal, 2 AP\n- **Kick:** d4 damage, Sweep, 3 AP",
+      "tags": [
+        "Strike"
+      ]
+    },
+    {
+      "id": "vanishing-step",
+      "name": "Vanishing Step",
+      "effect": "**AP Cost:** R\n\n**Trigger:** You successfully Dodge a melee attack.\n\nWhile Unencumbered, you may move to any space adjacent to the attacker. You are Hidden until the end of your next turn or until you attack.",
+      "tags": [
+        "Reaction",
+        "Dodge",
+        "Movement",
+        "Stealth"
+      ]
+    }
+  ],
+  "effects": []
 }

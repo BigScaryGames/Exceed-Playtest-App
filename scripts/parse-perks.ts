@@ -14,6 +14,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Types
+interface ParsedAbility {
+  id: string;
+  name: string;
+  effect: string;
+  tags: string[];
+}
+
+interface ParsedEffect {
+  id: string;
+  name: string;
+  effect: string;
+  tags: string[];
+}
+
+interface PerkGrants {
+  abilities: string[];  // Ability IDs
+  effects: string[];    // Effect IDs
+}
+
 interface ParsedPerk {
   id: string;
   name: string;
@@ -21,8 +40,8 @@ interface ParsedPerk {
   source: 'database';
   requirements: {
     text: string;
+    tier?: number;        // MS5: Tier requirement (1-5) for Martial/Spellcraft domain
     skills?: string[];
-    domains?: string[];
     perks?: string[];
     special?: string[];
   };
@@ -37,6 +56,7 @@ interface ParsedPerk {
   shortDescription: string;
   effect: string;
   description?: string;
+  grants: PerkGrants;  // MS5: Abilities and effects granted by this perk
 }
 
 interface PerkDatabase {
@@ -47,6 +67,8 @@ interface PerkDatabase {
     magic: ParsedPerk[];
     skill: ParsedPerk[];
   };
+  abilities: ParsedAbility[];  // MS5: All abilities
+  effects: ParsedEffect[];     // MS5: All effects
 }
 
 interface GitHubFile {
@@ -63,7 +85,9 @@ const GITHUB_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/Ru
 const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/Ruleset/Perks`;
 
 // Fallback to local path if available (for local development)
-const LOCAL_RULESET_PATH = '/home/rvh/Obsidian/ExceedV/Ruleset/Perks';
+const LOCAL_RULESET_PATH = '/home/r/Exceed/ExceedV/Ruleset/Perks';
+const LOCAL_ABILITIES_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/Actions/Abilities';
+const LOCAL_EFFECTS_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/References';
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'data', 'perks.json');
 
 // Check if running in CI or local
@@ -82,23 +106,6 @@ const ATTRIBUTE_MAP: Record<string, string> = {
   'PR': 'Perception',
   'PER': 'Perception',
   'CH': 'Charisma',
-};
-
-// Domain abbreviation mapping
-const DOMAIN_MAP: Record<string, string> = {
-  'SH': 'Shield',
-  'OH': 'OneHanded',
-  '1H': 'OneHanded',
-  'TH': 'TwoHanded',
-  '2H': 'TwoHanded',
-  'AR': 'Archery',
-  'SP': 'Spear',
-  'SAS': 'StavesAndSpears',
-  'SaS': 'StavesAndSpears',
-  'ST': 'Staff',
-  'STEALTH': 'Stealth',
-  'MD': 'Melee',
-  'SPELLCRAFT': 'Spellcraft',
 };
 
 /**
@@ -190,6 +197,8 @@ function filenameToId(filename: string): string {
 
 /**
  * Parse requirements field
+ * MS5: Now handles Tier X format and [[Perk Name]] references
+ * Note: Domain requirements (SH, OH, etc.) are no longer used - only Martial and Spellcraft exist
  */
 function parseRequirements(text: string): ParsedPerk['requirements'] {
   const result: ParsedPerk['requirements'] = { text };
@@ -201,19 +210,42 @@ function parseRequirements(text: string): ParsedPerk['requirements'] {
   const parts = text.split(',').map(p => p.trim());
 
   for (const part of parts) {
-    if (/^(SH|OH|1H|TH|2H|AR|SP|SaS|ST)\d+$/i.test(part)) {
-      result.domains = result.domains || [];
-      result.domains.push(part.toUpperCase());
+    // MS5: Handle Tier requirements (e.g., "Tier 2", "Tier 3")
+    const tierMatch = part.match(/^Tier\s+(\d+)$/i);
+    if (tierMatch) {
+      result.tier = parseInt(tierMatch[1], 10);
     }
-    else if (/[A-Z][a-z]+\s+\d+/.test(part)) {
+    // Handle attribute requirements (e.g., "AG 2", "MG 3", "AG2", "MG4")
+    else if (/^(MG|EN|AG|DX|WT|WI|WL|PR|CH)\s*\d+$/i.test(part)) {
+      // Attribute requirements - store as special for now
+      result.special = result.special || [];
+      result.special.push(part);
+    }
+    // Handle skill requirements (e.g., "Stealth 4", "Athletics 2")
+    else if (/^[A-Z][a-z]+\s+\d+$/.test(part)) {
       result.skills = result.skills || [];
       result.skills.push(part);
     }
+    // Handle GM permission requirements
     else if (part.toLowerCase().includes('gm') || part.toLowerCase().includes('permission')) {
       result.special = result.special || [];
       result.special.push(part);
     }
-    else {
+    // MS5: Handle [[Perk Name]] references - extract the perk name
+    else if (part.includes('[[') && part.includes(']]')) {
+      const perkMatch = part.match(/\[\[([^\]]+)\]\]/);
+      if (perkMatch) {
+        result.perks = result.perks || [];
+        result.perks.push(perkMatch[1]);
+      }
+    }
+    // Handle "X or Y" perk requirements
+    else if (part.includes(' or ')) {
+      result.perks = result.perks || [];
+      result.perks.push(part);
+    }
+    // Default: treat as perk requirement
+    else if (part.length > 0) {
       result.perks = result.perks || [];
       result.perks.push(part);
     }
@@ -224,6 +256,7 @@ function parseRequirements(text: string): ParsedPerk['requirements'] {
 
 /**
  * Parse attributes field
+ * MS5: No longer parses domain codes (only attributes)
  */
 function parseAttributes(text: string): string[] {
   const attributes: string[] = [];
@@ -241,20 +274,15 @@ function parseAttributes(text: string): string[] {
 
     if (ATTRIBUTE_MAP[code]) {
       attributes.push(ATTRIBUTE_MAP[code]);
-    } else if (DOMAIN_MAP[code]) {
-      attributes.push(DOMAIN_MAP[code]);
     } else {
       attributes.push(code);
     }
   }
 
+  // MS5: Domain codes after '+' are no longer used (Martial/Spellcraft are implicit)
+  // Keep second part if it exists as-is for compatibility
   if (parts.length > 1) {
-    const domainCode = parts[1].toUpperCase();
-    if (DOMAIN_MAP[domainCode]) {
-      attributes.push(DOMAIN_MAP[domainCode]);
-    } else {
-      attributes.push(domainCode);
-    }
+    attributes.push(parts[1].toUpperCase());
   }
 
   return attributes;
@@ -307,13 +335,114 @@ function parseTags(text: string): string[] {
 }
 
 /**
+ * Convert a name to kebab-case ID
+ */
+function nameToId(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/**
+ * Parse grants section to extract ability and effect references
+ * Looks for ![[Ability - Name]] and ![[Effect - Name]] patterns
+ */
+function parseGrants(content: string): PerkGrants {
+  const grants: PerkGrants = { abilities: [], effects: [] };
+
+  // Find the Grants section
+  const grantsMatch = content.match(/##\s+Grants\s*\n([\s\S]*?)(?=\n##|$)/i);
+  if (!grantsMatch) return grants;
+
+  const grantsText = grantsMatch[1];
+
+  // Find all ![[Ability - Name]] references
+  const abilityMatches = grantsText.matchAll(/!\[\[Ability\s*-\s*([^\]]+)\]\]/gi);
+  for (const match of abilityMatches) {
+    const name = match[1].trim();
+    grants.abilities.push(nameToId(name));
+  }
+
+  // Find all ![[Effect - Name]] references
+  const effectMatches = grantsText.matchAll(/!\[\[Effect\s*-\s*([^\]]+)\]\]/gi);
+  for (const match of effectMatches) {
+    const name = match[1].trim();
+    grants.effects.push(nameToId(name));
+  }
+
+  return grants;
+}
+
+/**
+ * Parse an ability file
+ */
+function parseAbilityContent(filename: string, content: string): ParsedAbility | null {
+  try {
+    // Extract name from filename: "Ability - Name.md" -> "Name"
+    const nameMatch = filename.match(/^Ability\s*-\s*(.+)\.md$/i);
+    if (!nameMatch) return null;
+    const name = nameMatch[1].trim();
+
+    // Extract effect text (everything before **Tags:**)
+    const effectMatch = content.split(/\*\*Tags:\*\*/i)[0];
+    const effect = effectMatch ? effectMatch.trim() : '';
+
+    // Extract tags
+    const tagsMatch = content.match(/\*\*Tags:\*\*\s*(.+?)$/m);
+    const tags = tagsMatch ? parseTags(tagsMatch[1].trim()) : [];
+
+    return {
+      id: nameToId(name),
+      name,
+      effect,
+      tags
+    };
+  } catch (error) {
+    console.error(`Error parsing ability ${filename}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Parse an effect file
+ */
+function parseEffectContent(filename: string, content: string): ParsedEffect | null {
+  try {
+    // Extract name from filename: "Effect - Name.md" -> "Name"
+    const nameMatch = filename.match(/^Effect\s*-\s*(.+)\.md$/i);
+    if (!nameMatch) return null;
+    const name = nameMatch[1].trim();
+
+    // Extract effect text (everything before **Tags:**)
+    const effectMatch = content.split(/\*\*Tags:\*\*/i)[0];
+    const effect = effectMatch ? effectMatch.trim() : '';
+
+    // Extract tags
+    const tagsMatch = content.match(/\*\*Tags:\*\*\s*(.+?)$/m);
+    const tags = tagsMatch ? parseTags(tagsMatch[1].trim()) : [];
+
+    return {
+      id: nameToId(name),
+      name,
+      effect,
+      tags
+    };
+  } catch (error) {
+    console.error(`Error parsing effect ${filename}:`, error);
+    return null;
+  }
+}
+
+/**
  * Parse perk from markdown content
+ * MS5: Name is now extracted from filename, not from # header
  */
 function parsePerkContent(filename: string, content: string, perkType: 'combat' | 'magic' | 'skill'): ParsedPerk | null {
   try {
-    const nameMatch = content.match(/^#\s+(.+?)$/m);
-    if (!nameMatch) return null;
-    const name = nameMatch[1].trim();
+    // MS5: Extract name from filename (without .md extension)
+    const name = filename.replace(/\.md$/, '').trim();
+    if (!name) return null;
 
     const requirementsMatch = content.match(/\*\*Requirements:\*\*\s*(.+?)$/m);
     const attributesMatch = content.match(/\*\*Attributes:\*\*\s*(.+?)$/m);
@@ -340,6 +469,7 @@ function parsePerkContent(filename: string, content: string, perkType: 'combat' 
       shortDescription: shortDescMatch ? shortDescMatch[1].trim() : '',
       effect: effectMatch ? effectMatch[1].trim() : '',
       description: descriptionMatch ? descriptionMatch[1].trim() : undefined,
+      grants: parseGrants(content),  // MS5: Extract ability/effect grants
     };
 
     return perk;
@@ -417,15 +547,81 @@ function parsePerksFromLocal(dir: string, perkType: 'combat' | 'magic' | 'skill'
 }
 
 /**
+ * Parse abilities from local filesystem
+ */
+function parseAbilitiesFromLocal(dir: string): ParsedAbility[] {
+  console.log('Parsing abilities from local filesystem...');
+  const abilities: ParsedAbility[] = [];
+
+  if (!fs.existsSync(dir)) {
+    console.log(`Abilities directory not found: ${dir}`);
+    return abilities;
+  }
+
+  try {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      if (entry.isFile() && entry.name.startsWith('Ability -') && entry.name.endsWith('.md')) {
+        const content = fs.readFileSync(path.join(dir, entry.name), 'utf-8');
+        const ability = parseAbilityContent(entry.name, content);
+        if (ability) {
+          abilities.push(ability);
+        }
+      }
+    }
+  } catch (error) {
+    console.error(`Error reading abilities directory ${dir}:`, error);
+  }
+
+  console.log(`Found ${abilities.length} abilities`);
+  return abilities;
+}
+
+/**
+ * Parse effects from local filesystem
+ */
+function parseEffectsFromLocal(dir: string): ParsedEffect[] {
+  console.log('Parsing effects from local filesystem...');
+  const effects: ParsedEffect[] = [];
+
+  if (!fs.existsSync(dir)) {
+    console.log(`Effects directory not found: ${dir}`);
+    return effects;
+  }
+
+  try {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      if (entry.isFile() && entry.name.startsWith('Effect -') && entry.name.endsWith('.md')) {
+        const content = fs.readFileSync(path.join(dir, entry.name), 'utf-8');
+        const effect = parseEffectContent(entry.name, content);
+        if (effect) {
+          effects.push(effect);
+        }
+      }
+    }
+  } catch (error) {
+    console.error(`Error reading effects directory ${dir}:`, error);
+  }
+
+  console.log(`Found ${effects.length} effects`);
+  return effects;
+}
+
+/**
  * Main execution
  */
 async function main() {
-  console.log('Starting perk parser...');
+  console.log('Starting perk parser (MS5)...');
   console.log(`CI Environment: ${IS_CI}`);
 
   let combatPerks: ParsedPerk[];
   let magicPerks: ParsedPerk[];
   let skillPerks: ParsedPerk[];
+  let abilities: ParsedAbility[] = [];
+  let effects: ParsedEffect[] = [];
 
   if (IS_CI || !fs.existsSync(LOCAL_RULESET_PATH)) {
     // Fetch from GitHub
@@ -435,6 +631,8 @@ async function main() {
       parsePerksFromGitHub('MagicPerks', 'magic'),
       parsePerksFromGitHub('SkillPerks', 'skill'),
     ]);
+    // TODO: Add GitHub fetching for abilities/effects when needed
+    console.log('Note: Abilities and effects not fetched from GitHub (local only for now)');
   } else {
     // Use local files
     console.log(`Using local ruleset: ${LOCAL_RULESET_PATH}\n`);
@@ -450,6 +648,11 @@ async function main() {
       path.join(LOCAL_RULESET_PATH, 'SkillPerks'),
       'skill'
     );
+
+    // Parse abilities and effects (MS5)
+    console.log('\n--- MS5: Parsing Abilities and Effects ---');
+    abilities = parseAbilitiesFromLocal(LOCAL_ABILITIES_PATH);
+    effects = parseEffectsFromLocal(LOCAL_EFFECTS_PATH);
   }
 
   // Create database object
@@ -461,6 +664,8 @@ async function main() {
       magic: magicPerks,
       skill: skillPerks,
     },
+    abilities,  // MS5
+    effects,    // MS5
   };
 
   // Ensure output directory exists
@@ -472,11 +677,13 @@ async function main() {
   // Write output file
   fs.writeFileSync(OUTPUT_PATH, JSON.stringify(database, null, 2), 'utf-8');
 
-  console.log('\n=== Perk Parser Complete ===');
+  console.log('\n=== Perk Parser Complete (MS5) ===');
   console.log(`Combat perks: ${combatPerks.length}`);
   console.log(`Magic perks: ${magicPerks.length}`);
   console.log(`Skill perks: ${skillPerks.length}`);
   console.log(`Total perks: ${combatPerks.length + magicPerks.length + skillPerks.length}`);
+  console.log(`Abilities: ${abilities.length}`);
+  console.log(`Effects: ${effects.length}`);
   console.log(`Output: ${OUTPUT_PATH}`);
 }
 

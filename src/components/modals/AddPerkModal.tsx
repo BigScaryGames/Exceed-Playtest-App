@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { Character, Perk, CombatPerk, WeaponDomain } from '@/types/character';
+import { Character, Perk, CombatPerk } from '@/types/character';
 import type { PerkDatabase, Perk as DatabasePerk } from '@/types/perks';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
 
@@ -23,16 +23,13 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 }) => {
   const [source, setSource] = useState<'predefined' | 'custom'>('predefined');
   const [selectedPerkId, setSelectedPerkId] = useState('');
-  const [xpTypeChoice, setXpTypeChoice] = useState<'combat' | 'social'>('combat');
   const [selectedPredefinedAttribute, setSelectedPredefinedAttribute] = useState<string>('');
-  const [selectedDomain, setSelectedDomain] = useState<WeaponDomain>('1H');
 
   // Custom perk fields
   const [customName, setCustomName] = useState('');
   const [customCost, setCustomCost] = useState('');
   const [customAttribute, setCustomAttribute] = useState('');
   const [customDescription, setCustomDescription] = useState('');
-  const [customDomain, setCustomDomain] = useState<WeaponDomain>('1H');
 
   if (!isOpen) return null;
 
@@ -42,7 +39,11 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     let perksToCheck: DatabasePerk[];
 
     if (category === 'combat') {
-      perksToCheck = perkDatabase.perks.combat;
+      // Filter out conditioning perks - they're handled by ConditioningPerkModal
+      perksToCheck = perkDatabase.perks.combat.filter(perk =>
+        !perk.tags.includes('Conditioning') &&
+        !(perk.cost.variable && perk.cost.formula?.includes('Max_Wounds'))
+      );
     } else if (category === 'magic') {
       perksToCheck = perkDatabase.perks.magic;
     } else if (category === 'skill') {
@@ -85,14 +86,11 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
   const handleClose = () => {
     setSource('predefined');
     setSelectedPerkId('');
-    setXpTypeChoice('combat');
     setSelectedPredefinedAttribute('');
-    setSelectedDomain('1H');
     setCustomName('');
     setCustomCost('');
     setCustomAttribute('');
     setCustomDescription('');
-    setCustomDomain('1H');
     onClose();
   };
 
@@ -124,14 +122,8 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     }
 
     // Determine which XP pool to use
-    let xpType: 'combat' | 'social';
-    if (perk.type === 'magic') {
-      xpType = xpTypeChoice;
-    } else if (perk.type === 'skill') {
-      xpType = 'social';
-    } else {
-      xpType = 'combat';
-    }
+    // Magic now uses Combat XP only
+    const xpType: 'combat' | 'social' = perk.type === 'skill' ? 'social' : 'combat';
     const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
     const perkCost = perk.cost.xp;
 
@@ -158,7 +150,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
       updatedCharacter.perks = [...character.perks, newPerk];
       updatedCharacter.socialXP -= perkCost;
     } else if (perk.type === 'magic') {
-      // Add to magicPerks array with snapshot
+      // Add to magicPerks array with snapshot - uses Combat XP
       const newMagicPerk: Perk = {
         id: perk.id,
         name: perk.name,
@@ -171,20 +163,13 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         addedAt: Date.now()
       };
       updatedCharacter.magicPerks = [...(character.magicPerks || []), newMagicPerk];
-
-      // Deduct from appropriate XP pool
-      if (xpType === 'social') {
-        updatedCharacter.socialXP -= perkCost;
-      } else {
-        updatedCharacter.combatXP -= perkCost;
-      }
+      updatedCharacter.combatXP -= perkCost;
     } else if (perk.type === 'combat') {
-      // Add to combatPerks array with snapshot
+      // Add to combatPerks array with snapshot - MS5: No domain needed, all combat perks use Martial
       const newCombatPerk: CombatPerk = {
         id: perk.id,
         name: perk.name,
         cost: perkCost,
-        domain: selectedDomain,
         attribute: effectiveAttribute,
         description: perk.effect || perk.shortDescription,
         isCustom: false,
@@ -196,7 +181,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
       updatedCharacter.combatXP -= perkCost;
     }
 
-    // Add to progression log
+    // Add to progression log - MS5: No domain field needed
     updatedCharacter.progressionLog = [
       ...updatedCharacter.progressionLog,
       {
@@ -204,7 +189,6 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         name: perk.name,
         cost: perkCost,
         attribute: effectiveAttribute,
-        domain: perk.type === 'combat' ? selectedDomain : undefined,
         xpType: xpType
       }
     ];
@@ -221,15 +205,9 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     }
 
     // Determine category and XP type
+    // Magic now uses Combat XP only
     const perkCategory = category || 'skill'; // Default to skill if not specified
-    let xpType: 'combat' | 'social';
-    if (perkCategory === 'magic') {
-      xpType = xpTypeChoice;
-    } else if (perkCategory === 'skill') {
-      xpType = 'social';
-    } else {
-      xpType = 'combat';
-    }
+    const xpType: 'combat' | 'social' = perkCategory === 'skill' ? 'social' : 'combat';
     const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
 
     if (availableXP < cost) {
@@ -253,7 +231,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
       updatedCharacter.perks = [...character.perks, newPerk];
       updatedCharacter.socialXP -= cost;
     } else if (perkCategory === 'magic') {
-      // Magic perks go to magicPerks array
+      // Magic perks go to magicPerks array - uses Combat XP
       const newMagicPerk: Perk = {
         name: customName,
         cost,
@@ -264,19 +242,12 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         addedAt: Date.now()
       };
       updatedCharacter.magicPerks = [...(character.magicPerks || []), newMagicPerk];
-
-      // Deduct from appropriate XP pool
-      if (xpType === 'social') {
-        updatedCharacter.socialXP -= cost;
-      } else {
-        updatedCharacter.combatXP -= cost;
-      }
+      updatedCharacter.combatXP -= cost;
     } else if (perkCategory === 'combat') {
-      // Combat perks go to combatPerks array
+      // Combat perks go to combatPerks array - MS5: No domain needed
       const newCombatPerk: CombatPerk = {
         name: customName,
         cost,
-        domain: customDomain,
         attribute: customAttribute,
         description: customDescription,
         isCustom: true,
@@ -287,7 +258,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
       updatedCharacter.combatXP -= cost;
     }
 
-    // Add to progression log
+    // Add to progression log - MS5: No domain field needed
     updatedCharacter.progressionLog = [
       ...updatedCharacter.progressionLog,
       {
@@ -295,7 +266,6 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         name: customName,
         cost,
         attribute: customAttribute,
-        domain: perkCategory === 'combat' ? customDomain : undefined,
         xpType
       }
     ];
@@ -305,13 +275,12 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
   };
 
   // Calculate XP type and available XP for display and validation
+  // Magic now uses Combat XP only (same as combat perks)
   let displayXpType: 'combat' | 'social';
-  if (category === 'magic') {
-    displayXpType = xpTypeChoice;
-  } else if (category === 'skill') {
+  if (category === 'skill') {
     displayXpType = 'social';
   } else {
-    displayXpType = 'combat';
+    displayXpType = 'combat'; // Both combat and magic use Combat XP
   }
   const availableXP = displayXpType === 'social' ? character.socialXP : character.combatXP;
   const canAfford = source === 'predefined'
@@ -378,37 +347,6 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
             </div>
           )}
 
-          {/* XP Type Selection - Only for Magic Perks */}
-          {category === 'magic' && (
-            <div className="mb-4">
-              <label className="block text-sm font-semibold text-slate-300 mb-2">
-                XP Type
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setXpTypeChoice('combat')}
-                  className={`py-2 px-4 rounded font-semibold transition-colors ${
-                    xpTypeChoice === 'combat'
-                      ? 'bg-red-700 text-white'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                  }`}
-                >
-                  Combat XP ({character.combatXP})
-                </button>
-                <button
-                  onClick={() => setXpTypeChoice('social')}
-                  className={`py-2 px-4 rounded font-semibold transition-colors ${
-                    xpTypeChoice === 'social'
-                      ? 'bg-green-700 text-white'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                  }`}
-                >
-                  Skill XP ({character.socialXP})
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Predefined Perk Selection */}
           {source === 'predefined' && perkDatabase && (
             <div className="space-y-3">
@@ -440,27 +378,6 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 
               {selectedPerk && (
                 <>
-                  {/* Domain Selection for Combat Perks */}
-                  {selectedPerk.type === 'combat' && (
-                    <div>
-                      <label className="block text-sm font-semibold text-slate-300 mb-2">
-                        Select Domain *
-                      </label>
-                      <select
-                        value={selectedDomain}
-                        onChange={(e) => setSelectedDomain(e.target.value as WeaponDomain)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
-                      >
-                        <option value="1H">One-Handed (1H)</option>
-                        <option value="2H">Two-Handed (2H)</option>
-                        <option value="SaS">Staves & Spears (SaS)</option>
-                        <option value="Sh">Shield (Sh)</option>
-                        <option value="Ar">Archery (Ar)</option>
-                        <option value="Spell">Spellcraft (Spell)</option>
-                      </select>
-                    </div>
-                  )}
-
                   {/* Attribute Selection for Perks with Multiple Attributes */}
                   {hasMultipleAttributes && (
                     <div className="mb-3">
@@ -578,26 +495,6 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
                   ))}
                 </div>
               </div>
-
-              {category === 'combat' && (
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    Domain *
-                  </label>
-                  <select
-                    value={customDomain}
-                    onChange={(e) => setCustomDomain(e.target.value as WeaponDomain)}
-                    className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
-                  >
-                    <option value="1H">One-Handed (1H)</option>
-                    <option value="2H">Two-Handed (2H)</option>
-                    <option value="SaS">Staves & Spears (SaS)</option>
-                    <option value="Sh">Shield (Sh)</option>
-                    <option value="Ar">Archery (Ar)</option>
-                    <option value="Spell">Spellcraft (Spell)</option>
-                  </select>
-                </div>
-              )}
 
               <div>
                 <label className="block text-sm font-semibold text-slate-300 mb-2">

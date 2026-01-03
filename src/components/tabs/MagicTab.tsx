@@ -38,7 +38,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
   const [expandedMagicPerkIndex, setExpandedMagicPerkIndex] = useState<number | null>(null);
   const [showMagePerkSpellModal, setShowMagePerkSpellModal] = useState(false);
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
-  const [upgradeXpType, setUpgradeXpType] = useState<'combat' | 'social'>('combat');
 
   // Initialize magic system if needed
   if (!character.knownSpells) {
@@ -90,20 +89,10 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
     const spell = character.knownSpells?.find(s => s.id === spellId);
     if (!spell) return;
 
-    // Find the progression log entry for this spell to determine which XP pool to refund
-    const spellLogEntry = character.progressionLog
-      .filter(e => e.type === 'spell' && e.name === spell.name)
-      .pop(); // Get the most recent one
-
-    const xpType = spellLogEntry?.xpType || 'combat'; // Default to combat if not specified
     const updatedCharacter = removeSpellFromKnown(character, spellId);
 
-    // Refund XP to the appropriate pool
-    if (xpType === 'social') {
-      updatedCharacter.socialXP += spell.xpCost;
-    } else {
-      updatedCharacter.combatXP += spell.xpCost;
-    }
+    // Refund XP to Combat pool (magic only uses Combat XP)
+    updatedCharacter.combatXP += spell.xpCost;
 
     // Remove from progression log
     updatedCharacter.progressionLog = updatedCharacter.progressionLog.filter(e =>
@@ -124,7 +113,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
   };
 
   const handleUpgradeSpell = (spellId: string) => {
-    const result = upgradeSpellToAdvanced(character, spellId, upgradeXpType);
+    const result = upgradeSpellToAdvanced(character, spellId, 'combat'); // Magic only uses Combat XP
     if (result.success) {
       onUpdate(result.character);
     } else {
@@ -146,16 +135,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
     // Remove from magicPerks array
     const updatedMagicPerks = magicPerks.filter((_, i) => i !== index);
 
-    // Find progression log entry to determine which XP pool to refund
-    const perkLogEntry = character.progressionLog
-      .filter(entry => entry.type === 'magicPerk' &&
-                      entry.name === perk.name &&
-                      entry.cost === perk.cost &&
-                      entry.attribute === perk.attribute)
-      .pop(); // Get the most recent one
-
-    const xpType = perkLogEntry?.xpType || 'combat'; // Default to combat if not specified
-
     // Remove from progression log
     const updatedLog = [...character.progressionLog];
     for (let i = updatedLog.length - 1; i >= 0; i--) {
@@ -168,20 +147,14 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
       }
     }
 
-    // Refund XP to the appropriate pool
-    const updatedCharacter = {
+    // Refund XP to Combat pool (magic only uses Combat XP)
+    onUpdate({
       ...character,
       magicPerks: updatedMagicPerks,
+      combatXP: character.combatXP + perk.cost,
       progressionLog: updatedLog
-    };
+    });
 
-    if (xpType === 'social') {
-      updatedCharacter.socialXP = character.socialXP + perk.cost;
-    } else {
-      updatedCharacter.combatXP = character.combatXP + perk.cost;
-    }
-
-    onUpdate(updatedCharacter);
     setExpandedMagicPerkIndex(null);
   };
 
@@ -459,37 +432,9 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                                     <div>
                                       <p className="text-purple-300 font-semibold text-sm">Upgrade Available</p>
                                       <p className="text-purple-400 text-xs mt-1">
-                                        Upgrade to Advanced version ({upgradeCost} XP)
+                                        Upgrade to Advanced version ({upgradeCost} Combat XP)
                                       </p>
                                     </div>
-                                  </div>
-                                  <div className="flex gap-2 mb-2">
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setUpgradeXpType('combat');
-                                      }}
-                                      className={`flex-1 py-1 px-3 rounded text-xs font-semibold ${
-                                        upgradeXpType === 'combat'
-                                          ? 'bg-red-700 text-white'
-                                          : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                                      }`}
-                                    >
-                                      Combat XP
-                                    </button>
-                                    <button
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setUpgradeXpType('social');
-                                      }}
-                                      className={`flex-1 py-1 px-3 rounded text-xs font-semibold ${
-                                        upgradeXpType === 'social'
-                                          ? 'bg-green-700 text-white'
-                                          : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                                      }`}
-                                    >
-                                      Skill XP
-                                    </button>
                                   </div>
                                   <button
                                     onClick={(e) => {

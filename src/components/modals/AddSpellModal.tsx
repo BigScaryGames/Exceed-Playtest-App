@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Character, SpellTier, SpellType } from '@/types/character';
-import { SPELLS } from '@/data/spells';
+import { SPELLS, getSpellEntries } from '@/data/spells';
 import {
   canLearnSpell,
   getSpellXPCost,
@@ -25,7 +25,6 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
   onUpdate
 }) => {
   const [mode, setMode] = useState<'database' | 'custom'>('database');
-  const [xpType, setXpType] = useState<'combat' | 'social'>('combat');
   const [selectedAttribute, setSelectedAttribute] = useState<string | null>(null);
 
   // Database mode
@@ -45,10 +44,10 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
   const [customDamage, setCustomDamage] = useState('');
 
   const spellcraft = getSpellcraft(character);
-  const availableXP = xpType === 'combat' ? character.combatXP : character.socialXP;
+  const availableXP = character.combatXP; // Magic only uses Combat XP
 
   // Get available spells from database (filter by spellcraft level and not already known)
-  const availableSpells = Object.entries(SPELLS).filter(([name, spell]) => {
+  const availableSpells = getSpellEntries().filter(([name, spell]) => {
     const alreadyKnown = character.knownSpells?.some(s => s.dataRef === name);
     const canLearn = canLearnSpell(character, spell.tier);
     return !alreadyKnown && canLearn;
@@ -72,7 +71,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
     const xpCost = getSpellXPCost(spellData.tier, spellData.type);
 
     if (availableXP < xpCost) {
-      alert(`Not enough ${xpType === 'combat' ? 'Combat' : 'Skill'} XP. Need ${xpCost}, have ${availableXP}`);
+      alert(`Not enough Combat XP. Need ${xpCost}, have ${availableXP}`);
       return;
     }
 
@@ -88,12 +87,8 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
 
     const updatedCharacter = addSpellToKnown(character, newSpell);
 
-    // Deduct XP from selected pool
-    if (xpType === 'combat') {
-      updatedCharacter.combatXP -= xpCost;
-    } else {
-      updatedCharacter.socialXP -= xpCost;
-    }
+    // Deduct XP from Combat pool (magic only uses Combat XP)
+    updatedCharacter.combatXP -= xpCost;
 
     // Add to progression log with selected attribute
     const attributeForLog = selectedAttribute || attributes[0]; // Use selected or default to first
@@ -105,8 +100,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
         tier: spellData.tier,
         spellType: spellData.type,
         attribute: attributeForLog,
-        cost: xpCost,
-        xpType
+        cost: xpCost
       }
     ];
 
@@ -132,7 +126,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
     const xpCost = getSpellXPCost(customTier, customType);
 
     if (availableXP < xpCost) {
-      alert(`Not enough ${xpType === 'combat' ? 'Combat' : 'Skill'} XP. Need ${xpCost}, have ${availableXP}`);
+      alert(`Not enough Combat XP. Need ${xpCost}, have ${availableXP}`);
       return;
     }
 
@@ -164,12 +158,8 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
 
     const updatedCharacter = addSpellToKnown(character, newSpell);
 
-    // Deduct XP from selected pool
-    if (xpType === 'combat') {
-      updatedCharacter.combatXP -= xpCost;
-    } else {
-      updatedCharacter.socialXP -= xpCost;
-    }
+    // Deduct XP from Combat pool (magic only uses Combat XP)
+    updatedCharacter.combatXP -= xpCost;
 
     // Add to progression log with selected attribute
     const attributeForLog = selectedAttribute || attributes[0]; // Use selected or default to first
@@ -181,8 +171,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
         tier: customTier,
         spellType: customType,
         attribute: attributeForLog,
-        cost: xpCost,
-        xpType
+        cost: xpCost
       }
     ];
 
@@ -254,39 +243,11 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
             </button>
           </div>
 
-          {/* XP Type Selection */}
-          <div className="flex gap-2 mb-4">
-            <button
-              onClick={() => setXpType('combat')}
-              className={`flex-1 py-2 px-4 rounded font-semibold ${
-                xpType === 'combat'
-                  ? 'bg-red-700 text-white'
-                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-              }`}
-            >
-              Use Combat XP
-            </button>
-            <button
-              onClick={() => setXpType('social')}
-              className={`flex-1 py-2 px-4 rounded font-semibold ${
-                xpType === 'social'
-                  ? 'bg-green-700 text-white'
-                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-              }`}
-            >
-              Use Skill XP
-            </button>
-          </div>
-
           {/* XP Display */}
           <div className="bg-slate-700 rounded p-3 mb-4">
             <div className="flex justify-between items-center text-sm">
               <span className="text-slate-400">Combat XP:</span>
-              <span className={`font-bold ${xpType === 'combat' ? 'text-red-400' : 'text-slate-500'}`}>{character.combatXP}</span>
-            </div>
-            <div className="flex justify-between items-center text-sm mt-1">
-              <span className="text-slate-400">Skill XP:</span>
-              <span className={`font-bold ${xpType === 'social' ? 'text-green-400' : 'text-slate-500'}`}>{character.socialXP}</span>
+              <span className="font-bold text-red-400">{character.combatXP}</span>
             </div>
             <div className="flex justify-between items-center text-sm mt-2 pt-2 border-t border-slate-600">
               <span className="text-slate-400">Cost:</span>
@@ -297,7 +258,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
               <span className={`font-bold ${
                 availableXP - previewXpCost >= 0 ? 'text-green-400' : 'text-red-400'
               }`}>
-                {availableXP - previewXpCost} {xpType === 'combat' ? 'Combat' : 'Skill'} XP
+                {availableXP - previewXpCost} Combat XP
               </span>
             </div>
           </div>

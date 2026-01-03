@@ -1,0 +1,880 @@
+{
+  "version": "2026-01-03T17:07:34.394Z",
+  "lastUpdated": 1767460054395,
+  "spells": [
+    {
+      "id": "arcane-armor",
+      "name": "Arcane Armor",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "-",
+      "attributes": "WL/EN",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Protection",
+        "Conjuration"
+      ],
+      "shortDescription": "Summon a light magical armor on self.",
+      "basic": {
+        "limitCost": 1,
+        "effect": "Set Armor bonus to Spellcraft Tier (minimum 1) if unarmored. Cannot be re-summoned if dispelled with non-full stamina HP."
+      },
+      "description": "Arcane Armor is rarely used in wars, and until higher tiers it is weaker defense than an actual physical armor. Despite that it is quite popular spell to learn, as Arcane Armor is weightless and requires no maintenance.  Authors note: put on a good enchanted brigantine and a nice helmet. No one needs to see your amazing hairstyle during the battle."
+    },
+    {
+      "id": "consecrate",
+      "name": "Consecrate",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "-",
+      "attributes": "-",
+      "traits": [],
+      "shortDescription": "Spend an breather consecrating a 10m radius area for up to a full day, making it uncomfortable for undead and monsters.",
+      "basic": {
+        "limitCost": 0,
+        "effect": ""
+      },
+      "description": "Spend an breather consecrating a 10m radius area for up to a full day, making it uncomfortable for undead and monsters."
+    },
+    {
+      "id": "darkvision",
+      "name": "Darkvision",
+      "tier": 0,
+      "type": "advanced",
+      "apCost": "-",
+      "attributes": "PR",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Scrying"
+      ],
+      "shortDescription": "Grant darkvision to self or team",
+      "basic": {
+        "limitCost": 1,
+        "effect": "5m black and white darkvision on self"
+      },
+      "advanced": {
+        "limitCost": "Self 0 / Party 1",
+        "effect": "5m Per Spellcraft tier of black and white darkvision on self/team"
+      },
+      "description": "Flavor text to be written"
+    },
+    {
+      "id": "detect-magic",
+      "name": "Detect Magic",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "3",
+      "attributes": "WT/WL",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Scrying"
+      ],
+      "shortDescription": "Sense magical auras and enchantments",
+      "basic": {
+        "limitCost": 1,
+        "effect": "See magic within 10m"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 round"
+    },
+    {
+      "id": "endure-elements",
+      "name": "Endure Elements",
+      "tier": 0,
+      "type": "advanced",
+      "apCost": "3",
+      "attributes": "EN/WL",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Protection",
+        "Enhancement"
+      ],
+      "shortDescription": "Resist environmental extremes",
+      "basic": {
+        "limitCost": 1,
+        "effect": "Ignore minor environmental effects, like rain or dust storm. #TODO Environmental rules are not yet written"
+      },
+      "advanced": {
+        "limitCost": "Self 0 / Party 1",
+        "effect": "Ignore minor environmental effects, like rain or dust storm"
+      },
+      "description": "Flavor text to be written"
+    },
+    {
+      "id": "featherfall",
+      "name": "Featherfall",
+      "tier": 0,
+      "type": "advanced",
+      "apCost": "R/1",
+      "attributes": "EN/DX",
+      "traits": [
+        "Spell",
+        "Boon",
+        "Protection"
+      ],
+      "shortDescription": "Negate falling damage for targets",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Negate falling damage on 1 target"
+      },
+      "advanced": {
+        "limitCost": 0,
+        "effect": "Negate falling damage on multiple targets"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 minuta"
+    },
+    {
+      "id": "ghost-sound",
+      "name": "Ghost Sound",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "2",
+      "attributes": "CH",
+      "traits": [
+        "Spell",
+        "Illusion"
+      ],
+      "shortDescription": "Create illusory sounds",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Audio illusion"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 round"
+    },
+    {
+      "id": "light",
+      "name": "Light",
+      "tier": 0,
+      "type": "advanced",
+      "apCost": "2",
+      "attributes": "WL/PR",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon"
+      ],
+      "shortDescription": "Create small lamp level illumination around yourself or party",
+      "basic": {
+        "limitCost": 1,
+        "effect": "Bright light 10m on self"
+      },
+      "advanced": {
+        "limitCost": "Self 0 / Party 1",
+        "effect": "Bright light up to 10m  per tier on self/party members. Can change the color and the intensity of the light."
+      },
+      "description": "Third most popular awakening spell and first spell taught to the students. The color of the light coming from the spell can be modified. Research has shown that the spell is way better for nigh-time reading than candles or lamps, as it doesn't cause as much stress to the eyes.",
+      "duration": "1 breather if cast as a spell"
+    },
+    {
+      "id": "light-backpack",
+      "name": "Light Backpack",
+      "tier": 0,
+      "type": "advanced",
+      "apCost": "-",
+      "attributes": "EN/MG",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Manipulation",
+        "Equipment"
+      ],
+      "shortDescription": "Reduce the weight you carry in your backpack.",
+      "basic": {
+        "limitCost": 1,
+        "effect": "Reduce the weight of the backpack you carry by 5* Tier kilos."
+      },
+      "advanced": {
+        "limitCost": "Self 0 / Party 1",
+        "effect": "Reduce the weight of the backpacks you and your team carries carry by 5* Tier KG."
+      },
+      "description": "This spell is ignored by the novice adventurers until their first long distance mission when those extra 20kg of pelts or 20 daily rations would have felt amazing.  The need for the spell disappears when they are rich enough for spacial bags, and it becomes disregarded again.",
+      "duration": "-"
+    },
+    {
+      "id": "light-feet",
+      "name": "Light Feet",
+      "tier": 0,
+      "type": "advanced",
+      "apCost": "-",
+      "attributes": "EN/AG",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon"
+      ],
+      "shortDescription": "Ignore difficult terrain while traveling",
+      "basic": {
+        "limitCost": 1,
+        "effect": "Mage ignores difficult terrain while traveling"
+      },
+      "advanced": {
+        "limitCost": "Self 0 / Party 1",
+        "effect": "Team ignores difficult terrain while traveling"
+      },
+      "description": "Flavor text to be written"
+    },
+    {
+      "id": "loud-mouth",
+      "name": "Loud Mouth",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "2",
+      "attributes": "CH/MG",
+      "traits": [
+        "Spell",
+        "Boon",
+        "Illusion"
+      ],
+      "shortDescription": "Amplify your voice significantly",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Amplify your voice 5 times"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 minuta"
+    },
+    {
+      "id": "message",
+      "name": "Message",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "2",
+      "attributes": "CH/PR",
+      "traits": [
+        "Spell",
+        "Illusion"
+      ],
+      "shortDescription": "Create a telepathic communication",
+      "basic": {
+        "limitCost": 0,
+        "effect": "30m telepathic whisper, ignores range and visibility reqs for team members"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 minuta"
+    },
+    {
+      "id": "minor-disruption",
+      "name": "Minor Disruption",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "5",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Bane"
+      ],
+      "shortDescription": "Disrupt a duration spell within range",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Attempt to disrupt a duration spell within 10 meters, DC=10+CastersBonus, doesn't work on spells in limits"
+      },
+      "description": "Flavor text to be written",
+      "duration": "-"
+    },
+    {
+      "id": "minor-elemental-manipulation",
+      "name": "Minor Elemental Manipulation",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "3",
+      "attributes": "WT/DX",
+      "traits": [
+        "Spell",
+        "Manipulation",
+        "Offensive",
+        "Projectile"
+      ],
+      "shortDescription": "Produce or manipulate small amounts of elements",
+      "basic": {
+        "limitCost": 0,
+        "effect": "1d3 damage if used offensively. Doesn't scale. Can produce flame, water, acid, move earth/stone, cool drinks."
+      },
+      "description": "Flavor text to be written",
+      "duration": "Instant"
+    },
+    {
+      "id": "minor-telekinesis",
+      "name": "Minor Telekinesis",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "2",
+      "attributes": "WL/PR",
+      "traits": [
+        "Spell",
+        "Manipulation"
+      ],
+      "shortDescription": "Telekinetic manipulation of small objects",
+      "basic": {
+        "limitCost": 0,
+        "effect": "2kg max, 10m range, 2 meters per AP, hard to aim to drop things"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 minuta"
+    },
+    {
+      "id": "phantom-tools",
+      "name": "Phantom Tools",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "3",
+      "attributes": "DX/WT",
+      "traits": [
+        "Spell",
+        "Conjuration"
+      ],
+      "shortDescription": "Create phantom tools for a skill you have",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Create phantom tools for a skill you have"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 minuta"
+    },
+    {
+      "id": "prestidigitation",
+      "name": "Prestidigitation",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "2",
+      "attributes": "WT/DX",
+      "traits": [
+        "Spell",
+        "Manipulation"
+      ],
+      "shortDescription": "Minor magical effects for cleaning, flavoring, and coloring",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Cosmetic effects"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 minuta"
+    },
+    {
+      "id": "resistance",
+      "name": "Resistance",
+      "tier": 0,
+      "type": "advanced",
+      "apCost": "3",
+      "attributes": "WL/EN",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Protection"
+      ],
+      "shortDescription": "Minor protection from one damage type",
+      "basic": {
+        "limitCost": 1,
+        "effect": "-1 damage from chosen type"
+      },
+      "advanced": {
+        "limitCost": 1,
+        "effect": "-Spellcraft damage from chosen type"
+      },
+      "description": "Flavor text to be written"
+    },
+    {
+      "id": "sad-violin",
+      "name": "Sad violin",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "R",
+      "attributes": "CH/DX",
+      "traits": [
+        "Spell",
+        "Illusion"
+      ],
+      "shortDescription": "Play ambient musical composition for the scene",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Play prerecorded musical composition as ambient music for the scene"
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 minuta"
+    },
+    {
+      "id": "stabilize",
+      "name": "Stabilize",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "5",
+      "attributes": "WL/DX",
+      "traits": [
+        "Spell",
+        "Healing"
+      ],
+      "shortDescription": "Conduct magical first aid",
+      "basic": {
+        "limitCost": 0,
+        "effect": "First aid"
+      },
+      "description": "Flavor text to be written",
+      "duration": "Instant"
+    },
+    {
+      "id": "team-ritual",
+      "name": "Team Ritual",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "-",
+      "attributes": "-",
+      "traits": [],
+      "shortDescription": "",
+      "basic": {
+        "limitCost": 0,
+        "effect": ""
+      }
+    },
+    {
+      "id": "wish-em-good-luck",
+      "name": "Wish-em Good Luck",
+      "tier": 0,
+      "type": "basic",
+      "apCost": "2",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Boon",
+        "Luck"
+      ],
+      "shortDescription": "Give advantage to an ally.",
+      "basic": {
+        "limitCost": 0,
+        "effect": "The ally's next roll is affected by Good #Luck"
+      },
+      "description": "People talk a lot, and mages are no exception. To use this spell you must mean it. Learning this spell is considered a funny challenge in magical community, but not all pass. It requires to speak what you mean for a day while actively interacting with other people. If you lie or say something you don't believe in, the you need to start all over.",
+      "duration": "1 round"
+    },
+    {
+      "id": "alarming-wards",
+      "name": "Alarming Wards",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "1m",
+      "attributes": "PR/EN",
+      "traits": [
+        "Spell",
+        "Ward",
+        "Scrying",
+        "Ritual"
+      ],
+      "shortDescription": "Cover small area with a movement detection spell.",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Cover a 20m^2  or a 15m radius area in movement detection ward."
+      },
+      "description": "Bread and butter of adventurers and bodyguards. Despite its common use and relative ease of detection by trained thieves and assassins this is a one of the pillars of security systems. Note from author: Dear adventurers, if your travel in the wilderness and your support mage doesn't know this spell - you need to find another one. ",
+      "duration": "4 shifts or until dispelled"
+    },
+    {
+      "id": "alter-shape",
+      "name": "Alter Shape",
+      "tier": 1,
+      "type": "advanced",
+      "apCost": "1m",
+      "attributes": "CH/PR",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Transformation",
+        "Illusion"
+      ],
+      "shortDescription": "Adjust facial features and body shape to impersonate others",
+      "basic": {
+        "limitCost": 1,
+        "effect": "You change your visuals. You can't change the body mass. This doesn't hide the voices acting skills and similar. This provides +3 to Fast-Talk and Acting trying to impersonate into a role."
+      },
+      "advanced": {
+        "limitCost": "Self 0 / Party 1",
+        "effect": "You change your and your team members visuals. You can't change the body mass. This doesn't hide the voices acting skills and similar. This provides +3 to Fast-Talk and Acting trying to impersonate into a role."
+      },
+      "description": "The Bread and Butter of spies, thieves and actors. While it is not illegal to change one's shape, impersonation is illegal and most wealthy and some well-off establishments have wards against transformation and illusion spells, highlighting the illusion for all present.",
+      "duration": "-"
+    },
+    {
+      "id": "animate-appliance",
+      "name": "Animate Appliance",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "-",
+      "attributes": "WT/CH",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Manipulation"
+      ],
+      "shortDescription": "Animate household appliances to do simple menial labor",
+      "basic": {
+        "limitCost": 1,
+        "effect": "Animate a number of appliances equal to your Spellcraft to do the work for you."
+      },
+      "description": "Animate Appliance is the favorite tool in poor students', pathological loners and disenfranchised nobles' hands. This spell will do the untrained monotonous labor worse than any professional cleaner or a maid, but maids are expensive and you are cheap.",
+      "duration": "-"
+    },
+    {
+      "id": "aura-of-speed",
+      "name": "Aura of Speed",
+      "tier": 1,
+      "type": "advanced",
+      "apCost": "-",
+      "attributes": "CH/EN",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Enhancement"
+      ],
+      "shortDescription": "Increase team movement speed",
+      "basic": {
+        "limitCost": 0,
+        "effect": ""
+      },
+      "advanced": {
+        "limitCost": 1,
+        "effect": "+1 #Enhancement bonus to Speed to the team"
+      },
+      "description": "Reaching places in time is important. you should try it as well. With this spell your movement will be a breeze.",
+      "duration": "-"
+    },
+    {
+      "id": "bestial-arms",
+      "name": "Bestial Arms",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "-",
+      "attributes": "AG/DX",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Transformation"
+      ],
+      "shortDescription": "Grow claws and defensive arm covering",
+      "basic": {
+        "limitCost": 1,
+        "effect": "You get up to two 1d4 Unarmed or 1H weapons with #Light trait. You can parry with them."
+      },
+      "description": "Basic transformation step on a way to become a furry beast. The utility of this spell is overrated, as a dagger is more versatile.  Authors note: I've only seen druids and furry pervs use this spell, and in Elzmeer we don't teach druidism. This spell won't count for exam qualifications.",
+      "duration": "-"
+    },
+    {
+      "id": "binding-chains",
+      "name": "Binding Chains",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "5",
+      "attributes": "EN/WL",
+      "traits": [
+        "Spell",
+        "Conjuration",
+        "Bane",
+        "Strike"
+      ],
+      "shortDescription": "Bind target with magical chains to restrict movement",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Target's speed is reduced to 1, Target can attempt to break the chain, which has Tier* 6 HP, or do a Break roll (breaking skill/MG vs Spellcraft) for 2AP."
+      },
+      "description": "Flavor text to be written",
+      "duration": "3 rounds"
+    },
+    {
+      "id": "elemental-strike",
+      "name": "Elemental Strike",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "2",
+      "attributes": "AG/WT",
+      "traits": [
+        "Spell",
+        "Offensive",
+        "Strike"
+      ],
+      "shortDescription": "Attack a target with chosen elemental damage",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Spellcraft * 4d damage of chosen element on a hit",
+        "distance": "3m"
+      },
+      "description": "The most versatile offensive spell out there. People enlarge it, make it into cones, rays, bursts and walls. ",
+      "duration": "-"
+    },
+    {
+      "id": "empower-weapons",
+      "name": "Empower Weapons",
+      "tier": 1,
+      "type": "advanced",
+      "apCost": "-",
+      "attributes": "WT/AG",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Equipment"
+      ],
+      "shortDescription": "Empower weapons with magic for extra damage",
+      "basic": {
+        "limitCost": 1,
+        "effect": "Weapons of you deal +1 damage. This is an Equipment bonus."
+      },
+      "advanced": {
+        "limitCost": "Self 0 / Party 1",
+        "effect": "Weapons of your allies deal +1 damage"
+      },
+      "description": "Flavor text to be written",
+      "duration": "-"
+    },
+    {
+      "id": "healing-aura",
+      "name": "Healing Aura",
+      "tier": 1,
+      "type": "advanced",
+      "apCost": "-",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Healing"
+      ],
+      "shortDescription": "Heal surface injuries of your team.",
+      "basic": {
+        "limitCost": 0,
+        "effect": ""
+      },
+      "advanced": {
+        "limitCost": 2,
+        "effect": "Spellcraft HP of healing per turn for all allies. Heals first health then stamina damage. Stacks with similar healing effects."
+      },
+      "description": "The main reason to have a mage in the group. ",
+      "duration": "-"
+    },
+    {
+      "id": "levitation",
+      "name": "Levitation",
+      "tier": 1,
+      "type": "advanced",
+      "apCost": "-",
+      "attributes": "AG/MG",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Manipulation"
+      ],
+      "shortDescription": "Levitate targets to move them through the air",
+      "basic": {
+        "limitCost": 3,
+        "effect": "Each AP spent moves 1 target by 1m in the same direction. Any successful attack against you will require an Endure check or your ability to hold the spell falters."
+      },
+      "advanced": {
+        "limitCost": 3,
+        "effect": "Each AP spent moves 1 target or the whole team by 1m in the same direction. Any successful attack against you will require an Endure check or your ability to hold the spell falters."
+      },
+      "description": "Flavor text to be written",
+      "duration": "-"
+    },
+    {
+      "id": "minor-curse",
+      "name": "Minor Curse",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "5",
+      "attributes": "CH/WT",
+      "traits": [
+        "Spell",
+        "Bane",
+        "Body"
+      ],
+      "shortDescription": "Place minor inconvenient curses on enemies",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Give your enemy digestive issues or a nasty pimple on the nose, make them stab their toe twice tomorrow, give them a few days of sexual dysfunction. This is a subtle spell, and someone without knowledge in arcane will not understand that you are cursing them not badmouthing. If they are roll opposed arcane check to hide the presence of the curse."
+      },
+      "description": "Flavor text to be written",
+      "duration": "1d6 days"
+    },
+    {
+      "id": "obscure",
+      "name": "Obscure",
+      "tier": 1,
+      "type": "advanced",
+      "apCost": "3",
+      "attributes": "PR/WT",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Boon",
+        "Illusion"
+      ],
+      "shortDescription": "Make yourself or team less noticeable from distance",
+      "basic": {
+        "limitCost": 3,
+        "effect": "All enemies 5m or further you roll contested stealth checks against roll with disadvantage"
+      },
+      "advanced": {
+        "limitCost": "Self 1 / Party 3",
+        "effect": "All enemies 5m or further you roll contested stealth checks against roll with disadvantage"
+      },
+      "description": "Flavor text to be written",
+      "duration": "unlimited/3 rounds"
+    },
+    {
+      "id": "pest-control",
+      "name": "Pest control",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "1 shift per 250 m²",
+      "attributes": "WT/PR",
+      "traits": [
+        "Spell",
+        "Manipulation",
+        "AOE",
+        "Bane",
+        "Illusion"
+      ],
+      "shortDescription": "Control pest population in a small area.",
+      "basic": {
+        "limitCost": 0,
+        "effect": "This ritual has 3 modes of operation."
+      },
+      "description": "Decades ago the Elzmeer academy student developed this ritual to clean the dorm from pests, It was so efficient, that he dropped out of the academy, took a loan and opened his own business. Sadly, it was too good, and the city was cleansed of pests in a year. To avoid bankruptcy he lowered the spell intensity to just shoo the critters away into other houses. That wasn't enough to save his failing business venture. Thus, the reverse of the ritual was invented. It led to his execution a few weeks later.",
+      "duration": "-"
+    },
+    {
+      "id": "profanity-filter",
+      "name": "Profanity filter",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "R",
+      "attributes": "CH/WL",
+      "traits": [
+        "Spell",
+        "Bane",
+        "Mind",
+        "Protection"
+      ],
+      "shortDescription": "Counter curses and profanity by silencing offenders",
+      "basic": {
+        "limitCost": 0,
+        "effect": "When a creatures curses, tries to summon profane beings or casts a curse - you try to shut them up. Contest against their endure (if no magic) or spellcraft. On a success, they lose their actions spent to cast the spell and cannot speak until the end of their turn. If it was a curse or the target takes 3 damage as they bite their tongue."
+      },
+      "description": "Flavor text to be written",
+      "duration": "-"
+    },
+    {
+      "id": "simple-barrier",
+      "name": "Simple barrier",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "4",
+      "attributes": "EN/WL",
+      "traits": [
+        "Spell",
+        "Conjuration",
+        "Protection"
+      ],
+      "shortDescription": "Place magical barriers to block or bridge",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Barrier 1m² block can sustain 120KG of static pressure and take Spellcraft x d8 damage before crumbling. You can layer the barrier."
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 minuta"
+    },
+    {
+      "id": "summon-skelly-boys",
+      "name": "Summon Skelly boys",
+      "tier": 1,
+      "type": "advanced",
+      "apCost": "-",
+      "attributes": "WT/CH",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Conjuration"
+      ],
+      "shortDescription": "Summon skeleton minions for combat",
+      "basic": {
+        "limitCost": 0,
+        "effect": ""
+      },
+      "advanced": {
+        "limitCost": 0,
+        "effect": "#TODO Summoning rules. I have the vision, just need to formalize it."
+      },
+      "description": "Flavor text to be written",
+      "duration": "-"
+    },
+    {
+      "id": "summon-weapon",
+      "name": "Summon weapon",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "1",
+      "attributes": "AG/MG",
+      "traits": [
+        "Spell",
+        "Conjuration"
+      ],
+      "shortDescription": "Summon an ephemeral weapon that seeks blood",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Summon an ephemeral weapon that you can use. You can only have 1. It disappears if removed from your hand. If there is no combat the weapon disappears. If you end up not using the weapon to attack until the end of the combat - the weapon strikes you with your modifier."
+      },
+      "description": "Flavor text to be written",
+      "duration": "Until the end of the combat encounter."
+    },
+    {
+      "id": "telekinetic-maneuver",
+      "name": "Telekinetic Maneuver",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "3",
+      "attributes": "MG/WL",
+      "traits": [
+        "Spell",
+        "Manipulation",
+        "Offensive",
+        "Strike"
+      ],
+      "shortDescription": "Push, pull, or trip targets telekinetically",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Contested check to perform a combat maneuver. On success the target is moved or prone."
+      },
+      "description": "Flavor text to be written",
+      "duration": "-"
+    },
+    {
+      "id": "tentacle-arms",
+      "name": "Tentacle arms",
+      "tier": 1,
+      "type": "basic",
+      "apCost": "3AP",
+      "attributes": "DX/EN",
+      "traits": [
+        "Spell",
+        "Boon",
+        "Transformation"
+      ],
+      "shortDescription": "Transform limbs into tentacles with extended reach",
+      "basic": {
+        "limitCost": 0,
+        "effect": "Your tentacles have reach 2m, but no fine manipulators. Removes manacles that don't prevent casting spells."
+      },
+      "description": "Flavor text to be written",
+      "duration": "1 shift, cannot be self dispelled. Because you don't have hands to dispell"
+    }
+  ]
+}

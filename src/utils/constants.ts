@@ -39,14 +39,23 @@ export const normalizeAttributeName = (attribute: string): string => {
 // CP thresholds for attribute progression (CP → Attribute Value)
 export const ATTRIBUTE_CP_THRESHOLDS = [10, 30, 60, 100, 150];
 
-// Combat Perk CP thresholds for weapon domain levels
-export const DOMAIN_CP_THRESHOLDS = [5, 15, 30, 50, 75];
+// MS5: Domain CP thresholds
+// Martial Domain: All combat perks contribute here
+export const MARTIAL_CP_THRESHOLDS = [10, 30, 60, 100, 150];
+// Spellcraft Domain: Spells and magic perks contribute here
+export const SPELLCRAFT_CP_THRESHOLDS = [10, 30, 60, 100, 150];
+
+// Legacy alias (deprecated - use MARTIAL_CP_THRESHOLDS)
+export const DOMAIN_CP_THRESHOLDS = MARTIAL_CP_THRESHOLDS;
 
 // Skill progression costs (level * 2 CP)
 export const getSkillCost = (level: number): number => level * 2;
 
 // Extra HP cost (equal to current max wounds)
 export const getExtraHPCost = (maxWounds: number): number => maxWounds;
+
+// MS5: Staged/Conditioning perk cost (maxWounds × level)
+export const getStagedPerkCost = (maxWounds: number, level: number): number => maxWounds * level;
 
 // Encumbrance levels and penalties
 export const ENCUMBRANCE_LEVELS = {
