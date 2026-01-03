@@ -1,6 +1,6 @@
 {
-  "version": "2026-01-03T17:07:32.904Z",
-  "lastUpdated": 1767460052905,
+  "version": "2026-01-03T22:10:38.447Z",
+  "lastUpdated": 1767478238448,
   "perks": {
     "combat": [
       {
@@ -31,10 +31,11 @@
         ],
         "shortDescription": "Standing still greatly extends weapon range based on aim.",
         "effect": "",
-        "description": "As long as you didn't move this or previous turn, your weapon range = Aim, double your aim X.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "artillery"
+          ]
         }
       },
       {
@@ -62,10 +63,11 @@
         ],
         "shortDescription": "Aimed shots at close range deal extra damage.",
         "effect": "",
-        "description": "When you aim, but strike a target within your close range your attack deals extra damage equal to your archery level.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "close-quarters-shooter"
+          ]
         }
       },
       {
@@ -94,12 +96,13 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "[[Parry]] with a bow without risking breaking it.",
+        "shortDescription": "Parry with a bow without risking breaking it.",
         "effect": "",
-        "description": "You can parry with a bow without risking to break it.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "defensive-archer"
+          ]
         }
       },
       {
@@ -127,10 +130,11 @@
         ],
         "shortDescription": "Count as flanking partner within weapon's first range.",
         "effect": "",
-        "description": "You count as a flanking partner within range of your weapon, as if your range was your reach.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "don-t-turn-your-back-on-me"
+          ]
         }
       },
       {
@@ -156,11 +160,12 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Shoot two different targets with one attack.(+2 AP)",
+        "shortDescription": "Shoot two different targets with one attack (+2 AP).",
         "effect": "",
-        "description": "Shoot two different targets, second at -2 to hit.",
         "grants": {
-          "abilities": [],
+          "abilities": [
+            "double-shot"
+          ],
           "effects": []
         }
       },
@@ -190,12 +195,13 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Aim as a free action during a [[Stride]]  (max Aim1).",
+        "shortDescription": "Aim as a free action during a Stride (max Aim1).",
         "effect": "",
-        "description": "You can aim as a free action while you move to a maximum of Aim1.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "fast-archer"
+          ]
         }
       },
       {
@@ -218,7 +224,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Ready a strike that triggers without spending a Reaction.",
         "effect": "",
         "description": "You keep an arrow nocked and ready, prepared to loose it the instant a target appears.",
@@ -252,7 +260,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Move and shoot at the same time.",
         "effect": "",
         "description": "You've mastered the technique of shooting on the move, loosing arrows mid-stride without breaking pace.",
@@ -286,12 +296,13 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Each aim action adds an extra die of damage?",
+        "shortDescription": "Each aim action adds a +1 cumulative bonus to the next strike.",
         "effect": "",
-        "description": "Each aim action adds a +1 cumulative to the next strike.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "overpowered-draw"
+          ]
         }
       },
       {
@@ -300,7 +311,7 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "Martial 3, [[Mage]], [[Bow Training]],",
+          "text": "Martial 3, [[Mage]], [[Bow Training]]",
           "skills": [
             "Martial 3"
           ],
@@ -323,9 +334,10 @@
         ],
         "shortDescription": "Store offensive spell in arrow for later delivery.",
         "effect": "",
-        "description": "When casting a single target offensive spell, you can store it in the knocked arrow until the end of your next turn, using your bow strike to resolve both the spells.",
         "grants": {
-          "abilities": [],
+          "abilities": [
+            "spell-shot"
+          ],
           "effects": []
         }
       },
@@ -353,7 +365,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Shoot at everything that moves.",
         "effect": "",
         "description": "You keep your tower stance and wait for the enemies to arrive, meeting them with utmost contempt.",
@@ -389,10 +403,11 @@
         ],
         "shortDescription": "Standing still grants all attacks Aim1.",
         "effect": "",
-        "description": "As long as you didn't move previous and this turns - all your attacks are getting Aim1.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "tower"
+          ]
         }
       },
       {
@@ -422,10 +437,11 @@
         ],
         "shortDescription": "Change attacking attribute of bows from Dexterity to Perception.",
         "effect": "",
-        "description": "You can change the attacking attribute of the bow from Dexterity to Perception.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "zen-archer"
+          ]
         }
       },
       {
@@ -1276,7 +1292,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Stride covers your full speed.",
         "effect": "",
         "grants": {
@@ -1313,7 +1331,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Disappear and reappear behind enemies when you dodge.",
         "effect": "",
         "grants": {
@@ -1349,7 +1369,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Roll away from burst and area effects.",
         "effect": "",
         "grants": {
@@ -1382,7 +1404,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Step freely when you successfully dodge a melee attack.",
         "effect": "",
         "grants": {
@@ -1415,7 +1439,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Each successful dodge makes the next one easier.",
         "effect": "",
         "grants": {
@@ -1442,7 +1468,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Foundation for mobile combat techniques.",
         "effect": "",
         "description": "You've trained to fight light on your feet, using movement as defense.",
@@ -1476,7 +1504,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Step as part of your first attack each turn.",
         "effect": "",
         "grants": {
@@ -1509,7 +1539,9 @@
           "variable": false
         },
         "apCost": null,
-        "tags": [],
+        "tags": [
+          "Combat"
+        ],
         "shortDescription": "Your first Stride doesn't trigger reactions.",
         "effect": "",
         "grants": {
@@ -1609,6 +1641,7 @@
         },
         "apCost": null,
         "tags": [
+          "Combat",
           "Skill"
         ],
         "shortDescription": "Lead fanatical followers who have sworn loyalty to you.",
@@ -1641,6 +1674,7 @@
         },
         "apCost": null,
         "tags": [
+          "Combat",
           "Skill"
         ],
         "shortDescription": "Lead your team's resistance against fear effects.",
@@ -2302,6 +2336,70 @@
             "reactive-prediction"
           ],
           "effects": []
+        }
+      },
+      {
+        "id": "wip-predict-a-perfect-ambush",
+        "name": "WIP Predict A Perfect ambush",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 4,",
+          "skills": [
+            "Martial 4"
+          ]
+        },
+        "attributes": [
+          "Wit",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "Your predictive Strike now predicts enemy's reaction as well.",
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "perfect-ambush"
+          ]
+        }
+      },
+      {
+        "id": "wip-predicted-duel",
+        "name": "WIP Predicted Duel",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3,",
+          "skills": [
+            "Martial 3"
+          ]
+        },
+        "attributes": [
+          "Wit",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "shortDescription": "TBD",
+        "effect": "",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "predicted-duel"
+          ]
         }
       },
       {
@@ -3178,7 +3276,6 @@
         },
         "apCost": null,
         "tags": [
-          "Magic",
           "Spellcraft",
           "Spellshape"
         ],
@@ -3209,8 +3306,8 @@
         },
         "apCost": null,
         "tags": [
-          "Instant",
-          "Magic"
+          "Spellcraft",
+          "Instant"
         ],
         "shortDescription": "Awaken your magical talent and unlock spellcasting.",
         "effect": "",
@@ -3243,7 +3340,6 @@
         },
         "apCost": null,
         "tags": [
-          "Magic",
           "Spellcraft",
           "Spellshape"
         ],
@@ -3277,14 +3373,17 @@
         },
         "apCost": null,
         "tags": [
-          "Skill"
+          "Skill",
+          "Exploration"
         ],
         "shortDescription": "From the birds eye view you can see the hints of ruins undergound.",
         "effect": "",
-        "description": "While airborne you can scan 200m radius on the ground underneath for potential remains buried underground. Roll History+PR against GM set DC. You are limited by the speed of your flight or flying device.",
+        "description": "",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "aerial-archaeologist"
+          ]
         }
       },
       {
@@ -3471,13 +3570,14 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "-  Gossip 2",
-          "perks": [
-            "-  Gossip 2"
+          "text": "Gossip 2",
+          "skills": [
+            "Gossip 2"
           ]
         },
         "attributes": [
-          "Any"
+          "Charisma",
+          "Perception"
         ],
         "cost": {
           "xp": 5,
@@ -3678,7 +3778,8 @@
           ]
         },
         "attributes": [
-          "Any"
+          "Wit",
+          "Will"
         ],
         "cost": {
           "xp": 5,
@@ -3704,13 +3805,14 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "- Survival 3",
-          "perks": [
-            "- Survival 3"
+          "text": "Survival 3",
+          "skills": [
+            "Survival 3"
           ]
         },
         "attributes": [
-          "Any"
+          "Endurance",
+          "Agility"
         ],
         "cost": {
           "xp": 7,
@@ -3769,10 +3871,14 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "-"
+          "text": "Survival 1",
+          "skills": [
+            "Survival 1"
+          ]
         },
         "attributes": [
-          "Any"
+          "Perception",
+          "Wit"
         ],
         "cost": {
           "xp": 5,
@@ -3798,13 +3904,14 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "Initimidation 3",
+          "text": "Intimidation 3",
           "skills": [
-            "Initimidation 3"
+            "Intimidation 3"
           ]
         },
         "attributes": [
-          "Any"
+          "Charisma",
+          "Might"
         ],
         "cost": {
           "xp": 5,
@@ -3813,7 +3920,7 @@
         "apCost": null,
         "tags": [
           "Skill",
-          "Mind"
+          "Combat"
         ],
         "shortDescription": "Your Initimidation can make enemies reconsider fighting you.",
         "effect": "",
@@ -3837,7 +3944,8 @@
           ]
         },
         "attributes": [
-          "Any"
+          "Charisma",
+          "Wit"
         ],
         "cost": {
           "xp": 2,
@@ -3845,14 +3953,17 @@
         },
         "apCost": null,
         "tags": [
-          "Skill"
+          "Skill",
+          "Downtime"
         ],
         "shortDescription": "Experienced Haggler doesn't make thing worse.",
         "effect": "",
         "description": "When bargaining, you don't worsen the bargain on a failure.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "haggler"
+          ]
         }
       },
       {
@@ -3867,7 +3978,8 @@
           ]
         },
         "attributes": [
-          "Any"
+          "Wit",
+          "Will"
         ],
         "cost": {
           "xp": 2,
@@ -3879,10 +3991,12 @@
         ],
         "shortDescription": "You have learned of heraldic symbolism and historic context for it.",
         "effect": "",
-        "description": "When trying to identify heraldry you roll deduce with +2. When identifying unknown heraldics you can attempt to deduce the symbolism attached,",
+        "description": "",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "heraldist"
+          ]
         }
       },
       {
@@ -3898,7 +4012,8 @@
           ]
         },
         "attributes": [
-          "Any"
+          "Perception",
+          "Wit"
         ],
         "cost": {
           "xp": 3,
@@ -3909,12 +4024,14 @@
           "Skill",
           "Exploration"
         ],
-        "shortDescription": "",
+        "shortDescription": "Gather herbs on the move without slowing down.",
         "effect": "",
-        "description": "Your trained eye instantly distinguishes useful plants from weeds and poisonous ones.  \nYou gather herbal materials efficiently, even while traveling, keeping your pouch stocked for elixirs, salves, and poisons.",
+        "description": "Your trained eye instantly distinguishes useful plants from weeds and poisonous ones.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "herbalist-s-eye"
+          ]
         }
       },
       {
@@ -3923,13 +4040,14 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "Street Wisdom 2",
-          "perks": [
-            "Street Wisdom 2"
+          "text": "Streetwise 2",
+          "skills": [
+            "Streetwise 2"
           ]
         },
         "attributes": [
-          "Any"
+          "Charisma",
+          "Perception"
         ],
         "cost": {
           "xp": 5,
@@ -3955,13 +4073,14 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "- Charisma 2",
-          "perks": [
-            "- Charisma 2"
+          "text": "Charisma 2",
+          "skills": [
+            "Charisma 2"
           ]
         },
         "attributes": [
-          "Any"
+          "Charisma",
+          "Will"
         ],
         "cost": {
           "xp": 5,
@@ -4047,7 +4166,9 @@
         "description": "Experience in crime tough you when to go fast as nothing can go wrong, and when to take your time to avoid complications.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "lock-consul"
+          ]
         }
       },
       {
@@ -4133,7 +4254,8 @@
           ]
         },
         "attributes": [
-          "Any"
+          "Wit",
+          "Perception"
         ],
         "cost": {
           "xp": 7,
@@ -4192,17 +4314,19 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "#Streetwise 2, Known in criminal upper echelons  #Rank in cri",
+          "text": "Streetwise 2, Known in criminal upper echelons",
+          "skills": [
+            "Streetwise 2"
+          ],
           "perks": [
-            "#Streetwise 2",
-            "Known in criminal upper echelons  #Rank in cri"
+            "Known in criminal upper echelons"
           ]
         },
         "attributes": [
           "Any"
         ],
         "cost": {
-          "xp": 10,
+          "xp": 0,
           "variable": false
         },
         "apCost": null,
@@ -4226,9 +4350,11 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "Street Wisdom 3, Created reputation rumors about power/viciousness",
+          "text": "Streetwise 3, Created reputation rumors about power/viciousness",
+          "skills": [
+            "Streetwise 3"
+          ],
           "perks": [
-            "Street Wisdom 3",
             "Created reputation rumors about power/viciousness"
           ]
         },
@@ -4236,12 +4362,13 @@
           "Any"
         ],
         "cost": {
-          "xp": 15,
+          "xp": 0,
           "variable": false
         },
         "apCost": null,
         "tags": [
-          "Skill"
+          "Skill",
+          "Rank"
         ],
         "shortDescription": "Your fearsome reputation causes people to avoid investigating your activities and look the other way when you're involved.",
         "effect": "",
@@ -4271,7 +4398,7 @@
           "Any"
         ],
         "cost": {
-          "xp": 5,
+          "xp": 0,
           "variable": false
         },
         "apCost": null,
@@ -4295,9 +4422,9 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "Fast-Talk 3, Charisma 2",
+          "text": "Fast-talk 3, Charisma 2",
           "perks": [
-            "Fast-Talk 3"
+            "Fast-talk 3"
           ],
           "skills": [
             "Charisma 2"
@@ -4313,15 +4440,16 @@
         "apCost": null,
         "tags": [
           "Skill",
-          "GM",
-          "Instant"
+          "GM"
         ],
         "shortDescription": "You gain the Jester immunity.",
         "effect": "",
         "description": "You can't offend people who know of you and your reputation of a clown. At least they can't admit it publicly.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "jester"
+          ]
         }
       },
       {
@@ -4330,9 +4458,11 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "Street Wisdom 3, Started a criminal organization",
+          "text": "Streetwise 3, Started a criminal organization",
+          "skills": [
+            "Streetwise 3"
+          ],
           "perks": [
-            "Street Wisdom 3",
             "Started a criminal organization"
           ]
         },
@@ -4340,7 +4470,7 @@
           "Any"
         ],
         "cost": {
-          "xp": 15,
+          "xp": 0,
           "variable": false
         },
         "apCost": null,
@@ -4377,7 +4507,7 @@
           "Any"
         ],
         "cost": {
-          "xp": 15,
+          "xp": 0,
           "variable": false
         },
         "apCost": null,
@@ -4410,12 +4540,13 @@
           "Any"
         ],
         "cost": {
-          "xp": 5,
+          "xp": 0,
           "variable": false
         },
         "apCost": null,
         "tags": [
-          "Skill"
+          "Skill",
+          "Rank"
         ],
         "shortDescription": "You are a licensed priest of a deity with official standing and religious authority.",
         "effect": "",
@@ -4433,9 +4564,11 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "Street Wisdom 3, Created reputation rumors",
+          "text": "Streetwise 3, Created reputation rumors",
+          "skills": [
+            "Streetwise 3"
+          ],
           "perks": [
-            "Street Wisdom 3",
             "Created reputation rumors"
           ]
         },
@@ -4443,7 +4576,7 @@
           "Any"
         ],
         "cost": {
-          "xp": 15,
+          "xp": 0,
           "variable": false
         },
         "apCost": null,
@@ -4480,7 +4613,7 @@
           "Any"
         ],
         "cost": {
-          "xp": 15,
+          "xp": 0,
           "variable": false
         },
         "apCost": null,
@@ -4499,6 +4632,40 @@
         }
       },
       {
+        "id": "savoir-faire",
+        "name": "Savoir Faire",
+        "type": "skill",
+        "source": "database",
+        "requirements": {
+          "text": "Survival 1, Tracking 1",
+          "skills": [
+            "Survival 1",
+            "Tracking 1"
+          ]
+        },
+        "attributes": [
+          "Charisma",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 3,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Skill"
+        ],
+        "shortDescription": "Learn the rules of behavior in a culture, that is not your own. Can be taken Multiple times.",
+        "effect": "",
+        "description": "More than 1 is not supported by the current up i the current version. Make a custom feat for this.",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "savoir-faire"
+          ]
+        }
+      },
+      {
         "id": "silent-steps",
         "name": "Silent Steps",
         "type": "skill",
@@ -4510,7 +4677,8 @@
           ]
         },
         "attributes": [
-          "Any"
+          "Agility",
+          "Dexterity"
         ],
         "cost": {
           "xp": 5,
@@ -4519,14 +4687,17 @@
         "apCost": null,
         "tags": [
           "Skill",
+          "Combat",
           "Exploration"
         ],
-        "shortDescription": "",
+        "shortDescription": "Move swiftly without breaking silence.",
         "effect": "",
         "description": "You know how to move quickly and quietly as a second nature.",
         "grants": {
           "abilities": [],
-          "effects": []
+          "effects": [
+            "silent-steps"
+          ]
         }
       },
       {
@@ -4535,13 +4706,14 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "Street Wisdom 1",
-          "perks": [
-            "Street Wisdom 1"
+          "text": "Streetwise 1",
+          "skills": [
+            "Streetwise 1"
           ]
         },
         "attributes": [
-          "Any"
+          "Charisma",
+          "Wit"
         ],
         "cost": {
           "xp": 5,
@@ -4567,13 +4739,14 @@
         "type": "skill",
         "source": "database",
         "requirements": {
-          "text": "Tracking 2,",
+          "text": "Tracking 2",
           "skills": [
             "Tracking 2"
           ]
         },
         "attributes": [
-          "Any"
+          "Perception",
+          "Wit"
         ],
         "cost": {
           "xp": 5,
@@ -4681,10 +4854,10 @@
     {
       "id": "double-shot",
       "name": "Double Shot",
-      "effect": "**AP Cost:** 4\n\nShoot two different targets with one action. The second shot takes -2 to hit.",
+      "effect": "**AP Cost:** 4\n\nShoot two different targets, second at -2 to hit.",
       "tags": [
-        "Ranged",
-        "Strike"
+        "Attack",
+        "Projectile"
       ]
     },
     {
@@ -4899,6 +5072,16 @@
       "tags": [
         "Reaction",
         "Parry"
+      ]
+    },
+    {
+      "id": "spell-shot",
+      "name": "Spell Shot",
+      "effect": "**AP Cost:** Variable (spell cost)\n\nWhen casting a single target offensive spell, you can store it in the knocked arrow until the end of your next turn, using your bow strike to resolve both the spells.",
+      "tags": [
+        "Attack",
+        "Spell",
+        "Projectile"
       ]
     },
     {

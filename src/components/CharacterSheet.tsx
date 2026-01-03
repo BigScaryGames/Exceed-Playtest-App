@@ -6,7 +6,7 @@ import { SkillsTab } from '@/components/tabs/SkillsTab';
 import { CombatTab } from '@/components/tabs/CombatTab';
 import { EquipmentTab } from '@/components/tabs/EquipmentTab';
 import { MagicTab } from '@/components/tabs/MagicTab';
-import { AbilitiesEffectsTab } from '@/components/tabs/AbilitiesEffectsTab';
+import { PerksTab } from '@/components/tabs/PerksTab';
 import { NotesTab } from '@/components/tabs/NotesTab';
 import { calculateAttributeValues, calculateWeaponDomains } from '@/utils/calculations';
 import { migrateCharacterIfNeeded, needsMigration } from '@/utils/migration';
@@ -18,14 +18,14 @@ interface CharacterSheetProps {
   onMenuToggle: () => void;
 }
 
-type TabType = 'skills' | 'combat' | 'equipment' | 'magic' | 'abilities' | 'list';
+type TabType = 'skills' | 'combat' | 'equipment' | 'magic' | 'perks' | 'list';
 
 export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpdate, perkDatabase, onMenuToggle }) => {
   const [activeTab, setActiveTab] = useState<TabType>('skills');
   const [touchStart, setTouchStart] = useState<number>(0);
   const [touchEnd, setTouchEnd] = useState<number>(0);
 
-  const tabs: TabType[] = ['skills', 'combat', 'equipment', 'magic', 'abilities', 'list'];
+  const tabs: TabType[] = ['skills', 'combat', 'equipment', 'magic', 'perks', 'list'];
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.touches[0].clientX);
@@ -161,14 +161,14 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
             🧙 Magic
           </button>
           <button
-            onClick={() => setActiveTab('abilities')}
+            onClick={() => setActiveTab('perks')}
             className={`flex-1 py-3 font-semibold ${
-              activeTab === 'abilities'
+              activeTab === 'perks'
                 ? 'text-white border-b-2 border-white'
                 : 'text-slate-500'
             }`}
           >
-            ✨ Powers
+            ✨ Perks
           </button>
           <button
             onClick={() => setActiveTab('list')}
@@ -188,7 +188,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
         {activeTab === 'combat' && <CombatTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
         {activeTab === 'equipment' && <EquipmentTab character={displayCharacter} onUpdate={onUpdate} />}
         {activeTab === 'magic' && <MagicTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
-        {activeTab === 'abilities' && <AbilitiesEffectsTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
+        {activeTab === 'perks' && <PerksTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
         {activeTab === 'list' && <NotesTab character={displayCharacter} onUpdate={onUpdate} />}
       </div>
     </div>

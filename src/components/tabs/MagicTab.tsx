@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Pencil, Trash2, Zap, ZapOff, Dice6, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, Trash2, Zap, ZapOff, Dice6, ChevronDown, ChevronRight, ScrollText } from 'lucide-react';
 import { Character, KnownSpell } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import {
@@ -20,8 +20,87 @@ import {
 import { AddSpellModal } from '@/components/modals/AddSpellModal';
 import { EditSpellModal } from '@/components/modals/EditSpellModal';
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
-import { AddPerkModal } from '@/components/modals/AddPerkModal';
 import { MagePerkSpellModal } from '@/components/modals/MagePerkSpellModal';
+import {
+  getActiveAbilitiesWithInheritedTags,
+  getActiveEffectsWithInheritedTags,
+  ActiveAbility,
+  ActiveEffect
+} from '@/utils/effectCalculator';
+
+// Ability/Effect card component
+interface AbilityEffectCardProps {
+  item: ActiveAbility | ActiveEffect;
+  isAbility: boolean;
+  onDelete?: () => void;
+}
+const AbilityEffectCard: React.FC<AbilityEffectCardProps> = ({ item, isAbility, onDelete }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const colorClass = isAbility ? 'blue' : 'purple';
+
+  return (
+    <div className="bg-slate-700 rounded overflow-hidden">
+      <div
+        className="p-3 cursor-pointer hover:bg-slate-600 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <span className="text-white font-medium text-sm">{item.name}</span>
+            <div className="text-slate-400 text-xs mt-0.5">
+              from {item.sourcePerk}
+            </div>
+          </div>
+          {item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 justify-end ml-2">
+              {item.tags.slice(0, 2).map((tag, i) => (
+                <span
+                  key={i}
+                  className={`text-xs bg-${colorClass}-900/50 text-${colorClass}-300 px-1.5 py-0.5 rounded`}
+                >
+                  {tag}
+                </span>
+              ))}
+              {item.tags.length > 2 && (
+                <span className="text-xs text-slate-500">+{item.tags.length - 2}</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      {isExpanded && (
+        <div className="px-3 pb-3 border-t border-slate-600">
+          <div className="text-slate-300 text-sm mt-2 whitespace-pre-wrap">
+            {item.effect}
+          </div>
+          {item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {item.tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className={`text-xs bg-${colorClass}-900/50 text-${colorClass}-300 px-1.5 py-0.5 rounded`}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {onDelete && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              className="w-full mt-3 bg-red-700 hover:bg-red-600 rounded py-2 text-white text-sm font-semibold"
+            >
+              Remove {item.sourcePerk}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 interface MagicTabProps {
   character: Character;
@@ -34,8 +113,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
   const [editingSpell, setEditingSpell] = useState<KnownSpell | null>(null);
   const [isRollerOpen, setIsRollerOpen] = useState(false);
   const [rollData, setRollData] = useState<RollData | null>(null);
-  const [showAddMagicPerkModal, setShowAddMagicPerkModal] = useState(false);
-  const [expandedMagicPerkIndex, setExpandedMagicPerkIndex] = useState<number | null>(null);
   const [showMagePerkSpellModal, setShowMagePerkSpellModal] = useState(false);
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
 
@@ -66,6 +143,14 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
   // Check if Mage perk free spell has been claimed (Tier 0 spell with xpCost: 0)
   const hasMagePerkFreeSpell = character.knownSpells?.some(s => s.tier === 0 && s.xpCost === 0) || false;
   const canClaimMagePerkSpell = hasMagePerk && !hasMagePerkFreeSpell;
+
+  // Get abilities and effects with inherited tags
+  const abilities = getActiveAbilitiesWithInheritedTags(character, perkDatabase);
+  const effects = getActiveEffectsWithInheritedTags(character, perkDatabase);
+
+  // Filter by #Spellcraft tag
+  const spellcraftAbilities = abilities.filter(a => a.tags.includes('Spellcraft'));
+  const spellcraftEffects = effects.filter(e => e.tags.includes('Spellcraft'));
 
   const handleAttuneToggle = (spellId: string) => {
     const isAttuned = character.attunedSpells?.includes(spellId);
@@ -125,23 +210,23 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
     setExpandedSpellId(expandedSpellId === spellId ? null : spellId);
   };
 
-  const toggleMagicPerkExpand = (index: number) => {
-    setExpandedMagicPerkIndex(expandedMagicPerkIndex === index ? null : index);
-  };
+  // Handle deleting a magic perk (by name, from abilities/effects section)
+  const handleDeleteMagicPerkByName = (perkName: string) => {
+    const perkIndex = magicPerks.findIndex(p => p.name === perkName);
+    if (perkIndex === -1) return;
 
-  const handleDeleteMagicPerk = (index: number) => {
-    const perk = magicPerks[index];
+    const perk = magicPerks[perkIndex];
+    const updatedMagicPerks = magicPerks.filter((_, i) => i !== perkIndex);
 
-    // Remove from magicPerks array
-    const updatedMagicPerks = magicPerks.filter((_, i) => i !== index);
-
-    // Remove from progression log
+    // Remove from progression log - find the most recent matching entry
     const updatedLog = [...character.progressionLog];
     for (let i = updatedLog.length - 1; i >= 0; i--) {
-      if (updatedLog[i].type === 'magicPerk' &&
-          updatedLog[i].name === perk.name &&
-          updatedLog[i].cost === perk.cost &&
-          updatedLog[i].attribute === perk.attribute) {
+      if (
+        updatedLog[i].type === 'magicPerk' &&
+        updatedLog[i].name === perk.name &&
+        updatedLog[i].cost === perk.cost &&
+        updatedLog[i].attribute === perk.attribute
+      ) {
         updatedLog.splice(i, 1);
         break;
       }
@@ -154,8 +239,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
       combatXP: character.combatXP + perk.cost,
       progressionLog: updatedLog
     });
-
-    setExpandedMagicPerkIndex(null);
   };
 
   const getLimitBarColor = (percentage: number): string => {
@@ -227,60 +310,38 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
         )}
       </div>
 
-      {/* Magic Perks Section */}
+      {/* Spellcraft Abilities & Effects Section */}
       <div className="bg-slate-800 rounded-lg p-4 mb-4">
         <div className="flex justify-between items-center mb-3">
-          <h4 className="text-lg font-bold text-white">Magic Perks</h4>
-          <button
-            onClick={() => setShowAddMagicPerkModal(true)}
-            className="flex items-center gap-2 bg-purple-700 hover:bg-purple-600 rounded px-3 py-1.5 text-white text-sm font-semibold"
-          >
-            <Plus size={16} />
-            Add Perk
-          </button>
+          <div className="flex items-center gap-2">
+            <ScrollText size={18} className="text-slate-300" />
+            <h4 className="text-lg font-bold text-white">Spellcraft Abilities & Effects</h4>
+          </div>
+          <span className="text-slate-400 text-sm">
+            {spellcraftAbilities.length + spellcraftEffects.length} total
+          </span>
         </div>
-        {magicPerks.length === 0 ? (
-          <div className="text-center py-6">
-            <p className="text-slate-400 text-sm">No magic perks yet</p>
-            <p className="text-slate-500 text-xs mt-1">Add perks to enhance your spellcasting</p>
+        {spellcraftAbilities.length === 0 && spellcraftEffects.length === 0 ? (
+          <div className="text-slate-500 text-sm text-center py-4">
+            No abilities or effects from #Spellcraft perks. Add perks in the Perks tab.
           </div>
         ) : (
           <div className="space-y-2">
-            {magicPerks.map((perk, index) => (
-              <div key={index} className="bg-slate-700 rounded overflow-hidden">
-                <div
-                  className="p-3 cursor-pointer hover:bg-slate-600 transition-colors"
-                  onClick={() => toggleMagicPerkExpand(index)}
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-white font-medium">{perk.name}</span>
-                      <div className="text-sm mt-1">
-                        <span className="text-green-400">{perk.cost} XP</span>
-                        <span className="text-slate-400 mx-2">•</span>
-                        <span className="text-purple-400">{perk.attribute}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {expandedMagicPerkIndex === index && (
-                  <div className="px-3 pb-3 border-t border-slate-600">
-                    {perk.description && (
-                      <p className="text-slate-300 text-sm mt-2 mb-3">{perk.description}</p>
-                    )}
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteMagicPerk(index);
-                      }}
-                      className="w-full bg-red-700 hover:bg-red-600 rounded py-2 text-white font-semibold"
-                    >
-                      Delete (Refund {perk.cost} XP)
-                    </button>
-                  </div>
-                )}
-              </div>
+            {spellcraftAbilities.map((ability, index) => (
+              <AbilityEffectCard
+                key={`spellcraft-ability-${index}`}
+                item={ability}
+                isAbility={true}
+                onDelete={() => handleDeleteMagicPerkByName(ability.sourcePerk)}
+              />
+            ))}
+            {spellcraftEffects.map((effect, index) => (
+              <AbilityEffectCard
+                key={`spellcraft-effect-${index}`}
+                item={effect}
+                isAbility={false}
+                onDelete={() => handleDeleteMagicPerkByName(effect.sourcePerk)}
+              />
             ))}
           </div>
         )}
@@ -506,16 +567,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
         isOpen={isRollerOpen}
         onClose={() => setIsRollerOpen(false)}
         rollData={rollData}
-      />
-
-      {/* Magic Perk Modal */}
-      <AddPerkModal
-        isOpen={showAddMagicPerkModal}
-        onClose={() => setShowAddMagicPerkModal(false)}
-        character={character}
-        onUpdate={onUpdate}
-        category="magic"
-        perkDatabase={perkDatabase}
       />
 
       {/* Mage Perk Free Spell Modal */}

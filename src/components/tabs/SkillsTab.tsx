@@ -1,13 +1,92 @@
 import React, { useState } from 'react';
-import { Plus, Dice6 } from 'lucide-react';
+import { Plus, Dice6, BookOpen } from 'lucide-react';
 import { Character, Skill, Perk, SkillDefinition, AttributeCode } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import { Modal } from '@/components/shared/Modal';
 import { AttributeSelector } from '@/components/shared/AttributeSelector';
 import { SkillSelectModal } from '@/components/modals/SkillSelectModal';
-import { AddPerkModal } from '@/components/modals/AddPerkModal';
 import { PerkModal } from '@/components/modals/PerkModal';
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
+import {
+  getActiveAbilitiesWithInheritedTags,
+  getActiveEffectsWithInheritedTags,
+  ActiveAbility,
+  ActiveEffect
+} from '@/utils/effectCalculator';
+
+// Ability/Effect card component
+interface AbilityEffectCardProps {
+  item: ActiveAbility | ActiveEffect;
+  isAbility: boolean;
+  onDelete?: () => void;
+}
+const AbilityEffectCard: React.FC<AbilityEffectCardProps> = ({ item, isAbility, onDelete }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const colorClass = isAbility ? 'blue' : 'purple';
+
+  return (
+    <div className="bg-slate-800 rounded overflow-hidden">
+      <div
+        className="p-3 cursor-pointer hover:bg-slate-750 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <span className="text-white font-medium text-sm">{item.name}</span>
+            <div className="text-slate-400 text-xs mt-0.5">
+              from {item.sourcePerk}
+            </div>
+          </div>
+          {item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 justify-end ml-2">
+              {item.tags.slice(0, 2).map((tag, i) => (
+                <span
+                  key={i}
+                  className={`text-xs bg-${colorClass}-900/50 text-${colorClass}-300 px-1.5 py-0.5 rounded`}
+                >
+                  {tag}
+                </span>
+              ))}
+              {item.tags.length > 2 && (
+                <span className="text-xs text-slate-500">+{item.tags.length - 2}</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      {isExpanded && (
+        <div className="px-3 pb-3 border-t border-slate-700">
+          <div className="text-slate-300 text-sm mt-2 whitespace-pre-wrap">
+            {item.effect}
+          </div>
+          {item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {item.tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className={`text-xs bg-${colorClass}-900/50 text-${colorClass}-300 px-1.5 py-0.5 rounded`}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {onDelete && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              className="w-full mt-3 bg-red-700 hover:bg-red-600 rounded py-2 text-white text-sm font-semibold"
+            >
+              Remove {item.sourcePerk}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 interface SkillsTabProps {
   character: Character;
@@ -16,12 +95,16 @@ interface SkillsTabProps {
 }
 
 export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkDatabase }) => {
-  // Sub-tab state
-  const [activeSubTab, setActiveSubTab] = useState<'skills' | 'perks'>('skills');
+  // Get abilities and effects with inherited tags
+  const abilities = getActiveAbilitiesWithInheritedTags(character, perkDatabase);
+  const effects = getActiveEffectsWithInheritedTags(character, perkDatabase);
+
+  // Filter by #Skill tag
+  const skillAbilities = abilities.filter(a => a.tags.includes('Skill'));
+  const skillEffects = effects.filter(e => e.tags.includes('Skill'));
 
   // Modal state
   const [showAddSkillModal, setShowAddSkillModal] = useState(false);
-  const [showAddPerkModal, setShowAddPerkModal] = useState(false);
   const [showEditPerkModal, setShowEditPerkModal] = useState(false);
   const [showAttributeSelectModal, setShowAttributeSelectModal] = useState(false);
   const [isRollerOpen, setIsRollerOpen] = useState(false);
@@ -33,7 +116,6 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
 
   // Expansion state
   const [expandedSkillIndex, setExpandedSkillIndex] = useState<number | null>(null);
-  const [expandedPerkIndex, setExpandedPerkIndex] = useState<number | null>(null);
 
   // Editing state
   const [editingPerkIndex, setEditingPerkIndex] = useState<number | null>(null);
@@ -260,10 +342,13 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
     setEditingPerkIndex(null);
   };
 
-  // Handle deleting a perk
-  const handleDeletePerk = (index: number) => {
-    const perk = character.perks[index];
-    const updatedPerks = character.perks.filter((_, i) => i !== index);
+  // Handle deleting a perk (by name, from abilities/effects section)
+  const handleDeletePerk = (perkName: string) => {
+    const perkIndex = character.perks.findIndex(p => p.name === perkName);
+    if (perkIndex === -1) return;
+
+    const perk = character.perks[perkIndex];
+    const updatedPerks = character.perks.filter((_, i) => i !== perkIndex);
 
     // Remove from progression log - find the most recent matching entry
     const updatedLog = [...character.progressionLog];
@@ -285,218 +370,146 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
       socialXP: character.socialXP + perk.cost,
       progressionLog: updatedLog
     });
-
-    setExpandedPerkIndex(null);
-  };
-
-  // Toggle perk expansion
-  const togglePerkExpand = (index: number) => {
-    setExpandedPerkIndex(expandedPerkIndex === index ? null : index);
-  };
-
-  // Open edit perk modal
-  const openEditPerkModal = (index: number) => {
-    setEditingPerkIndex(index);
-    setShowEditPerkModal(true);
   };
 
   return (
     <>
-      {/* Sub-tab Navigation Bar - Only visible on mobile */}
-      <div className="bg-slate-900 border-b border-slate-700 lg:hidden">
-        <div className="flex">
+      <div className="p-4">
+        {/* Skills Section */}
+        <div className="flex justify-between items-center mb-3">
+          <h3 className="text-xl font-bold text-white">Skills</h3>
           <button
-            onClick={() => setActiveSubTab('skills')}
-            className={`flex-1 py-3 px-4 text-center font-semibold transition-colors ${
-              activeSubTab === 'skills'
-                ? 'text-white border-b-2 border-blue-500 bg-slate-800'
-                : 'text-slate-400 hover:text-slate-300 hover:bg-slate-850'
-            }`}
+            onClick={() => setShowAddSkillModal(true)}
+            className="bg-slate-700 hover:bg-slate-600 rounded-lg p-1.5"
           >
-            Skills
-          </button>
-          <button
-            onClick={() => setActiveSubTab('perks')}
-            className={`flex-1 py-3 px-4 text-center font-semibold transition-colors ${
-              activeSubTab === 'perks'
-                ? 'text-white border-b-2 border-blue-500 bg-slate-800'
-                : 'text-slate-400 hover:text-slate-300 hover:bg-slate-850'
-            }`}
-          >
-            Perks
+            <Plus size={16} />
           </button>
         </div>
-      </div>
-
-      <div className="p-4">
-        {/* Responsive Layout: Sub-tabs on mobile, Two-columns on desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Skills Section */}
-          <div className={activeSubTab === 'skills' ? 'block lg:block' : 'hidden lg:block'}>
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-xl font-bold text-white lg:hidden">Skills</h3>
-              <h4 className="text-lg font-semibold text-slate-300 hidden lg:block">Skills</h4>
+        <div className="space-y-2">
+          {character.skills.map((skill, index) => (
+          <div key={index} className="bg-slate-800 rounded overflow-hidden">
+            <div
+              className="p-3 cursor-pointer hover:bg-slate-750 transition-colors flex justify-between items-center"
+              onClick={() => toggleSkillExpand(index)}
+            >
+              <div>
+                <span className="text-white font-medium">
+                  {skill.name}[{skill.level}]
+                </span>
+                <span className="text-slate-400 text-sm ml-2">
+                  ({skill.attributes})
+                </span>
+              </div>
               <button
-                onClick={() => setShowAddSkillModal(true)}
-                className="bg-slate-700 hover:bg-slate-600 rounded-lg p-1.5"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSkillRoll(skill);
+                }}
+                className="bg-blue-700 hover:bg-blue-600 rounded p-2 text-white transition-colors"
               >
-                <Plus size={16} />
+                <Dice6 size={16} />
               </button>
             </div>
-            <div className="space-y-2">
-              {character.skills.map((skill, index) => (
-              <div key={index} className="bg-slate-800 rounded overflow-hidden">
-                <div
-                  className="p-3 cursor-pointer hover:bg-slate-750 transition-colors flex justify-between items-center"
-                  onClick={() => toggleSkillExpand(index)}
-                >
-                  <div>
-                    <span className="text-white font-medium">
-                      {skill.name}[{skill.level}]
-                    </span>
-                    <span className="text-slate-400 text-sm ml-2">
-                      ({skill.attributes})
-                    </span>
+            {expandedSkillIndex === index && (
+              <div className="px-3 pb-3 border-t border-slate-700">
+                <p className="text-slate-300 text-sm mt-2 mb-3">
+                  {skill.description}
+                </p>
+
+                <div className="mb-3">
+                  <div className="text-xs font-semibold text-slate-400 mb-1">
+                    Attribute History:
                   </div>
+                  <div className="flex flex-wrap gap-1">
+                    {skill.attributeHistory.map((attr, i) => (
+                      <span
+                        key={i}
+                        className="text-xs bg-blue-900/50 text-blue-300 px-2 py-0.5 rounded"
+                      >
+                        Lvl {i + 1}: {attr}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleSkillRoll(skill);
+                      handleSkillLevelUp(index);
                     }}
-                    className="bg-blue-700 hover:bg-blue-600 rounded p-2 text-white transition-colors"
+                    disabled={
+                      skill.level >= 5 ||
+                      character.socialXP < (skill.level + 1) * 2
+                    }
+                    className={`flex-1 rounded py-2 text-white font-semibold flex items-center justify-center gap-1 ${
+                      skill.level >= 5 ||
+                      character.socialXP < (skill.level + 1) * 2
+                        ? 'bg-slate-600 cursor-not-allowed opacity-50'
+                        : 'bg-green-700 hover:bg-green-600'
+                    }`}
                   >
-                    <Dice6 size={16} />
+                    <Plus size={16} />
+                    Level Up [{(skill.level + 1) * 2} XP]
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSkillLevelDown(index);
+                    }}
+                    disabled={skill.level <= 1}
+                    className={`flex-1 rounded py-2 text-white font-semibold flex items-center justify-center gap-1 ${
+                      skill.level <= 1
+                        ? 'bg-slate-600 cursor-not-allowed opacity-50'
+                        : 'bg-red-700 hover:bg-red-600'
+                    }`}
+                  >
+                    <span className="text-lg leading-none">−</span>
+                    Level Down [{skill.level * 2} XP]
                   </button>
                 </div>
-                {expandedSkillIndex === index && (
-                  <div className="px-3 pb-3 border-t border-slate-700">
-                    <p className="text-slate-300 text-sm mt-2 mb-3">
-                      {skill.description}
-                    </p>
-
-                    <div className="mb-3">
-                      <div className="text-xs font-semibold text-slate-400 mb-1">
-                        Attribute History:
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {skill.attributeHistory.map((attr, i) => (
-                          <span
-                            key={i}
-                            className="text-xs bg-blue-900/50 text-blue-300 px-2 py-0.5 rounded"
-                          >
-                            Lvl {i + 1}: {attr}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSkillLevelUp(index);
-                        }}
-                        disabled={
-                          skill.level >= 5 ||
-                          character.socialXP < (skill.level + 1) * 2
-                        }
-                        className={`flex-1 rounded py-2 text-white font-semibold flex items-center justify-center gap-1 ${
-                          skill.level >= 5 ||
-                          character.socialXP < (skill.level + 1) * 2
-                            ? 'bg-slate-600 cursor-not-allowed opacity-50'
-                            : 'bg-green-700 hover:bg-green-600'
-                        }`}
-                      >
-                        <Plus size={16} />
-                        Level Up [{(skill.level + 1) * 2} XP]
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSkillLevelDown(index);
-                        }}
-                        disabled={skill.level <= 1}
-                        className={`flex-1 rounded py-2 text-white font-semibold flex items-center justify-center gap-1 ${
-                          skill.level <= 1
-                            ? 'bg-slate-600 cursor-not-allowed opacity-50'
-                            : 'bg-red-700 hover:bg-red-600'
-                        }`}
-                      >
-                        <span className="text-lg leading-none">−</span>
-                        Level Down [{skill.level * 2} XP]
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
-            ))}
-            </div>
+            )}
           </div>
+          ))}
+        </div>
+      </div>
 
-          {/* Perks Section */}
-          <div className={activeSubTab === 'perks' ? 'block lg:block' : 'hidden lg:block'}>
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="text-xl font-bold text-white lg:hidden">Perks</h3>
-              <h4 className="text-lg font-semibold text-slate-300 hidden lg:block">Perks</h4>
-              <button
-                onClick={() => setShowAddPerkModal(true)}
-                className="flex items-center gap-2 bg-purple-700 hover:bg-purple-600 rounded px-3 py-1.5 text-white text-sm font-semibold"
-              >
-                <Plus size={16} />
-                Add Perk
-              </button>
-            </div>
-            <div className="space-y-2">
-              {character.perks.map((perk, index) => (
-              <div key={index} className="bg-slate-800 rounded overflow-hidden">
-                <div
-                  className="p-3 cursor-pointer hover:bg-slate-750 transition-colors"
-                  onClick={() => togglePerkExpand(index)}
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-white font-medium">{perk.name}</span>
-                      <div className="text-sm mt-1">
-                        <span className="text-green-400">{perk.cost} CP</span>
-                        <span className="text-slate-400 mx-2">•</span>
-                        <span className="text-blue-400">{perk.attribute}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {expandedPerkIndex === index && (
-                  <div className="px-3 pb-3 border-t border-slate-700">
-                    {perk.description && (
-                      <p className="text-slate-300 text-sm mt-2 mb-3">
-                        {perk.description}
-                      </p>
-                    )}
-
-                    <div className="flex gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openEditPerkModal(index);
-                        }}
-                        className="flex-1 bg-blue-700 hover:bg-blue-600 rounded py-2 text-white font-semibold"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeletePerk(index);
-                        }}
-                        className="flex-1 bg-red-700 hover:bg-red-600 rounded py-2 text-white font-semibold"
-                      >
-                        Delete (Refund {perk.cost} CP)
-                      </button>
-                    </div>
-                  </div>
-                )}
+      {/* Granted Abilities & Effects Section */}
+      <div className="px-4 pb-4">
+        <div className="bg-slate-800 rounded-lg overflow-hidden">
+          <div className="px-4 py-3 bg-slate-750 border-b border-slate-700 flex items-center gap-2">
+            <BookOpen size={18} className="text-slate-300" />
+            <h3 className="text-white font-semibold">Granted Abilities & Effects</h3>
+            <span className="text-slate-400 text-sm ml-auto">
+              {skillAbilities.length + skillEffects.length} total
+            </span>
+          </div>
+          <div className="p-4 space-y-2">
+            {skillAbilities.length === 0 && skillEffects.length === 0 ? (
+              <div className="text-slate-500 text-sm text-center py-4">
+                No abilities or effects from #Skill perks. Add perks in the Perks tab.
               </div>
-            ))}
-            </div>
+            ) : (
+              <>
+                {skillAbilities.map((ability, index) => (
+                  <AbilityEffectCard
+                    key={`skill-ability-${index}`}
+                    item={ability}
+                    isAbility={true}
+                    onDelete={() => handleDeletePerk(ability.sourcePerk)}
+                  />
+                ))}
+                {skillEffects.map((effect, index) => (
+                  <AbilityEffectCard
+                    key={`skill-effect-${index}`}
+                    item={effect}
+                    isAbility={false}
+                    onDelete={() => handleDeletePerk(effect.sourcePerk)}
+                  />
+                ))}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -508,16 +521,6 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
         onSelectSkill={handleSkillSelect}
         learnedSkills={character.skills.map(s => s.name)}
         availableCP={character.socialXP}
-      />
-
-      {/* Add Perk Modal */}
-      <AddPerkModal
-        isOpen={showAddPerkModal}
-        onClose={() => setShowAddPerkModal(false)}
-        character={character}
-        onUpdate={onUpdate}
-        category="skill"
-        perkDatabase={perkDatabase}
       />
 
       {/* Edit Perk Modal */}

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
 import { Character, Weapon, InventoryItem } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import { WEAPONS } from '@/data/weapons';
-import { AddPerkModal } from '@/components/modals/AddPerkModal';
 import { ConditioningPerkModal } from '@/components/modals/ConditioningPerkModal';
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
 import {
@@ -20,6 +18,87 @@ import {
   calculateHPValues,
   calculateEndure
 } from '@/utils/calculations';
+import {
+  getActiveAbilitiesWithInheritedTags,
+  getActiveEffectsWithInheritedTags,
+  ActiveAbility,
+  ActiveEffect
+} from '@/utils/effectCalculator';
+import { Swords, Plus } from 'lucide-react';
+
+// Ability/Effect card component
+interface AbilityEffectCardProps {
+  item: ActiveAbility | ActiveEffect;
+  isAbility: boolean;
+  onDelete?: () => void;
+}
+const AbilityEffectCard: React.FC<AbilityEffectCardProps> = ({ item, isAbility, onDelete }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const colorClass = isAbility ? 'blue' : 'purple';
+
+  return (
+    <div className="bg-slate-700 rounded overflow-hidden">
+      <div
+        className="p-3 cursor-pointer hover:bg-slate-600 transition-colors"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <span className="text-white font-medium text-sm">{item.name}</span>
+            <div className="text-slate-400 text-xs mt-0.5">
+              from {item.sourcePerk}
+            </div>
+          </div>
+          {item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 justify-end ml-2">
+              {item.tags.slice(0, 2).map((tag, i) => (
+                <span
+                  key={i}
+                  className={`text-xs bg-${colorClass}-900/50 text-${colorClass}-300 px-1.5 py-0.5 rounded`}
+                >
+                  {tag}
+                </span>
+              ))}
+              {item.tags.length > 2 && (
+                <span className="text-xs text-slate-500">+{item.tags.length - 2}</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      {isExpanded && (
+        <div className="px-3 pb-3 border-t border-slate-600">
+          <div className="text-slate-300 text-sm mt-2 whitespace-pre-wrap">
+            {item.effect}
+          </div>
+          {item.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {item.tags.map((tag, i) => (
+                <span
+                  key={i}
+                  className={`text-xs bg-${colorClass}-900/50 text-${colorClass}-300 px-1.5 py-0.5 rounded`}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {onDelete && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              className="w-full mt-3 bg-red-700 hover:bg-red-600 rounded py-2 text-white text-sm font-semibold"
+            >
+              Remove {item.sourcePerk}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 // WeaponRollSection Component
 interface WeaponRollSectionProps {
@@ -87,12 +166,18 @@ interface CombatTabProps {
 
 export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkDatabase }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Get abilities and effects with inherited tags
+  const abilities = getActiveAbilitiesWithInheritedTags(character, perkDatabase);
+  const effects = getActiveEffectsWithInheritedTags(character, perkDatabase);
+
+  // Filter by #Combat tag
+  const combatAbilities = abilities.filter(a => a.tags.includes('Combat'));
+  const combatEffects = effects.filter(e => e.tags.includes('Combat'));
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragStartHP, setDragStartHP] = useState(0);
   const [showConditioningModal, setShowConditioningModal] = useState(false);
-  const [showAddCombatPerkModal, setShowAddCombatPerkModal] = useState(false);
-  const [expandedCombatPerkIndex, setExpandedCombatPerkIndex] = useState<number | null>(null);
   const [isRollerOpen, setIsRollerOpen] = useState(false);
   const [rollData, setRollData] = useState<RollData | null>(null);
 
@@ -188,10 +273,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
     });
   };
 
-  const toggleCombatPerkExpand = (index: number) => {
-    setExpandedCombatPerkIndex(expandedCombatPerkIndex === index ? null : index);
-  };
-
   const handleDeleteCombatPerk = (index: number) => {
     const perk = character.combatPerks[index];
     const updatedPerks = character.combatPerks.filter((_, i) => i !== index);
@@ -260,8 +341,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
       combatXP: character.combatXP + totalRefund,
       progressionLog: updatedLog
     });
-
-    setExpandedCombatPerkIndex(null);
   };
 
   // Get equipped weapons - with backward compatibility
@@ -550,69 +629,47 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
         </div>
       </div>
 
-      {/* Combat Perks Section */}
+      {/* Martial Abilities & Effects Section */}
       <div className="bg-slate-800 rounded-lg p-4 mb-4">
-        <div className="flex justify-between items-center mb-3">
-          <h4 className="text-lg font-bold text-white">Combat Perks</h4>
-          <button
-            onClick={() => setShowAddCombatPerkModal(true)}
-            className="flex items-center gap-2 bg-purple-700 hover:bg-purple-600 rounded px-3 py-1.5 text-white text-sm font-semibold"
-          >
-            <Plus size={16} />
-            Add Perk
-          </button>
+        <div className="px-4 py-3 bg-slate-750 -mx-4 -mt-4 mb-4 flex items-center gap-2 border-b border-slate-700">
+          <Swords size={18} className="text-slate-300" />
+          <h3 className="text-white font-semibold">Martial Abilities & Effects</h3>
+          <span className="text-slate-400 text-sm ml-auto">
+            {combatAbilities.length + combatEffects.length} total
+          </span>
         </div>
-        <div className="space-y-2">
-          {character.combatPerks.map((perk, index) => {
-            // Calculate refund amount - for conditioning perks, sum all stagedPerk entries
-            const isConditioningPerk = perk.perkSnapshot?.tags?.includes('Conditioning') ||
-              perk.name.includes('(Completed)');
-            const basePerkName = perk.name.replace(' (Completed)', '');
-
-            const refundAmount = isConditioningPerk
-              ? character.progressionLog
-                  .filter(entry => entry.type === 'stagedPerk' && entry.name === basePerkName)
-                  .reduce((sum, entry) => sum + (entry.cost || 0), 0)
-              : perk.cost;
-
-            return (
-              <div key={index} className="bg-slate-700 rounded overflow-hidden">
-                <div
-                  className="p-3 cursor-pointer hover:bg-slate-600 transition-colors"
-                  onClick={() => toggleCombatPerkExpand(index)}
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <span className="text-white font-medium">{perk.name}</span>
-                      <div className="text-sm mt-1">
-                        <span className="text-green-400">{refundAmount} XP</span>
-                        <span className="text-slate-400 mx-2">•</span>
-                        <span className="text-purple-400">{perk.attribute}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {expandedCombatPerkIndex === index && (
-                  <div className="px-3 pb-3 border-t border-slate-600">
-                    {perk.description && (
-                      <p className="text-slate-300 text-sm mt-2 mb-3">{perk.description}</p>
-                    )}
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteCombatPerk(index);
-                      }}
-                      className="w-full bg-red-700 hover:bg-red-600 rounded py-2 text-white font-semibold"
-                    >
-                      Delete (Refund {refundAmount} XP{isConditioningPerk ? ', -1 Wound' : ''})
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        {combatAbilities.length === 0 && combatEffects.length === 0 ? (
+          <div className="text-slate-500 text-sm text-center py-4">
+            No abilities or effects from #Combat perks. Add perks in the Perks tab.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {combatAbilities.map((ability, index) => (
+              <AbilityEffectCard
+                key={`combat-ability-${index}`}
+                item={ability}
+                isAbility={true}
+                onDelete={() => {
+                  // Find the perk index by name
+                  const perkIndex = character.combatPerks.findIndex(p => p.name === ability.sourcePerk);
+                  if (perkIndex !== -1) handleDeleteCombatPerk(perkIndex);
+                }}
+              />
+            ))}
+            {combatEffects.map((effect, index) => (
+              <AbilityEffectCard
+                key={`combat-effect-${index}`}
+                item={effect}
+                isAbility={false}
+                onDelete={() => {
+                  // Find the perk index by name
+                  const perkIndex = character.combatPerks.findIndex(p => p.name === effect.sourcePerk);
+                  if (perkIndex !== -1) handleDeleteCombatPerk(perkIndex);
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Dice Roller Modal */}
@@ -620,16 +677,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
         isOpen={isRollerOpen}
         onClose={() => setIsRollerOpen(false)}
         rollData={rollData}
-      />
-
-      {/* Combat Perk Modal */}
-      <AddPerkModal
-        isOpen={showAddCombatPerkModal}
-        onClose={() => setShowAddCombatPerkModal(false)}
-        character={character}
-        onUpdate={onUpdate}
-        category="combat"
-        perkDatabase={perkDatabase}
       />
 
       {/* Conditioning Perk Modal */}
