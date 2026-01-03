@@ -293,19 +293,6 @@ export default function App() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold mb-2">Concept</label>
-              <input
-                type="text"
-                value={newCharacter.concept}
-                onChange={(e) =>
-                  setNewCharacter({ ...newCharacter, concept: e.target.value })
-                }
-                placeholder="Character concept (e.g., Warrior, Mage, Rogue)"
-                className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold mb-2">Combat XP</label>
@@ -401,7 +388,7 @@ export default function App() {
                     <div className="flex-1">
                       <h3 className="font-semibold text-lg">{character.name}</h3>
                       {character.concept && (
-                        <p className="text-slate-400 text-sm">{character.concept}</p>
+                        <p className="text-slate-400 text-sm italic">{character.concept}</p>
                       )}
                       <div className="flex gap-4 mt-2 text-xs text-slate-500">
                         <span>Combat XP: {character.combatXP}</span>

@@ -1,6 +1,6 @@
 {
-  "version": "2026-01-03T22:47:38.204Z",
-  "lastUpdated": 1767480458204,
+  "version": "2026-01-03T23:54:21.964Z",
+  "lastUpdated": 1767484461964,
   "perks": {
     "combat": [
       {
@@ -5179,5 +5179,900 @@
       ]
     }
   ],
-  "effects": []
+  "effects": [
+    {
+      "id": "aerial-archaeologist",
+      "name": "Aerial Archaeologist",
+      "effect": "While airborne you can can scan 200m radius on the ground underneath for potential remains buried underground. Roll History+PR against GM set DC. You are limited by the speed of your flight or flying device.",
+      "tags": []
+    },
+    {
+      "id": "ambidexterity",
+      "name": "Ambidexterity",
+      "effect": "Your off-hand and main hand weapons can both be non-light, and you won't suffer a penalty while [[Dual Wielding]].",
+      "tags": []
+    },
+    {
+      "id": "animal-affinity",
+      "name": "Animal Affinity",
+      "effect": "Animals' starting attitude with you is increased by 2.",
+      "tags": [
+        "Passive",
+        "Social",
+        "Attitude",
+        "Animal"
+      ]
+    },
+    {
+      "id": "arcane-sight",
+      "name": "Arcane Sight",
+      "effect": "Detect Magic's **Limit cost** is now 0. **Range** = 10m × Spellcraft Tier.\nYou can identify creature's Spellcraft Tier on sight within range by spending 3 AP. You know tiers of spells cast in your sight and range.",
+      "tags": [
+        "Passive",
+        "Scrying",
+        "Detection",
+        "Perception"
+      ]
+    },
+    {
+      "id": "arcane-veil",
+      "name": "Arcane Veil",
+      "effect": "When a #Scrying is attempted against you, roll Stealth +2 against the scrier's Spell DC or Ward's DC. On success the spell doesn't register you.",
+      "tags": [
+        "Passive",
+        "Scrying",
+        "Stealth",
+        "Defense"
+      ]
+    },
+    {
+      "id": "artillery",
+      "name": "Artillery",
+      "effect": "As long as you didn't move this or previous turn, your weapon range = Aim, double your aim X.",
+      "tags": [
+        "Passive"
+      ]
+    },
+    {
+      "id": "avid-gossiper",
+      "name": "Avid Gossiper",
+      "effect": "When gathering information, you can choose to spend double the time to do so covertly. When you do, roll Gossip +5 against the highest level of target who is actively conducting counter intelligence.",
+      "tags": [
+        "Passive",
+        "Social",
+        "Information",
+        "Gossip"
+      ]
+    },
+    {
+      "id": "backstab",
+      "name": "Backstab",
+      "effect": "When attacking a flanked or off-guard target with a Light weapon, add your Dexterity to the damage roll.",
+      "tags": [
+        "Passive",
+        "Strike",
+        "Damage"
+      ]
+    },
+    {
+      "id": "battle-scarred",
+      "name": "Battle Scarred",
+      "effect": "Your body bears the marks of countless battles. Through experience with injury and recovery, you've learned how to survive grievous wounds.\n\n**Effect:** Reduce the Treatment DC for healing your wounds by 2 (makes it easier for others to treat your injuries).",
+      "tags": [
+        "Passive",
+        "Healing"
+      ]
+    },
+    {
+      "id": "big-steps",
+      "name": "Big Steps",
+      "effect": "While Unencumbered, you can Stride up to your full Speed instead of half.",
+      "tags": []
+    },
+    {
+      "id": "bribery-expert",
+      "name": "Bribery Expert",
+      "effect": "You can deduce if an official is corruptible or if you can ask for a bribe with +3. You know appropriate amounts for different 'favors'.",
+      "tags": [
+        "Passive",
+        "Social",
+        "Streetwise",
+        "Corruption"
+      ]
+    },
+    {
+      "id": "cartographer-s-mind",
+      "name": "Cartographer's Mind",
+      "effect": "- Recall without a roll all roads and routes you have taken during the last month.\n- During downtime, can create accurate maps of traveled areas.\n- Perfect memory includes landmarks, distances, and navigation details.",
+      "tags": [
+        "Passive",
+        "Knowledge",
+        "Navigation",
+        "Memory"
+      ]
+    },
+    {
+      "id": "cheat",
+      "name": "Cheat",
+      "effect": "When someone with neutral or better attitude that might find you attractive rolls to Detect Falsehood, they roll with #Disadvantage.",
+      "tags": [
+        "Passive",
+        "Social",
+        "Deception",
+        "Disadvantage"
+      ]
+    },
+    {
+      "id": "close-quarters-shooter",
+      "name": "Close Quarters Shooter",
+      "effect": "When you aim, but strike a target within your close range your attack deals extra damage equal to your archery level.",
+      "tags": [
+        "Passive"
+      ]
+    },
+    {
+      "id": "cold-conditioning",
+      "name": "Cold Conditioning",
+      "effect": "Through prolonged exposure to frigid temperatures, your body has adapted to function efficiently in extreme cold.\n\n**Effect:**\n- Gain +2 bonus to Endure checks against cold effects\n- Treat cold environments as one step less severe (extreme cold becomes severe, severe becomes moderate, etc.)",
+      "tags": [
+        "Passive",
+        "Body",
+        "Endure",
+        "Environmental"
+      ]
+    },
+    {
+      "id": "crime-in-law",
+      "name": "Crime in-Law",
+      "effect": "- +2 bonus to all interactions with criminals and criminal organizations\n- Recognized status in the criminal hierarchy provides protection and respect\n- Better treatment in criminal-controlled areas (better accommodations, respect)\n- May provide protection from lower-level criminals who wouldn't dare cross you\n- Access to higher-level criminal operations and information\n- Can mediate disputes between criminal factions\n- Status must be maintained through actions and reputation\n- May create enemies among law enforcement and rival criminal organizations\n- Particularly useful for large-scale criminal operations and underworld politics",
+      "tags": [
+        "Passive",
+        "Streetwise",
+        "Rank",
+        "Criminal",
+        "Social"
+      ]
+    },
+    {
+      "id": "cultural-explorer",
+      "name": "Cultural Explorer",
+      "effect": "- Choose one specific culture when taking this perk\n- Learn cultural norms, social expectations, and taboos\n- Gain basic language skills for communication\n- Know commonly known historical facts and cultural references\n- Can take this perk multiple times for different cultures",
+      "tags": [
+        "Passive",
+        "Knowledge",
+        "Culture",
+        "Language"
+      ]
+    },
+    {
+      "id": "defensive-archer",
+      "name": "Defensive Archer",
+      "effect": "You can parry with a bow without risking to break it.",
+      "tags": [
+        "Passive"
+      ]
+    },
+    {
+      "id": "defensive-stance",
+      "name": "Defensive Stance",
+      "effect": "When using the Ready action to prepare a weapon strike with a polearm, reduce the AP cost by 1 (minimum 1 AP).",
+      "tags": [
+        "Passive",
+        "Ready",
+        "APReduction"
+      ]
+    },
+    {
+      "id": "dodging-step",
+      "name": "Dodging Step",
+      "effect": "While Unencumbered, when you successfully Dodge a melee attack, make a free Step within the attacker's reach.",
+      "tags": []
+    },
+    {
+      "id": "don-t-turn-your-back-on-me",
+      "name": "Don't Turn Your Back On Me",
+      "effect": "You count as a flanking partner within range of your weapon, as if your range was your reach.",
+      "tags": [
+        "Passive"
+      ]
+    },
+    {
+      "id": "elusive",
+      "name": "Elusive",
+      "effect": "While Unencumbered, each successful Dodge gives +1 to Dodge until the start of your next turn. Stacks.",
+      "tags": []
+    },
+    {
+      "id": "enchanter",
+      "name": "Enchanter",
+      "effect": "#TODO Enchantment (crafting) rules are TBD in 0.8 or later.",
+      "tags": [
+        "Passive",
+        "Crafting",
+        "Enchantment",
+        "TODO"
+      ]
+    },
+    {
+      "id": "enhanced-defensive-stance",
+      "name": "Enhanced Defensive Stance",
+      "effect": "**Requirement**: Your weapon is a polearm that deals piercing or slashing damage.\nAttacks dealt as a reaction to enemy movement deal extra damage of 2 per damage die.",
+      "tags": [
+        "Preparation",
+        "Reaction",
+        "Strike",
+        "Reach"
+      ]
+    },
+    {
+      "id": "enhanced-knives",
+      "name": "Enhanced Knives",
+      "effect": "Increase the die size of Knives and daggers in your hands by 1 step.",
+      "tags": [
+        "Passive",
+        "Damage",
+        "Weapon"
+      ]
+    },
+    {
+      "id": "environmental-grace",
+      "name": "Environmental Grace",
+      "effect": "- Reduce harsh environmental effects by 1 step for you and your party\n- Applies to temperature extremes, altitude effects, and similar natural hazards",
+      "tags": [
+        "Passive",
+        "Survival",
+        "Environmental",
+        "Party"
+      ]
+    },
+    {
+      "id": "expanded-blade-critical-range",
+      "name": "Expanded Blade Critical Range",
+      "effect": "When attacking with blades, exceeding the defense roll by 10 or more counts as a critical hit.",
+      "tags": [
+        "Passive",
+        "Strike",
+        "Critical"
+      ]
+    },
+    {
+      "id": "extra-hp",
+      "name": "Extra HP",
+      "effect": "Gain additional HP based on your current Max_Wounds.\n\nThis effect is granted by leveled conditioning perks (Poison Resistance, Waterfall Training, Mental Resilience, Cold Conditioning, Heat Conditioning, Battle Scarred, and Magical Conditioning).\n\n**Progression:**\n- **Levels 1-4:** Gain +1 HP per level\n- **Level 5:** Consolidates into +1 Max_Wounds (the new wound grants full armor and endurance bonuses)",
+      "tags": [
+        "Passive",
+        "HP"
+      ]
+    },
+    {
+      "id": "fast-archer",
+      "name": "Fast Archer",
+      "effect": "You can aim as a free action while you move to a maximum of Aim1.",
+      "tags": [
+        "Passive"
+      ]
+    },
+    {
+      "id": "fear-means-respect",
+      "name": "Fear Means Respect",
+      "effect": "- People will ignore or avoid investigating activities they believe you're involved in\n- Information gathering attempts about you must overcome fear with DC based on reputation strength\n- Reputation rumors have their own DC system (to be detailed later)\n- Takes a hero-level character to openly stand against your reputation\n- Does not protect against direct evidence or witnesses to major crimes\n- May cause innocent people to be too afraid to interact with you normally\n- Can backfire if reputation is exposed as false or if defeated publicly\n- Requires maintaining the fearsome image through actions or continued rumors\n- Particularly effective for intimidation-based criminal operations",
+      "tags": [
+        "Passive",
+        "Reputation",
+        "Intimidation",
+        "Social",
+        "Streetwise"
+      ]
+    },
+    {
+      "id": "first-responder",
+      "name": "First Responder",
+      "effect": "When rolling for first aid as the first responder (first attempt at first aid) on the target, calculate the Treatment DC as 10 + (Consequence/20). First Aid AP cost reduced to 3.",
+      "tags": [
+        "Passive",
+        "Medicine",
+        "Healing",
+        "FirstAid"
+      ]
+    },
+    {
+      "id": "flanked",
+      "name": "Flanked",
+      "effect": "Enemies surround you in an angle of 135* or more.\n![[Flanking Rules]]\nyou gain ![[Condition - Off Guard||Off Guard Condition]]",
+      "tags": []
+    },
+    {
+      "id": "footwork",
+      "name": "Footwork",
+      "effect": "While Unencumbered, gain +1 to all defenses.",
+      "tags": []
+    },
+    {
+      "id": "forager",
+      "name": "Forager",
+      "effect": "When traveling long distances in environments with present food sources you can procure 4 + Skill rations without considerably slowing down. Based on the environment GM determines food availability. (#TODO update when exploration rules are written)",
+      "tags": [
+        "Passive",
+        "Survival",
+        "Food",
+        "Exploration",
+        "TODO"
+      ]
+    },
+    {
+      "id": "fuck-i-m-out",
+      "name": "Fuck I'm Out",
+      "effect": "Mindful enemies that think they are weaker than you have to roll the second endure check against your DC or disengage for 1 round. GM decides if they will return to combat at all.",
+      "tags": [
+        "Passive",
+        "Intimidation",
+        "Mind",
+        "Endure",
+        "Demoralize"
+      ]
+    },
+    {
+      "id": "grabbed",
+      "name": "Grabbed",
+      "effect": "You are held in place by another creature through a grapple.",
+      "tags": [
+        "Situational",
+        "Condition"
+      ]
+    },
+    {
+      "id": "grip-switch",
+      "name": "Grip Switch",
+      "effect": "Switch the grip between long reach and reach for free at the beginning of an offensive action.",
+      "tags": [
+        "Passive",
+        "Utility",
+        "Polearm"
+      ]
+    },
+    {
+      "id": "haggler",
+      "name": "Haggler",
+      "effect": "When you fail bargaining check as per [[Trading Rules]], don't worsen the deal.",
+      "tags": []
+    },
+    {
+      "id": "heat-conditioning",
+      "name": "Heat Conditioning",
+      "effect": "Through prolonged exposure to scorching temperatures, your body has adapted to function efficiently in extreme heat.\n\n**Effect:**\n- Gain +2 bonus to Endure checks against heat effects\n- Treat heat environments as one step less severe (extreme heat becomes severe, severe becomes moderate, etc.)",
+      "tags": [
+        "Passive",
+        "Body",
+        "Endure",
+        "Environmental",
+        "Conditioning"
+      ]
+    },
+    {
+      "id": "heraldist",
+      "name": "Heraldist",
+      "effect": "When trying to identify heraldry you roll deduce with +2 competency bonus.\nWhen identifying unknown heraldics, you can attempt to deduce the symbolism attached,",
+      "tags": []
+    },
+    {
+      "id": "herbalist-s-eye",
+      "name": "Herbalist's Eye",
+      "effect": "When foraging for herbs while marching, choose one:\n1. Ignore the –1 Speed penalty for gathering on the move.\n2. Ignore the +2 DC penalty for gathering on the move.",
+      "tags": []
+    },
+    {
+      "id": "in-the-know",
+      "name": "In the Know",
+      "effect": "- Spending one week of downtime in a settlement you get the initial set of connections.\n- May provide access to black market, information brokers, and fixers, as well as criminal and low profile contracts.",
+      "tags": [
+        "Passive",
+        "Streetwise",
+        "Social",
+        "Contacts",
+        "Downtime"
+      ]
+    },
+    {
+      "id": "inquisitor",
+      "name": "Inquisitor",
+      "effect": "- Certified witch hunter with official recognition\n- Can legally request local authorities provide aid or rewards against supernatural threats\n- Authority extends to non-hostile religious jurisdictions\n- Requires valid proof or prior notification to authorities\n- Can pursue supernatural threats that weren't initially requested to be removed\n- May requisition resources, manpower, or information for investigations\n- Legal protection when acting within authority against supernatural threats\n- Can identify and classify various supernatural entities and their threat levels\n- May coordinate with other religious organizations for major threats",
+      "tags": [
+        "Passive",
+        "Theology",
+        "Rank",
+        "Authority",
+        "Supernatural"
+      ]
+    },
+    {
+      "id": "jester",
+      "name": "Jester",
+      "effect": "You are a jester. Enjoy yourself.",
+      "tags": []
+    },
+    {
+      "id": "king-on-the-hill",
+      "name": "King on the Hill",
+      "effect": "- Criminal organization generates passive income during downtime\n- Income amount determined by organization size, territory, and activities\n- Requires ongoing management and decision-making to maintain profitability\n- May involve protection rackets, smuggling, fencing operations, etc.\n- Organization can provide resources, information, and manpower\n- Attracts attention from law enforcement and rival criminal groups\n- Income may fluctuate based on successful operations and external threats\n- Can be expanded through successful criminal ventures and territorial expansion\n- Provides foundation for major criminal storylines and campaigns",
+      "tags": [
+        "Passive",
+        "Streetwise",
+        "Rank",
+        "Criminal",
+        "Income",
+        "Organization"
+      ]
+    },
+    {
+      "id": "liar-liar",
+      "name": "Liar Liar",
+      "effect": "- +2 bonus on all fast talk and manipulation rolls in attempts to mislead\n- -2 penalty on leadership and negotiation checks if you are honest\n- Penalty applies when genuine honesty and sincerity are required",
+      "tags": [
+        "Passive",
+        "Social",
+        "Manipulation",
+        "FastTalk",
+        "Deception"
+      ]
+    },
+    {
+      "id": "licensed-healer",
+      "name": "Licensed Healer",
+      "effect": "- Gain audiences with nobility through your medical standing\n- Protection under medical immunity laws when practicing medicine\n- Access to rare ingredients through royal connections and court resources\n- Preferential treatment in legal and social situations\n- May be called upon to treat important political figures\n- Access to court libraries, laboratories, and medical facilities\n- Political influence through medical services to the powerful\n- Requires maintaining court appointment through continued service",
+      "tags": [
+        "Passive",
+        "Medicine",
+        "Rank",
+        "Social",
+        "Noble",
+        "Resources"
+      ]
+    },
+    {
+      "id": "light-steps",
+      "name": "Light Steps",
+      "effect": "While Unencumbered, make a Step as part of your first attack each turn. You can Step before or after the strike.",
+      "tags": []
+    },
+    {
+      "id": "lock-consul",
+      "name": "Lock Consul",
+      "effect": "When circumventing locks or safes, you can adjust your approach:\n\n1. **Quick and Dirty:** Reduce the **attempt time** by 1 step (Shift → Breather → Minuta), but increase the **DC by 2**.\n    \n2. **Slow and Steady:** Ignore the normal **failure effect**, and treat **critical failure** as a simple failure",
+      "tags": []
+    },
+    {
+      "id": "mage",
+      "name": "Mage",
+      "effect": "- Select one Tier 0 spell and add it to your repertoire (this spell doesn't contribute to attribute advancement)\n- You unlock Tier 0 spells for learning\n- You can learn Team Ritual in one day with written guidance or one shift with help\n- This perk requires GM permission and no time to learn\n- Can be selected as part of character background (GM may require Magical Theory 1/Theology 1 and a magical instructor)",
+      "tags": [
+        "Passive",
+        "Spellcasting",
+        "Unlock",
+        "Tier0"
+      ]
+    },
+    {
+      "id": "magical-conditioning",
+      "name": "Magical Conditioning",
+      "effect": "Through repeated exposure to transmutation magic and teleportation effects, your body and essence have developed resistance to forced magical alterations.\n\n**Effect:** Gain +2 bonus to resist transmutation spells and forced teleportation effects.",
+      "tags": [
+        "Passive",
+        "Magic",
+        "Endure"
+      ]
+    },
+    {
+      "id": "magical-deflection",
+      "name": "Magical Deflection",
+      "effect": "You can parry Lines, Rays, Bursts and Cones. On a successful parry, targets behind you are unaffected.",
+      "tags": [
+        "Passive",
+        "Parry",
+        "Magic",
+        "AOE"
+      ]
+    },
+    {
+      "id": "mental-resilience",
+      "name": "Mental Resilience",
+      "effect": "Through meditation, mental exercises, or exposure to mind-affecting magic, you have fortified your will against mental intrusion.\n\n**Effect:** Gain +2 bonus to Endure checks against mental effects (fear, charm, mind control, and similar mind-affecting abilities).",
+      "tags": [
+        "Passive",
+        "Mind",
+        "Endure"
+      ]
+    },
+    {
+      "id": "multipurpose-shield",
+      "name": "Multipurpose Shield",
+      "effect": "Shield counts as a weapon for dual wielding.",
+      "tags": [
+        "Strike",
+        "Block"
+      ]
+    },
+    {
+      "id": "natural-predator",
+      "name": "Natural Predator",
+      "effect": "When laying ambush, or attempting to attack a target you are tracking you can use Tracking, Stealth or Survival for the initiative as the leader of the Ambush.",
+      "tags": [
+        "Passive",
+        "Initiative",
+        "Ambush",
+        "Tracking",
+        "Stealth",
+        "Survival"
+      ]
+    },
+    {
+      "id": "not-sherlock",
+      "name": "Not Sherlock",
+      "effect": "When you fail a [Deduce] check, the GM provides two pieces of information: one true, one false. You don't know which is which.",
+      "tags": [
+        "Passive",
+        "Deduce",
+        "Knowledge",
+        "Mixed"
+      ]
+    },
+    {
+      "id": "ordained",
+      "name": "Ordained",
+      "effect": "- Licensed priest status with legal religious authority\n- Can seek refuge and gain preferential treatment at churches of your deity\n- Know the tenets, rites, and ceremonies of your chosen deity\n- Authority to perform religious ceremonies: weddings, funerals, blessings\n- May provide spiritual counsel and religious guidance to followers\n- Access to religious networks and communication channels\n- Protection under religious law in many jurisdictions\n- Can identify religious symbols, practices, and beliefs of your faith\n- May be called upon to resolve religious disputes or provide guidance",
+      "tags": [
+        "Passive",
+        "Theology",
+        "Rank",
+        "Religious",
+        "Authority",
+        "Social"
+      ]
+    },
+    {
+      "id": "overpowered-draw",
+      "name": "Overpowered Draw",
+      "effect": "Each aim action adds a +1 cumulative to the next strike.",
+      "tags": [
+        "Passive"
+      ]
+    },
+    {
+      "id": "perfect-block",
+      "name": "Perfect Block",
+      "effect": "When critically succeeding on a Block defense against a melee attack, the attacker becomes off-guard until the start of their next turn.",
+      "tags": [
+        "Passive",
+        "Block",
+        "Critical",
+        "Condition"
+      ]
+    },
+    {
+      "id": "plot-armor",
+      "name": "Plot Armor",
+      "effect": "You are the shining hope, the hero with a destiny. You gain Plot Armor.",
+      "tags": [
+        "Passive",
+        "Protection",
+        "Special"
+      ]
+    },
+    {
+      "id": "poison-resistance",
+      "name": "Poison Resistance",
+      "effect": "Through constant exposure to small doses of various toxins, you have developed a remarkable resistance to poisons.\n\n**Effect:** Gain +2 bonus to Endure checks against poison effects.",
+      "tags": [
+        "Passive",
+        "Body",
+        "Endure"
+      ]
+    },
+    {
+      "id": "potion-brewer",
+      "name": "Potion Brewer",
+      "effect": "#TODO Potion Brewing (crafting) rules are TBD in 0.8 or later.",
+      "tags": [
+        "Passive",
+        "Crafting",
+        "Potions",
+        "TODO"
+      ]
+    },
+    {
+      "id": "predicted-exchange",
+      "name": "Predicted Exchange",
+      "effect": "When using [[Predictive Strike]] roll the enemy's defense as well. This predicts the rolls, but doesn't prevent enemy to use reactions and other abilities and effects to modify the end result.",
+      "tags": []
+    },
+    {
+      "id": "primeval-awareness",
+      "name": "Primeval Awareness",
+      "effect": "While foraging, hunting or tracking in the wilderness roll Survival to notice subtle things animals and beasts in passing, identifying the common ones without a roll. You still need [Deduce] to identify rarer species.",
+      "tags": [
+        "Passive",
+        "Survival",
+        "Tracking",
+        "Animal",
+        "Perception"
+      ]
+    },
+    {
+      "id": "projectile-deflection",
+      "name": "Projectile Deflection",
+      "effect": "You can use Parry defense against ranged physical attacks (arrows, thrown weapons, etc.) using a melee weapon.",
+      "tags": [
+        "Parry",
+        "Ranged"
+      ]
+    },
+    {
+      "id": "quarterstaff-defense",
+      "name": "Quarterstaff Defense",
+      "effect": "Quarterstaff and WarStaves in your hands grant you +1 to all defenses.",
+      "tags": [
+        "Passive",
+        "Defense",
+        "Polearm",
+        "Weapon"
+      ]
+    },
+    {
+      "id": "ready-hand",
+      "name": "Ready Hand",
+      "effect": "You were trained to take out your weapon instinctually. On initiative, even when ambushed, draw your blade.",
+      "tags": [
+        "Passive",
+        "Initiative",
+        "QuickDraw"
+      ]
+    },
+    {
+      "id": "robin-hood",
+      "name": "Robin Hood",
+      "effect": "- Similar mechanics to \"Fear Means Respect\" but based on positive reputation\n- People will help cover for you or provide assistance believing you're fighting for good\n- Information gathering about your activities faces resistance from sympathetic population\n- Common folk may actively hinder authorities investigating you\n- Provides protection through popular support rather than fear\n- May attract followers, informants, and allies to your cause\n- Can backfire if your actions contradict the heroic reputation\n- Requires maintaining the positive image through charitable or heroic actions\n- Particularly effective for rebellion-based storylines and protecting the innocent",
+      "tags": [
+        "Passive",
+        "Reputation",
+        "Social",
+        "Streetwise",
+        "Heroic"
+      ]
+    },
+    {
+      "id": "savoir-faire",
+      "name": "Savoir Faire",
+      "effect": "Knowledge of the appropriate behavior in a subculture that has an established code of conduct. Basically you know the rules of said specific society.",
+      "tags": []
+    },
+    {
+      "id": "second-reaction",
+      "name": "Second Reaction",
+      "effect": "You gain a second reaction.",
+      "tags": [
+        "Passive",
+        "Reaction",
+        "ActionEconomy"
+      ]
+    },
+    {
+      "id": "silent-steps",
+      "name": "Silent Steps",
+      "effect": "",
+      "tags": [
+        "Stealth",
+        "Movement"
+      ]
+    },
+    {
+      "id": "since-it-is-you",
+      "name": "Since It Is You",
+      "effect": "- Recognition chance in academic and noble circles\n- Preferential treatment may include offers of accommodation, audiences, or access\n- Based on your published works and conference participation\n- May open doors to private libraries, exclusive events, or scholarly discussions\n- Recognition depends on local scholarly community and your reputation\n- Can provide opportunities for funding, patronage, or collaboration\n- May attract requests for lectures, consultations, or expert opinions\n- Requires maintaining scholarly reputation through continued work\n- Particularly useful for accessing exclusive knowledge or influential contacts",
+      "tags": [
+        "Passive",
+        "History",
+        "Rank",
+        "Academic",
+        "Social",
+        "Noble"
+      ]
+    },
+    {
+      "id": "sitting-on-the-fence",
+      "name": "Sitting on the Fence",
+      "effect": "- Earn income during downtime using Streetwise skill (//TODO Earn income and investment rules)\n- Purchase stolen/illicit goods with 25-50% discount (GM discretion)\n//BUSINESS RULES ARE OUTSIDE OF SCOPE",
+      "tags": [
+        "Passive",
+        "Streetwise",
+        "Downtime",
+        "Income",
+        "Trading",
+        "TODO"
+      ]
+    },
+    {
+      "id": "small-steps",
+      "name": "Small Steps",
+      "effect": "While Unencumbered, your first Stride each turn doesn't trigger reactions (except readied actions).",
+      "tags": []
+    },
+    {
+      "id": "spear-brothers",
+      "name": "Spear Brothers",
+      "effect": "When standing adjacent to another spearman with this perk, you gain +1 Situational bonus to Parrying, and, +1 Situational bonus to strikes if the enemy is within the reach of both of you.",
+      "tags": [
+        "Passive",
+        "Polearm",
+        "Teamwork",
+        "Bonus"
+      ]
+    },
+    {
+      "id": "spell-guard",
+      "name": "Spell Guard",
+      "effect": "You learn to channel magical energy through your shield, creating a defensive layer covering you. You can attempt to Block against Physical or Energy Line, Cone, Burst, and Ray type spells and magical effects (like dragon's breath or fireball). If you have Guardian Aura, the bonus applies to your allies as well.",
+      "tags": [
+        "Passive",
+        "Shield",
+        "Magic",
+        "Block",
+        "Limit"
+      ]
+    },
+    {
+      "id": "staff-acrobat",
+      "name": "Staff Acrobat",
+      "effect": "Add your weapon's reach to the distance of your long jumps, and half of it to your high jumps. While holding your staff, you get +2 on checks to balance.",
+      "tags": [
+        "Passive",
+        "Polearm",
+        "Movement",
+        "Acrobatic"
+      ]
+    },
+    {
+      "id": "the-aspiring-hero",
+      "name": "The Aspiring Hero",
+      "effect": "This perk requires no training. If you die here, the story ends. Lose 10 CP, take a limitation, consequence, or disadvantage of GM's choice and survive.",
+      "tags": [
+        "Instant",
+        "Death"
+      ]
+    },
+    {
+      "id": "the-cult-inner-member",
+      "name": "The Cult Inner Member",
+      "effect": "You are close to The Leader and your oath is strong. Any attempt to mind control or coerce you (unless by the leader) is rolled with disadvantage. You gain \"Protect the Leader\" reaction (allowing you to take damage for the leader if adjacent). When driven into fervor, your attack increases by +2 and defense decreases by -3.",
+      "tags": [
+        "Passive",
+        "Mental",
+        "Protection"
+      ]
+    },
+    {
+      "id": "the-edgelord",
+      "name": "The Edgelord",
+      "effect": "You are so edgy one can cut themselves against you. Deal +2 damage with edged weapons. If two Edgelords exist in one party, they must duel. The winner keeps the perk, the loser loses the edge.",
+      "tags": [
+        "Passive",
+        "Damage",
+        "Weapon",
+        "Special"
+      ]
+    },
+    {
+      "id": "the-loner",
+      "name": "The Loner",
+      "effect": "It's you against the world. When fighting alone you start with +2 AP. You count no-one as your allies. You can't be a willing target for a Team Ritual, if you participate in one you lose this effect until you are no longer connected for over a day. Retraining from this perk requires GM permission. (and a story arc)",
+      "tags": [
+        "Passive",
+        "AP",
+        "Team",
+        "Restriction",
+        "Unique"
+      ]
+    },
+    {
+      "id": "throwing-hand",
+      "name": "Throwing Hand",
+      "effect": "You learn how to throw 1H weapons. If it's a thrown weapon, increase the range by 3, if not, range becomes 3. Use Dexterity for thrown attacks.",
+      "tags": [
+        "Passive",
+        "Thrown",
+        "Range",
+        "Weapon"
+      ]
+    },
+    {
+      "id": "tower",
+      "name": "Tower",
+      "effect": "As long as you didn't move previous and this turns - all your attacks are getting Aim1.",
+      "tags": [
+        "Passive"
+      ]
+    },
+    {
+      "id": "tracker",
+      "name": "Tracker",
+      "effect": "When tracking you don't reduce movement speed.",
+      "tags": [
+        "Passive",
+        "Tracking",
+        "Movement",
+        "Speed"
+      ]
+    },
+    {
+      "id": "twin-parry",
+      "name": "Twin Parry",
+      "effect": "Dual wielding provides +1 circumstance bonus to parrying.",
+      "tags": [
+        "Passive",
+        "Parry",
+        "Defense",
+        "Circumstance"
+      ]
+    },
+    {
+      "id": "vanishing-step",
+      "name": "Vanishing Step",
+      "effect": "When using Dodging Step and succeeding on your dodge, roll Stealth against enemy's Perception. If you succeed, you are hidden from that enemy and appear behind their back.",
+      "tags": [
+        "Passive",
+        "Dodge",
+        "Stealth",
+        "Movement"
+      ]
+    },
+    {
+      "id": "walking-stick",
+      "name": "Walking Stick",
+      "effect": "Your Heavy Polearms don't count towards your encumbrance, and Light and Medium Polearms provide you with extra carrying weight.",
+      "tags": [
+        "Passive",
+        "Encumbrance",
+        "Utility",
+        "StavesSpears"
+      ]
+    },
+    {
+      "id": "wargame-master",
+      "name": "Wargame Master",
+      "effect": "- When others are participating in War-Games you organize, they will perceive it as more real, allowing them to earn experience at a speed they would earn in a real battle.\n- If you are [System Authorized Event Manager] You can register said events with the system for tracking and rewards.\n- Your senses [Perception] will be enhanced by +1, when attempting to find foul play during all of your events.",
+      "tags": [
+        "Passive",
+        "Leadership",
+        "Training",
+        "Perception",
+        "Campaign"
+      ]
+    },
+    {
+      "id": "watching-your-back",
+      "name": "Watching your back",
+      "effect": "While adjacent to you your allies cannot be flanked. Because you always are watching their backs.",
+      "tags": [
+        "Passive",
+        "Team",
+        "Defense"
+      ]
+    },
+    {
+      "id": "waterfall-training",
+      "name": "Waterfall Training",
+      "effect": "Through rigorous training under cascading water and resisting powerful currents, you've learned to stand firm against forces that would move you.\n\n**Effect:** Gain +2 bonus to resist forced movement effects (pushes, pulls, trips, and similar displacement effects).",
+      "tags": [
+        "Passive",
+        "Body",
+        "Endure"
+      ]
+    },
+    {
+      "id": "zen-archer",
+      "name": "Zen Archer",
+      "effect": "You can change the attacking attribute of the bow from Dexterity to Perception.",
+      "tags": [
+        "Passive"
+      ]
+    }
+  ]
 }

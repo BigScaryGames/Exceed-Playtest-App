@@ -635,7 +635,7 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
           <Swords size={18} className="text-slate-300" />
           <h3 className="text-white font-semibold">Martial Abilities & Effects</h3>
           <span className="text-slate-400 text-sm ml-auto">
-            {combatAbilities.length + combatEffects.length} total
+            {combatAbilities.length} abilities, {combatEffects.length} effects
           </span>
         </div>
         {combatAbilities.length === 0 && combatEffects.length === 0 ? (
@@ -643,31 +643,55 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
             No abilities or effects from #Combat perks. Add perks in the Perks tab.
           </div>
         ) : (
-          <div className="space-y-2">
-            {combatAbilities.map((ability, index) => (
-              <AbilityEffectCard
-                key={`combat-ability-${index}`}
-                item={ability}
-                isAbility={true}
-                onDelete={() => {
-                  // Find the perk index by name
-                  const perkIndex = character.combatPerks.findIndex(p => p.name === ability.sourcePerk);
-                  if (perkIndex !== -1) handleDeleteCombatPerk(perkIndex);
-                }}
-              />
-            ))}
-            {combatEffects.map((effect, index) => (
-              <AbilityEffectCard
-                key={`combat-effect-${index}`}
-                item={effect}
-                isAbility={false}
-                onDelete={() => {
-                  // Find the perk index by name
-                  const perkIndex = character.combatPerks.findIndex(p => p.name === effect.sourcePerk);
-                  if (perkIndex !== -1) handleDeleteCombatPerk(perkIndex);
-                }}
-              />
-            ))}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Abilities Column */}
+            <div>
+              <h4 className="text-blue-400 text-sm font-semibold mb-2">
+                Abilities ({combatAbilities.length})
+              </h4>
+              {combatAbilities.length === 0 ? (
+                <div className="text-slate-500 text-xs text-center py-2">No abilities</div>
+              ) : (
+                <div className="space-y-2">
+                  {combatAbilities.map((ability, index) => (
+                    <AbilityEffectCard
+                      key={`combat-ability-${index}`}
+                      item={ability}
+                      isAbility={true}
+                      onDelete={() => {
+                        // Find the perk index by name
+                        const perkIndex = character.combatPerks.findIndex(p => p.name === ability.sourcePerk);
+                        if (perkIndex !== -1) handleDeleteCombatPerk(perkIndex);
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Effects Column */}
+            <div>
+              <h4 className="text-purple-400 text-sm font-semibold mb-2">
+                Effects ({combatEffects.length})
+              </h4>
+              {combatEffects.length === 0 ? (
+                <div className="text-slate-500 text-xs text-center py-2">No effects</div>
+              ) : (
+                <div className="space-y-2">
+                  {combatEffects.map((effect, index) => (
+                    <AbilityEffectCard
+                      key={`combat-effect-${index}`}
+                      item={effect}
+                      isAbility={false}
+                      onDelete={() => {
+                        // Find the perk index by name
+                        const perkIndex = character.combatPerks.findIndex(p => p.name === effect.sourcePerk);
+                        if (perkIndex !== -1) handleDeleteCombatPerk(perkIndex);
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

@@ -482,33 +482,57 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
             <BookOpen size={18} className="text-slate-300" />
             <h3 className="text-white font-semibold">Granted Abilities & Effects</h3>
             <span className="text-slate-400 text-sm ml-auto">
-              {skillAbilities.length + skillEffects.length} total
+              {skillAbilities.length} abilities, {skillEffects.length} effects
             </span>
           </div>
-          <div className="p-4 space-y-2">
+          <div className="p-4">
             {skillAbilities.length === 0 && skillEffects.length === 0 ? (
               <div className="text-slate-500 text-sm text-center py-4">
                 No abilities or effects from #Skill perks. Add perks in the Perks tab.
               </div>
             ) : (
-              <>
-                {skillAbilities.map((ability, index) => (
-                  <AbilityEffectCard
-                    key={`skill-ability-${index}`}
-                    item={ability}
-                    isAbility={true}
-                    onDelete={() => handleDeletePerk(ability.sourcePerk)}
-                  />
-                ))}
-                {skillEffects.map((effect, index) => (
-                  <AbilityEffectCard
-                    key={`skill-effect-${index}`}
-                    item={effect}
-                    isAbility={false}
-                    onDelete={() => handleDeletePerk(effect.sourcePerk)}
-                  />
-                ))}
-              </>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Abilities Column */}
+                <div>
+                  <h4 className="text-blue-400 text-sm font-semibold mb-2">
+                    Abilities ({skillAbilities.length})
+                  </h4>
+                  {skillAbilities.length === 0 ? (
+                    <div className="text-slate-500 text-xs text-center py-2">No abilities</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {skillAbilities.map((ability, index) => (
+                        <AbilityEffectCard
+                          key={`skill-ability-${index}`}
+                          item={ability}
+                          isAbility={true}
+                          onDelete={() => handleDeletePerk(ability.sourcePerk)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {/* Effects Column */}
+                <div>
+                  <h4 className="text-purple-400 text-sm font-semibold mb-2">
+                    Effects ({skillEffects.length})
+                  </h4>
+                  {skillEffects.length === 0 ? (
+                    <div className="text-slate-500 text-xs text-center py-2">No effects</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {skillEffects.map((effect, index) => (
+                        <AbilityEffectCard
+                          key={`skill-effect-${index}`}
+                          item={effect}
+                          isAbility={false}
+                          onDelete={() => handleDeletePerk(effect.sourcePerk)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         </div>

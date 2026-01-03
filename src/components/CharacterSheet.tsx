@@ -18,14 +18,14 @@ interface CharacterSheetProps {
   onMenuToggle: () => void;
 }
 
-type TabType = 'skills' | 'combat' | 'equipment' | 'magic' | 'perks' | 'list';
+type TabType = 'list' | 'skills' | 'combat' | 'equipment' | 'magic' | 'perks';
 
 export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpdate, perkDatabase, onMenuToggle }) => {
-  const [activeTab, setActiveTab] = useState<TabType>('skills');
+  const [activeTab, setActiveTab] = useState<TabType>('list');
   const [touchStart, setTouchStart] = useState<number>(0);
   const [touchEnd, setTouchEnd] = useState<number>(0);
 
-  const tabs: TabType[] = ['skills', 'combat', 'equipment', 'magic', 'perks', 'list'];
+  const tabs: TabType[] = ['list', 'skills', 'combat', 'equipment', 'magic', 'perks'];
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.touches[0].clientX);
@@ -121,6 +121,16 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
       <div className="sticky top-0 z-10 bg-slate-900 border-b border-slate-700">
         <div className="flex">
           <button
+            onClick={() => setActiveTab('list')}
+            className={`flex-1 py-3 font-semibold ${
+              activeTab === 'list'
+                ? 'text-white border-b-2 border-white'
+                : 'text-slate-500'
+            }`}
+          >
+            📓 Notes
+          </button>
+          <button
             onClick={() => setActiveTab('skills')}
             className={`flex-1 py-3 font-semibold ${
               activeTab === 'skills'
@@ -170,26 +180,16 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
           >
             ✨ Perks
           </button>
-          <button
-            onClick={() => setActiveTab('list')}
-            className={`flex-1 py-3 font-semibold ${
-              activeTab === 'list'
-                ? 'text-white border-b-2 border-white'
-                : 'text-slate-500'
-            }`}
-          >
-            📓 Notes
-          </button>
         </div>
       </div>
 
       <div className="bg-black min-h-screen">
+        {activeTab === 'list' && <NotesTab character={displayCharacter} onUpdate={onUpdate} />}
         {activeTab === 'skills' && <SkillsTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
         {activeTab === 'combat' && <CombatTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
         {activeTab === 'equipment' && <EquipmentTab character={displayCharacter} onUpdate={onUpdate} />}
         {activeTab === 'magic' && <MagicTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
         {activeTab === 'perks' && <PerksTab character={displayCharacter} onUpdate={onUpdate} perkDatabase={perkDatabase} />}
-        {activeTab === 'list' && <NotesTab character={displayCharacter} onUpdate={onUpdate} />}
       </div>
     </div>
   );

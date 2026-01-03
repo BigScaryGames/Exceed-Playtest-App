@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, Edit2 } from 'lucide-react';
 import { Character, ProgressionLogEntry } from '@/types/character';
 import { ATTRIBUTE_MAP, normalizeAttributeName } from '@/utils/constants';
+import { deleteCharacter } from '@/utils/character';
 
 interface NotesTabProps {
   character: Character;
@@ -10,9 +11,33 @@ interface NotesTabProps {
 
 export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
   const [isProgressionExpanded, setIsProgressionExpanded] = useState(false);
+  const [showRenameModal, setShowRenameModal] = useState(false);
+  const [newName, setNewName] = useState(character.name);
+  const [originalName, setOriginalName] = useState(character.name);
 
-  const handleFieldChange = (field: 'bio' | 'notes' | 'reputation', value: string) => {
+  const handleFieldChange = (field: 'bio' | 'notes' | 'reputation' | 'concept', value: string) => {
     onUpdate({ ...character, [field]: value });
+  };
+
+  const openRenameModal = () => {
+    setNewName(character.name);
+    setOriginalName(character.name);
+    setShowRenameModal(true);
+  };
+
+  const handleRenameConfirm = () => {
+    if (newName.trim() && newName !== character.name) {
+      // First delete the old character by original name
+      deleteCharacter(originalName);
+
+      // Then update with new name
+      onUpdate({ ...character, name: newName.trim() });
+    }
+    setShowRenameModal(false);
+  };
+
+  const handleRenameCancel = () => {
+    setShowRenameModal(false);
   };
 
   // Calculate CP spent per attribute
@@ -53,6 +78,78 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
 
   return (
     <div className="p-4 space-y-4">
+      {/* Rename Modal */}
+      {showRenameModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 rounded-lg max-w-sm w-full p-6">
+            <h3 className="text-lg font-bold text-white mb-4">Rename Character</h3>
+            <input
+              type="text"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              placeholder="Character name"
+              className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 mb-4"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleRenameConfirm();
+                if (e.key === 'Escape') handleRenameCancel();
+              }}
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={handleRenameCancel}
+                className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRenameConfirm}
+                disabled={!newName.trim()}
+                className="flex-1 bg-blue-700 hover:bg-blue-600 disabled:bg-slate-600 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-semibold py-2 rounded"
+              >
+                Rename
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Name and Appearance Fields - Side by Side */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* Name Field */}
+        <div className="bg-slate-800 rounded-lg p-2">
+          <label className="block text-sm font-semibold text-slate-300 mb-2">
+            Name
+          </label>
+          <div className="flex items-center gap-2">
+            <div className="flex-1 bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white truncate">
+              {character.name}
+            </div>
+            <button
+              onClick={openRenameModal}
+              className="bg-blue-700 hover:bg-blue-600 text-white p-2 rounded"
+              title="Rename character"
+            >
+              <Edit2 size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Appearance Field */}
+        <div className="bg-slate-800 rounded-lg p-2">
+          <label className="block text-sm font-semibold text-slate-300 mb-2">
+            Appearance
+          </label>
+          <textarea
+            value={character.concept || ''}
+            onChange={(e) => handleFieldChange('concept', e.target.value)}
+            placeholder="Physical appearance, distinctive features, clothing..."
+            className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500 resize-none"
+            rows={3}
+          />
+        </div>
+      </div>
+
       {/* Bio Field */}
       <div className="bg-slate-800 rounded-lg p-4">
         <label className="block text-sm font-semibold text-slate-300 mb-2">

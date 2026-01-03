@@ -87,7 +87,7 @@ const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITH
 // Fallback to local path if available (for local development)
 const LOCAL_RULESET_PATH = '/home/r/Exceed/ExceedV/Ruleset/Perks';
 const LOCAL_ABILITIES_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/Actions/Abilities';
-const LOCAL_EFFECTS_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/References';
+const LOCAL_EFFECTS_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/References/Effects';
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'data', 'perks.json');
 
 // Check if running in CI or local
@@ -579,7 +579,7 @@ function parseAbilitiesFromLocal(dir: string): ParsedAbility[] {
 }
 
 /**
- * Parse effects from local filesystem
+ * Parse effects from local filesystem (recursive)
  */
 function parseEffectsFromLocal(dir: string): ParsedEffect[] {
   console.log('Parsing effects from local filesystem...');
@@ -590,23 +590,39 @@ function parseEffectsFromLocal(dir: string): ParsedEffect[] {
     return effects;
   }
 
-  try {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
+  function findMarkdownFiles(directory: string): string[] {
+    const files: string[] = [];
+    try {
+      const entries = fs.readdirSync(directory, { withFileTypes: true });
 
-    for (const entry of entries) {
-      if (entry.isFile() && entry.name.startsWith('Effect -') && entry.name.endsWith('.md')) {
-        const content = fs.readFileSync(path.join(dir, entry.name), 'utf-8');
-        const effect = parseEffectContent(entry.name, content);
-        if (effect) {
-          effects.push(effect);
+      for (const entry of entries) {
+        const fullPath = path.join(directory, entry.name);
+
+        if (entry.isDirectory()) {
+          files.push(...findMarkdownFiles(fullPath));
+        } else if (entry.isFile() && entry.name.startsWith('Effect -') && entry.name.endsWith('.md')) {
+          files.push(fullPath);
         }
       }
+    } catch (error) {
+      console.error(`Error reading directory ${directory}:`, error);
     }
-  } catch (error) {
-    console.error(`Error reading effects directory ${dir}:`, error);
+
+    return files;
   }
 
-  console.log(`Found ${effects.length} effects`);
+  const files = findMarkdownFiles(dir);
+  console.log(`Found ${files.length} effect files`);
+
+  for (const file of files) {
+    const content = fs.readFileSync(file, 'utf-8');
+    const effect = parseEffectContent(path.basename(file), content);
+    if (effect) {
+      effects.push(effect);
+    }
+  }
+
+  console.log(`Parsed ${effects.length} effects`);
   return effects;
 }
 

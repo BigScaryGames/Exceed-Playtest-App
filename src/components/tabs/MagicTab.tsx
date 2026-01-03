@@ -20,7 +20,6 @@ import {
 import { AddSpellModal } from '@/components/modals/AddSpellModal';
 import { EditSpellModal } from '@/components/modals/EditSpellModal';
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
-import { MagePerkSpellModal } from '@/components/modals/MagePerkSpellModal';
 import {
   getActiveAbilitiesWithInheritedTags,
   getActiveEffectsWithInheritedTags,
@@ -113,7 +112,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
   const [editingSpell, setEditingSpell] = useState<KnownSpell | null>(null);
   const [isRollerOpen, setIsRollerOpen] = useState(false);
   const [rollData, setRollData] = useState<RollData | null>(null);
-  const [showMagePerkSpellModal, setShowMagePerkSpellModal] = useState(false);
   const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
 
   // Initialize magic system if needed
@@ -132,17 +130,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
   const currentLimit = calculateCurrentLimit(character);
 
   const spellsByTier = getSpellsByTier(character);
-
-  // Get magic perks from the dedicated magicPerks array
-  const magicPerks = character.magicPerks || [];
-
-  // Check if character has Mage perk in any location (perks or magicPerks)
-  const hasMagePerk = character.perks.some(p => p.name === 'Mage') ||
-                      magicPerks.some(p => p.name === 'Mage');
-
-  // Check if Mage perk free spell has been claimed (Tier 0 spell with xpCost: 0)
-  const hasMagePerkFreeSpell = character.knownSpells?.some(s => s.tier === 0 && s.xpCost === 0) || false;
-  const canClaimMagePerkSpell = hasMagePerk && !hasMagePerkFreeSpell;
 
   // Get abilities and effects with inherited tags
   const abilities = getActiveAbilitiesWithInheritedTags(character, perkDatabase);
@@ -212,11 +199,12 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
 
   // Handle deleting a magic perk (by name, from abilities/effects section)
   const handleDeleteMagicPerkByName = (perkName: string) => {
-    const perkIndex = magicPerks.findIndex(p => p.name === perkName);
+    const perks = character.magicPerks || [];
+    const perkIndex = perks.findIndex(p => p.name === perkName);
     if (perkIndex === -1) return;
 
-    const perk = magicPerks[perkIndex];
-    const updatedMagicPerks = magicPerks.filter((_, i) => i !== perkIndex);
+    const perk = perks[perkIndex];
+    const updatedMagicPerks = perks.filter((_, i) => i !== perkIndex);
 
     // Remove from progression log - find the most recent matching entry
     const updatedLog = [...character.progressionLog];
@@ -259,14 +247,9 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
             <div className="bg-slate-700 rounded p-3 text-center">
               <div className="text-2xl font-bold">
                 <span className="text-slate-400">Spellcraft - </span>
-                <span className="text-blue-400">{hasMagePerk ? spellcraft : '-'}</span>
+                <span className="text-blue-400">{spellcraft}</span>
               </div>
             </div>
-            {!hasMagePerk && spellcraft === 0 && (
-              <div className="text-xs text-amber-400 mt-2">
-                Requires Mage perk for Tier 0 access
-              </div>
-            )}
           </div>
 
           {/* Limit */}
@@ -289,25 +272,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
           </div>
         </div>
 
-        {/* Mage Perk Free Spell Notice */}
-        {canClaimMagePerkSpell && (
-          <div className="bg-purple-900/30 border border-purple-700 rounded p-3 mb-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-purple-300 font-semibold">Mage Perk Selector</p>
-                <p className="text-purple-400 text-sm mt-1">
-                  Select your initial spell from mage perk
-                </p>
-              </div>
-              <button
-                onClick={() => setShowMagePerkSpellModal(true)}
-                className="bg-purple-700 hover:bg-purple-600 rounded px-4 py-2 text-white font-semibold whitespace-nowrap"
-              >
-                Select Initial Spell
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Spellcraft Abilities & Effects Section */}
@@ -318,7 +282,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
             <h4 className="text-lg font-bold text-white">Spellcraft Abilities & Effects</h4>
           </div>
           <span className="text-slate-400 text-sm">
-            {spellcraftAbilities.length + spellcraftEffects.length} total
+            {spellcraftAbilities.length} abilities, {spellcraftEffects.length} effects
           </span>
         </div>
         {spellcraftAbilities.length === 0 && spellcraftEffects.length === 0 ? (
@@ -326,23 +290,47 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
             No abilities or effects from #Spellcraft perks. Add perks in the Perks tab.
           </div>
         ) : (
-          <div className="space-y-2">
-            {spellcraftAbilities.map((ability, index) => (
-              <AbilityEffectCard
-                key={`spellcraft-ability-${index}`}
-                item={ability}
-                isAbility={true}
-                onDelete={() => handleDeleteMagicPerkByName(ability.sourcePerk)}
-              />
-            ))}
-            {spellcraftEffects.map((effect, index) => (
-              <AbilityEffectCard
-                key={`spellcraft-effect-${index}`}
-                item={effect}
-                isAbility={false}
-                onDelete={() => handleDeleteMagicPerkByName(effect.sourcePerk)}
-              />
-            ))}
+          <div className="grid grid-cols-2 gap-4">
+            {/* Abilities Column */}
+            <div>
+              <h5 className="text-blue-400 text-sm font-semibold mb-2">
+                Abilities ({spellcraftAbilities.length})
+              </h5>
+              {spellcraftAbilities.length === 0 ? (
+                <div className="text-slate-500 text-xs text-center py-2">No abilities</div>
+              ) : (
+                <div className="space-y-2">
+                  {spellcraftAbilities.map((ability, index) => (
+                    <AbilityEffectCard
+                      key={`spellcraft-ability-${index}`}
+                      item={ability}
+                      isAbility={true}
+                      onDelete={() => handleDeleteMagicPerkByName(ability.sourcePerk)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Effects Column */}
+            <div>
+              <h5 className="text-purple-400 text-sm font-semibold mb-2">
+                Effects ({spellcraftEffects.length})
+              </h5>
+              {spellcraftEffects.length === 0 ? (
+                <div className="text-slate-500 text-xs text-center py-2">No effects</div>
+              ) : (
+                <div className="space-y-2">
+                  {spellcraftEffects.map((effect, index) => (
+                    <AbilityEffectCard
+                      key={`spellcraft-effect-${index}`}
+                      item={effect}
+                      isAbility={false}
+                      onDelete={() => handleDeleteMagicPerkByName(effect.sourcePerk)}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -567,14 +555,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
         isOpen={isRollerOpen}
         onClose={() => setIsRollerOpen(false)}
         rollData={rollData}
-      />
-
-      {/* Mage Perk Free Spell Modal */}
-      <MagePerkSpellModal
-        isOpen={showMagePerkSpellModal}
-        onClose={() => setShowMagePerkSpellModal(false)}
-        character={character}
-        onUpdate={onUpdate}
       />
     </div>
   );

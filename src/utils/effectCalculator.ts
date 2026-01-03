@@ -64,11 +64,23 @@ export function getActiveAbilities(
 
   // Helper to extract abilities from a perk snapshot
   const extractFromPerk = (perkSnapshot: DatabasePerk | undefined, perkName: string) => {
-    if (!perkSnapshot?.grants?.abilities) return;
+    // Fallback: if snapshot doesn't have grants field, try to look up the perk in the database
+    let effectivePerk = perkSnapshot;
+    if (!effectivePerk?.grants?.abilities && effectivePerk?.id) {
+      // Try to find the perk in the database
+      const allPerks = [
+        ...perkDatabase.perks.combat,
+        ...perkDatabase.perks.magic,
+        ...perkDatabase.perks.skill
+      ];
+      effectivePerk = allPerks.find(p => p.id === effectivePerk!.id) || effectivePerk;
+    }
 
-    const inherited = inheritTags ? getInheritedTags(perkSnapshot) : [];
+    if (!effectivePerk?.grants?.abilities) return;
 
-    for (const abilityId of perkSnapshot.grants.abilities) {
+    const inherited = inheritTags ? getInheritedTags(effectivePerk) : [];
+
+    for (const abilityId of effectivePerk.grants.abilities) {
       const ability = abilityLookup.get(abilityId);
       if (ability) {
         const mergedTags = inheritTags ? mergeTags(ability.tags, inherited) : ability.tags;
@@ -81,7 +93,7 @@ export function getActiveAbilities(
             effect: ability.effect,
             tags: mergedTags,
             sourcePerk: perkName,
-            sourcePerkId: perkSnapshot.id
+            sourcePerkId: effectivePerk!.id
           });
         } else if (inheritTags) {
           // If inheriting tags, merge tags into existing entry
@@ -146,11 +158,23 @@ export function getActiveEffects(
 
   // Helper to extract effects from a perk snapshot
   const extractFromPerk = (perkSnapshot: DatabasePerk | undefined, perkName: string) => {
-    if (!perkSnapshot?.grants?.effects) return;
+    // Fallback: if snapshot doesn't have grants field, try to look up the perk in the database
+    let effectivePerk = perkSnapshot;
+    if (!effectivePerk?.grants?.effects && effectivePerk?.id) {
+      // Try to find the perk in the database
+      const allPerks = [
+        ...perkDatabase.perks.combat,
+        ...perkDatabase.perks.magic,
+        ...perkDatabase.perks.skill
+      ];
+      effectivePerk = allPerks.find(p => p.id === effectivePerk!.id) || effectivePerk;
+    }
 
-    const inherited = inheritTags ? getInheritedTags(perkSnapshot) : [];
+    if (!effectivePerk?.grants?.effects) return;
 
-    for (const effectId of perkSnapshot.grants.effects) {
+    const inherited = inheritTags ? getInheritedTags(effectivePerk) : [];
+
+    for (const effectId of effectivePerk.grants.effects) {
       const effect = effectLookup.get(effectId);
       if (effect) {
         const mergedTags = inheritTags ? mergeTags(effect.tags, inherited) : effect.tags;
@@ -163,7 +187,7 @@ export function getActiveEffects(
             effect: effect.effect,
             tags: mergedTags,
             sourcePerk: perkName,
-            sourcePerkId: perkSnapshot.id
+            sourcePerkId: effectivePerk!.id
           });
         } else if (inheritTags) {
           // If inheriting tags, merge tags into existing entry
