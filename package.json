@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "dotenv -e .env -- gh-pages -d dist -r https://LindyGreen:$GITHUB_TOKEN@github.com/BigScaryGames/Exceed-Playtest-App.git"
   },
   "homepage": "https://BigScaryGames.github.io/Exceed-Playtest-App",
   "dependencies": {
@@ -29,6 +29,7 @@
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
