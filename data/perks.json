@@ -1,6 +1,6 @@
 {
-  "version": "2026-01-04T00:31:58.516Z",
-  "lastUpdated": 1767486718517,
+  "version": "2026-01-04T13:04:51.590Z",
+  "lastUpdated": 1767531891591,
   "perks": {
     "combat": [
       {
@@ -3095,7 +3095,9 @@
         "effect": "",
         "description": "Shooting is not only about drawing and knocking an arrow. Well, on short distances it might be. Longer ones require you to take a breather and adjust where you shoot.",
         "grants": {
-          "abilities": [],
+          "abilities": [
+            "aim"
+          ],
           "effects": []
         }
       },
@@ -3292,26 +3294,30 @@
         "type": "magic",
         "source": "database",
         "requirements": {
-          "text": "GM permission",
+          "text": "GM permission, Magical Theory 1/Theology 1",
           "special": [
             "GM permission"
+          ],
+          "perks": [
+            "Magical Theory 1/Theology 1"
           ]
         },
         "attributes": [
           "Will"
         ],
         "cost": {
-          "xp": 5,
+          "xp": 4,
           "variable": false
         },
         "apCost": null,
         "tags": [
           "Spellcraft",
-          "Instant"
+          "Instant",
+          "GM"
         ],
         "shortDescription": "Awaken your magical talent and unlock spellcasting.",
         "effect": "",
-        "description": "Everyone wants to bend reality to their will. Unlike most, you can, because you are a mage.\n\nPerhaps you were trained by a journeyman or master mage, paid to try to awaken your talent. Or maybe, like most mages, during a pivotal moment in your life, your talent awakened.\n\nYou might have been a child lost in the darkness who summoned light or adapted your eyes to see in it, a pilgrim whose legs were so tired that all you wanted was for your backpack to become weightless or the mud less clingy, or maybe you saw your loved ones dying and willed their wounds to stop bleeding.",
+        "description": "Everyone wants to bend reality to their will. Unlike most, you can, because you are a mage.\n\nPerhaps you were trained by a journeyman or master mage, paid to try to awaken your talent. Or maybe, like most mages, during a pivotal moment in your life, your talent awakened.\n\nYou might have been a child lost in the darkness who summoned light or adapted your eyes to see in it, a pilgrim whose legs were so tired that all you wanted was for your backpack to become weightless or the mud less clingy, or maybe you saw your loved ones dying and willed their wounds to stop bleeding.\n\nWhen Selecting this perk, also select a tier 0 spell or a spell of GM's offering.",
         "grants": {
           "abilities": [],
           "effects": [
@@ -5177,6 +5183,179 @@
         "Movement",
         "Stealth"
       ]
+    },
+    {
+      "id": "aim",
+      "name": "Aim",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Interact"
+      ]
+    },
+    {
+      "id": "all-in-defense",
+      "name": "All in Defense",
+      "effect": "**AP Cost:** 2",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "block",
+      "name": "Block",
+      "effect": "**AP Cost:** -",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "dodge",
+      "name": "Dodge",
+      "effect": "**AP Cost:** -",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "endure",
+      "name": "Endure",
+      "effect": "**AP Cost:** -",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "escape",
+      "name": "Escape",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Attack"
+      ]
+    },
+    {
+      "id": "grapple",
+      "name": "Grapple",
+      "effect": "**AP Cost:** 3",
+      "tags": [
+        "Attack"
+      ]
+    },
+    {
+      "id": "melee-attack",
+      "name": "Melee Attack",
+      "effect": "# Melee Attack\n\n**AP Cost:** 2-4 (based on weapon weight)",
+      "tags": [
+        "Attack"
+      ]
+    },
+    {
+      "id": "parry",
+      "name": "Parry",
+      "effect": "**AP Cost:**",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "ranged-attack",
+      "name": "Ranged Attack",
+      "effect": "**AP Cost:** 2-4 (based on weapon weight)",
+      "tags": [
+        "Attack",
+        "Projectile"
+      ]
+    },
+    {
+      "id": "ready",
+      "name": "Ready",
+      "effect": "# Ready\n\n**AP Cost:** Variable (activity AP cost)",
+      "tags": [
+        "Interact"
+      ]
+    },
+    {
+      "id": "crawl",
+      "name": "Crawl",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "run",
+      "name": "Run",
+      "effect": "**AP Cost:** 2+",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "stand-up",
+      "name": "Stand Up",
+      "effect": "**AP Cost:** 2",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "step",
+      "name": "Step",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "stride",
+      "name": "Stride",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "comedian",
+      "name": "Comedian",
+      "effect": "**AP Cost:** R\n\nWhenever words lead to a decrease in an attitude, roll Fast-Talk against GM set DC (based on the offense level) attempting to turn it into a joke. On a success the offense taken doesn't decrease the attitude.",
+      "tags": [
+        "Reaction"
+      ]
+    },
+    {
+      "id": "deduce",
+      "name": "Deduce",
+      "effect": "# Deduce\n\n**AP Cost:** 1",
+      "tags": [
+        "Skill"
+      ]
+    },
+    {
+      "id": "demoralize",
+      "name": "Demoralize",
+      "effect": "# Demoralize\n\n**AP Cost:** 2",
+      "tags": [
+        "Skill",
+        "Bane",
+        "Mind"
+      ]
+    },
+    {
+      "id": "aid",
+      "name": "Aid",
+      "effect": "# Aid\n\n**AP Cost:** 2 + Reaction",
+      "tags": [
+        "Interact",
+        "Boon"
+      ]
+    },
+    {
+      "id": "first-aid",
+      "name": "First Aid",
+      "effect": "# First Aid\n\n**AP Cost:** 4",
+      "tags": [
+        "Interact",
+        "Healing"
+      ]
     }
   ],
   "effects": [
@@ -5643,12 +5822,10 @@
     {
       "id": "mage",
       "name": "Mage",
-      "effect": "- Select one Tier 0 spell and add it to your repertoire (this spell doesn't contribute to attribute advancement)\n- You unlock Tier 0 spells for learning\n- You can learn Team Ritual in one day with written guidance or one shift with help\n- This perk requires GM permission and no time to learn\n- Can be selected as part of character background (GM may require Magical Theory 1/Theology 1 and a magical instructor)",
+      "effect": "- You are a mage, and can now cast spells.",
       "tags": [
         "Passive",
-        "Spellcasting",
-        "Unlock",
-        "Tier0"
+        "Spellcasting"
       ]
     },
     {
