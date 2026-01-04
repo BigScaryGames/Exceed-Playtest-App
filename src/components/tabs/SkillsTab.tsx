@@ -194,7 +194,8 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
             name: selectedSkill.name,
             level: 1,
             attribute: attribute,
-            cost: cost
+            cost: cost,
+            xpType: 'social'
           }
         ]
       });
@@ -225,7 +226,8 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
             name: skill.name,
             level: newLevel,
             attribute: attribute,
-            cost: cost
+            cost: cost,
+            xpType: 'social'
           }
         ]
       });

@@ -162,28 +162,51 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
       </div>
 
       {/* Combat and Skill XP Block */}
-      <div
-        className="bg-slate-800 hover:bg-slate-750 rounded-lg p-4 cursor-pointer transition-colors border border-slate-600"
-        onClick={() => setShowXPModal(true)}
-      >
-        <div className="flex items-center justify-around gap-4">
-          <div className="flex items-center gap-3">
-            <Swords size={24} className="text-red-400" />
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-slate-300">Combat XP</span>
-              <span className="text-2xl font-bold text-white">{character.combatXP}</span>
+      <div className="grid grid-cols-2 gap-3">
+        {/* Total XP Block */}
+        <div className="bg-slate-800 rounded-lg p-3 border border-slate-600">
+          <span className="text-sm font-semibold text-slate-400">Total XP</span>
+          <div className="flex items-center justify-around mt-2">
+            <div className="flex items-center gap-2">
+              <Swords size={18} className="text-red-400" />
+              <span className="text-xl font-bold text-white">
+                {character.combatXP + character.progressionLog.filter(e => e.xpType === 'combat').reduce((sum, e) => sum + e.cost, 0)}
+              </span>
             </div>
-          </div>
-          <div className="w-px h-12 bg-slate-600"></div>
-          <div className="flex items-center gap-3">
-            <BookOpen size={24} className="text-blue-400" />
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold text-slate-300">Skill XP</span>
-              <span className="text-2xl font-bold text-white">{character.socialXP}</span>
+            <div className="w-px h-6 bg-slate-600"></div>
+            <div className="flex items-center gap-2">
+              <BookOpen size={18} className="text-blue-400" />
+              <span className="text-xl font-bold text-white">
+                {character.socialXP + character.progressionLog.filter(e => e.xpType === 'social').reduce((sum, e) => sum + e.cost, 0)}
+              </span>
             </div>
           </div>
         </div>
-        <p className="text-xs text-slate-500 mt-3 text-center">Tap to add XP</p>
+
+        {/* Available XP Block */}
+        <div
+          className="bg-slate-800 hover:bg-slate-750 rounded-lg p-3 cursor-pointer transition-colors border border-slate-600"
+          onClick={() => setShowXPModal(true)}
+        >
+          <div className="flex items-center justify-around gap-2">
+            <div className="flex items-center gap-2">
+              <Swords size={20} className="text-red-400" />
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold text-slate-300">Combat</span>
+                <span className="text-lg font-bold text-white">{character.combatXP}</span>
+              </div>
+            </div>
+            <div className="w-px h-8 bg-slate-600"></div>
+            <div className="flex items-center gap-2">
+              <BookOpen size={20} className="text-blue-400" />
+              <div className="flex flex-col">
+                <span className="text-xs font-semibold text-slate-300">Skill</span>
+                <span className="text-lg font-bold text-white">{character.socialXP}</span>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-slate-500 mt-2 text-center">Tap to add XP</p>
+        </div>
       </div>
 
       {/* XP Modal */}
