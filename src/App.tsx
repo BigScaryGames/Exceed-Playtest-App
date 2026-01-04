@@ -13,7 +13,7 @@ import { CharacterSheet } from '@/components/CharacterSheet';
 import { RulesTab } from '@/components/tabs/RulesTab';
 import { SideMenu } from '@/components/SideMenu';
 import { RenameCharacterModal } from '@/components/modals/RenameCharacterModal';
-import { loadPerks } from '@/services/perkSync';
+import { loadPerks, clearPerkCache } from '@/services/perkSync';
 import { loadSpellDatabase } from '@/data/spells';
 import type { PerkDatabase } from '@/types/perks';
 
@@ -208,7 +208,9 @@ export default function App() {
   };
 
   const handleClearCache = async () => {
-    // Clear all caches
+    // Clear perk cache from localStorage
+    clearPerkCache();
+    // Clear all HTTP caches
     if ('caches' in window) {
       const cacheNames = await caches.keys();
       await Promise.all(cacheNames.map(name => caches.delete(name)));
