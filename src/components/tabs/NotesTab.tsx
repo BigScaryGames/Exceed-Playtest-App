@@ -183,29 +183,23 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
           </div>
         </div>
 
-        {/* Available XP Block */}
+        {/* Current XP Block */}
         <div
           className="bg-slate-800 hover:bg-slate-750 rounded-lg p-3 cursor-pointer transition-colors border border-slate-600"
           onClick={() => setShowXPModal(true)}
         >
-          <div className="flex items-center justify-around gap-2">
+          <span className="text-sm font-semibold text-slate-400">Current XP (Add)</span>
+          <div className="flex items-center justify-around mt-2">
             <div className="flex items-center gap-2">
-              <Swords size={20} className="text-red-400" />
-              <div className="flex flex-col">
-                <span className="text-xs font-semibold text-slate-300">Combat</span>
-                <span className="text-lg font-bold text-white">{character.combatXP}</span>
-              </div>
+              <Swords size={18} className="text-red-400" />
+              <span className="text-xl font-bold text-white">{character.combatXP}</span>
             </div>
-            <div className="w-px h-8 bg-slate-600"></div>
+            <div className="w-px h-6 bg-slate-600"></div>
             <div className="flex items-center gap-2">
-              <BookOpen size={20} className="text-blue-400" />
-              <div className="flex flex-col">
-                <span className="text-xs font-semibold text-slate-300">Skill</span>
-                <span className="text-lg font-bold text-white">{character.socialXP}</span>
-              </div>
+              <BookOpen size={18} className="text-blue-400" />
+              <span className="text-xl font-bold text-white">{character.socialXP}</span>
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-2 text-center">Tap to add XP</p>
         </div>
       </div>
 
