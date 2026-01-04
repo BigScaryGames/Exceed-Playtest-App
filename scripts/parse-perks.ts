@@ -554,8 +554,9 @@ function parsePerkContent(filename: string, content: string, perkType: 'combat' 
 
 /**
  * Parse perks from GitHub
+ * Returns both perks and a map of original contents for post-processing
  */
-async function parsePerksFromGitHub(folder: string, perkType: 'combat' | 'magic' | 'skill'): Promise<ParsedPerk[]> {
+async function parsePerksFromGitHubWithContents(folder: string, perkType: 'combat' | 'magic' | 'skill'): Promise<{ perks: ParsedPerk[], contents: Map<string, string> }> {
   console.log(`Fetching ${perkType} perks from GitHub...`);
   const files = await fetchAllMarkdownFiles(
     `${GITHUB_API_BASE}/${folder}`,
@@ -564,15 +565,25 @@ async function parsePerksFromGitHub(folder: string, perkType: 'combat' | 'magic'
 
   console.log(`Parsing ${files.size} ${perkType} perk files...`);
   const perks: ParsedPerk[] = [];
+  const contents = new Map<string, string>();
 
   for (const [filename, content] of files) {
     const perk = parsePerkContent(filename, content, perkType);
     if (perk) {
       perks.push(perk);
+      contents.set(perk.name, content);
     }
   }
 
-  return perks;
+  return { perks, contents };
+}
+
+/**
+ * Parse perks from GitHub - simplified version (for backwards compatibility)
+ */
+async function parsePerksFromGitHub(folder: string, perkType: 'combat' | 'magic' | 'skill'): Promise<ParsedPerk[]> {
+  const result = await parsePerksFromGitHubWithContents(folder, perkType);
+  return result.perks;
 }
 
 /**
@@ -815,13 +826,31 @@ async function main() {
   if (IS_CI || !fs.existsSync(LOCAL_RULESET_PATH)) {
     // Fetch from GitHub
     console.log('Fetching perks from GitHub...\n');
-    [combatPerks, magicPerks, skillPerks] = await Promise.all([
-      parsePerksFromGitHub('CombatPerks', 'combat'),
-      parsePerksFromGitHub('MagicPerks', 'magic'),
-      parsePerksFromGitHub('SkillPerks', 'skill'),
+    const [combatResult, magicResult, skillResult] = await Promise.all([
+      parsePerksFromGitHubWithContents('CombatPerks', 'combat'),
+      parsePerksFromGitHubWithContents('MagicPerks', 'magic'),
+      parsePerksFromGitHubWithContents('SkillPerks', 'skill'),
     ]);
-    // TODO: Add GitHub fetching for abilities/effects when needed
-    console.log('Note: Abilities and effects not fetched from GitHub (local only for now)');
+
+    combatPerks = combatResult.perks;
+    magicPerks = magicResult.perks;
+    skillPerks = skillResult.perks;
+
+    // Fetch abilities and effects from GitHub
+    console.log('\n--- MS5: Fetching Abilities and Effects from GitHub ---');
+    [abilities, effects] = await Promise.all([
+      parseAbilitiesFromGitHub(),
+      parseEffectsFromGitHub(),
+    ]);
+
+    // Resolve plain references
+    console.log('\n--- Resolving plain grant references ---');
+    const allPerks = [...combatPerks, ...magicPerks, ...skillPerks];
+    const allContents = new Map<string, string>();
+    [...combatResult.contents, ...magicResult.contents, ...skillResult.contents].forEach(([k, v]) => allContents.set(k, v));
+
+    resolvePlainGrantReferences(allPerks, abilities, effects, allContents);
+    console.log('Plain grant references resolved');
   } else {
     // Use local files
     console.log(`Using local ruleset: ${LOCAL_RULESET_PATH}\n`);

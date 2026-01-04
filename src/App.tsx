@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, Upload, Trash2, BookOpen } from 'lucide-react';
+import { User, Upload, Trash2, BookOpen, RefreshCw } from 'lucide-react';
 import { Character } from '@/types/character';
 import {
   createEmptyCharacter,
@@ -207,6 +207,16 @@ export default function App() {
     setIsMenuOpen(false);
   };
 
+  const handleClearCache = async () => {
+    // Clear all caches
+    if ('caches' in window) {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map(name => caches.delete(name)));
+    }
+    // Hard reload to bypass cache
+    window.location.reload();
+  };
+
   // Landing Page
   if (currentView === 'landing') {
     return (
@@ -258,6 +268,14 @@ export default function App() {
             >
               <BookOpen size={24} />
               <span>View Rules</span>
+            </button>
+
+            <button
+              onClick={handleClearCache}
+              className="w-full flex items-center justify-center gap-3 bg-orange-700 hover:bg-orange-600 text-slate-100 font-semibold py-3 px-6 rounded-lg transition-colors border border-orange-600 text-sm"
+            >
+              <RefreshCw size={18} />
+              <span>Clear Cache & Reload</span>
             </button>
           </div>
 
