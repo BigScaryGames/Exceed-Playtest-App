@@ -510,6 +510,7 @@ function parseEffectContent(filename: string, content: string): ParsedEffect | n
 /**
  * Parse perk from markdown content
  * MS5: Name is now extracted from filename, not from # header
+ * New format: Description section contains short desc (first line) and full description (rest)
  */
 function parsePerkContent(filename: string, content: string, perkType: 'combat' | 'magic' | 'skill'): ParsedPerk | null {
   try {
@@ -523,9 +524,19 @@ function parsePerkContent(filename: string, content: string, perkType: 'combat' 
     const apCostMatch = content.match(/\*\*AP Cost:\*\*\s*(.+?)$/m);
     const tagsMatch = content.match(/\*\*Tags:\*\*\s*(.+?)$/m);
 
-    const shortDescMatch = content.match(/##\s+Short Description\s*\n([\s\S]*?)(?=\n##|\n\*\*|$)/);
-    const effectMatch = content.match(/##\s+Effect\s*\n([\s\S]*?)(?=\n##|\n\*\*|$)/);
-    const descriptionMatch = content.match(/##\s+Description\s*\n([\s\S]*?)(?=\n##|\n\*\*|$)/);
+    // New format: Description section (first line = short, rest = full)
+    const descriptionMatch = content.match(/##\s+Description\s*\n([\s\S]*?)(?=\n##|$)/);
+
+    let shortDescription = '';
+    let description = '';
+    if (descriptionMatch) {
+      const descText = descriptionMatch[1].trim();
+      // First line is short description
+      const lines = descText.split('\n');
+      shortDescription = lines[0].trim();
+      // Rest is full description
+      description = lines.slice(1).join('\n').trim() || undefined;
+    }
 
     if (!costMatch) return null;
 
@@ -539,10 +550,10 @@ function parsePerkContent(filename: string, content: string, perkType: 'combat' 
       cost: parseCost(costMatch[1].trim()),
       apCost: parseApCost(apCostMatch ? apCostMatch[1].trim() : '-'),
       tags: parseTags(tagsMatch ? tagsMatch[1].trim() : '-'),
-      shortDescription: shortDescMatch ? shortDescMatch[1].trim() : '',
-      effect: effectMatch ? effectMatch[1].trim() : '',
-      description: descriptionMatch ? descriptionMatch[1].trim() : undefined,
-      grants: parseGrants(content),  // MS5: Extract ability/effect grants
+      shortDescription,
+      effect: shortDescription,  // Use short desc as effect for compatibility
+      description,
+      grants: parseGrants(content),  // Extract ability/effect grants
     };
 
     return perk;
