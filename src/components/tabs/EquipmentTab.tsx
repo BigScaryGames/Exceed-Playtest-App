@@ -24,6 +24,7 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
   const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
   const [draggedItem, setDraggedItem] = useState<InventoryItem | null>(null);
   const [showMoneyModal, setShowMoneyModal] = useState(false);
+  const [moneyAmount, setMoneyAmount] = useState('0');
 
   // Calculate encumbrance
   const encumbranceData = calculateEncumbrance(character);
@@ -259,11 +260,14 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
       <div className="bg-slate-800 rounded-lg px-3 py-2 mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-slate-400 text-sm">Money:</span>
-          <span className="text-white font-semibold">{character.money || 0} gp</span>
+          <span className="text-white font-semibold">{character.money || 0} Silver</span>
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setShowMoneyModal(true)}
+            onClick={() => {
+              setMoneyAmount('0');
+              setShowMoneyModal(true);
+            }}
             className="flex items-center gap-1 bg-slate-700 hover:bg-slate-600 rounded px-3 py-1.5 text-white text-sm font-semibold"
           >
             Adjust Money
@@ -387,45 +391,59 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
       {showMoneyModal && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          onClick={() => setShowMoneyModal(false)}
+          onClick={() => {
+            setShowMoneyModal(false);
+            setMoneyAmount('0');
+          }}
         >
           <div
             className="bg-slate-800 rounded-lg p-6 max-w-sm w-full mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold text-white mb-4">Add/Remove Money</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Adjust Money</h3>
             <div className="mb-4">
               <label className="block text-sm font-semibold text-slate-300 mb-2">
-                Amount (use negative to subtract)
+                Amount
               </label>
               <input
                 type="number"
-                step="0.01"
-                placeholder="e.g., 50 or -20"
+                step="1"
+                min="0"
+                value={moneyAmount}
+                onChange={(e) => setMoneyAmount(e.target.value)}
                 className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    const input = e.currentTarget;
-                    const amount = parseFloat(input.value) || 0;
-                    const newMoney = (character.money || 0) + amount;
-                    onUpdate({
-                      ...character,
-                      money: Math.max(0, newMoney)
-                    });
-                    setShowMoneyModal(false);
-                  }
-                }}
               />
-              <p className="text-slate-400 text-xs mt-1">
-                Current: {character.money || 0} gp
-              </p>
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => setShowMoneyModal(false)}
-                className="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2 rounded font-semibold"
+                onClick={() => {
+                  const amount = parseFloat(moneyAmount) || 0;
+                  const newMoney = (character.money || 0) + amount;
+                  onUpdate({
+                    ...character,
+                    money: newMoney
+                  });
+                  setShowMoneyModal(false);
+                  setMoneyAmount('0');
+                }}
+                className="flex-1 bg-green-700 hover:bg-green-600 text-white py-2 rounded font-semibold"
               >
-                Cancel
+                Add
+              </button>
+              <button
+                onClick={() => {
+                  const amount = parseFloat(moneyAmount) || 0;
+                  const newMoney = Math.max(0, (character.money || 0) - amount);
+                  onUpdate({
+                    ...character,
+                    money: newMoney
+                  });
+                  setShowMoneyModal(false);
+                  setMoneyAmount('0');
+                }}
+                className="flex-1 bg-red-700 hover:bg-red-600 text-white py-2 rounded font-semibold"
+              >
+                Reduce
               </button>
             </div>
           </div>
