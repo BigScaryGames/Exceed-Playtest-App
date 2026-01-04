@@ -83,6 +83,10 @@ const GITHUB_REPO = 'BigScaryGames/ExceedV';
 const GITHUB_BRANCH = 'main';
 const GITHUB_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/Ruleset/Perks`;
 const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/Ruleset/Perks`;
+const GITHUB_ACTIONS_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/Ruleset/Core%20Rules/Actions`;
+const GITHUB_ACTIONS_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/Ruleset/Core Rules/Actions`;
+const GITHUB_EFFECTS_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/Ruleset/Core%20Rules/References/Effects`;
+const GITHUB_EFFECTS_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/Ruleset/Core Rules/References/Effects`;
 
 // Fallback to local path if available (for local development)
 const LOCAL_RULESET_PATH = '/home/r/Exceed/ExceedV/Ruleset/Perks';
@@ -627,6 +631,75 @@ function parsePerksFromLocal(dir: string, perkType: 'combat' | 'magic' | 'skill'
 }
 
 /**
+ * Fetch abilities from GitHub (recursive)
+ * Searches all subdirectories for .md files
+ */
+async function parseAbilitiesFromGitHub(): Promise<ParsedAbility[]> {
+  console.log('Fetching abilities from GitHub...');
+  const abilities: ParsedAbility[] = [];
+
+  try {
+    const files = await fetchAllMarkdownFiles(
+      GITHUB_ACTIONS_API_BASE,
+      GITHUB_ACTIONS_RAW_BASE,
+      false // Don't skip templates in subdirs
+    );
+
+    console.log(`Found ${files.size} potential ability files`);
+
+    for (const [filename, content] of files) {
+      // Skip Effect - files and _index files
+      if (filename.startsWith('Effect -') || filename.startsWith('_')) {
+        continue;
+      }
+      const ability = parseAbilityContent(filename, content);
+      if (ability) {
+        abilities.push(ability);
+      }
+    }
+
+    console.log(`Parsed ${abilities.length} abilities`);
+  } catch (error) {
+    console.error('Error fetching abilities from GitHub:', error);
+  }
+
+  return abilities;
+}
+
+/**
+ * Fetch effects from GitHub (recursive)
+ */
+async function parseEffectsFromGitHub(): Promise<ParsedEffect[]> {
+  console.log('Fetching effects from GitHub...');
+  const effects: ParsedEffect[] = [];
+
+  try {
+    const files = await fetchAllMarkdownFiles(
+      GITHUB_EFFECTS_API_BASE,
+      GITHUB_EFFECTS_RAW_BASE,
+      false
+    );
+
+    console.log(`Found ${files.size} potential effect files`);
+
+    for (const [filename, content] of files) {
+      if (filename.startsWith('Effect -') && filename.endsWith('.md')) {
+        const effect = parseEffectContent(filename, content);
+        if (effect) {
+          effects.push(effect);
+        }
+      }
+    }
+
+    console.log(`Parsed ${effects.length} effects`);
+  } catch (error) {
+    console.error('Error fetching effects from GitHub:', error);
+  }
+
+  return effects;
+}
+
+/**
  * Parse abilities from local filesystem (recursive)
  * Searches all subdirectories for .md files
  */
@@ -780,7 +853,7 @@ async function main() {
     console.log('\n--- Resolving plain grant references ---');
     const allPerks = [...combatPerks, ...magicPerks, ...skillPerks];
     const allContents = new Map<string, string>();
-    [...combatResult.contents, ...magicResult.contents, ...skillResult.contents].forEach((v, k) => allContents.set(k, v));
+    [...combatResult.contents, ...magicResult.contents, ...skillResult.contents].forEach(([k, v]) => allContents.set(k, v));
 
     resolvePlainGrantReferences(allPerks, abilities, effects, allContents);
     console.log('Plain grant references resolved');
