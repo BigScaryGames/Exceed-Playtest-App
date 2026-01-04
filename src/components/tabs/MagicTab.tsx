@@ -3,9 +3,6 @@ import { Plus, Pencil, Trash2, Zap, ZapOff, Dice6, ChevronDown, ChevronRight, Sc
 import { Character, KnownSpell } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import {
-  calculateLimit,
-  calculateCurrentLimit,
-  calculateUsedLimit,
   calculateCastingDC,
   getSpellData,
   attuneSpell,
@@ -122,13 +119,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
     character.attunedSpells = [];
   }
 
-  // Get spellcraft from Spell domain
   const spellcraft = getSpellcraft(character);
-
-  const totalLimit = calculateLimit(character);
-  const usedLimit = calculateUsedLimit(character);
-  const currentLimit = calculateCurrentLimit(character);
-
   const spellsByTier = getSpellsByTier(character);
 
   // Get abilities and effects with inherited tags
@@ -229,51 +220,8 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
     });
   };
 
-  const getLimitBarColor = (percentage: number): string => {
-    if (percentage >= 80) return 'bg-red-600';
-    if (percentage >= 50) return 'bg-yellow-600';
-    return 'bg-green-600';
-  };
-
-  const limitPercentage = totalLimit > 0 ? (usedLimit / totalLimit) * 100 : 0;
-
   return (
     <div className="p-4">
-      {/* Spellcraft & Limit Section */}
-      <div className="bg-slate-800 rounded-lg p-4 mb-4">
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          {/* Spellcraft */}
-          <div>
-            <div className="bg-slate-700 rounded p-3 text-center">
-              <div className="text-2xl font-bold">
-                <span className="text-slate-400">Spellcraft - </span>
-                <span className="text-blue-400">{spellcraft}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Limit */}
-          <div>
-            <div className="bg-slate-700 rounded p-3">
-              <div className="text-xl font-bold mb-2">
-                <span className="text-slate-400">Limit </span>
-                <span className="text-white">{currentLimit}/{totalLimit}</span>
-              </div>
-              <div className="relative h-4 bg-slate-600 rounded-full overflow-hidden">
-                <div
-                  className={`absolute inset-y-0 left-0 transition-all ${getLimitBarColor(limitPercentage)}`}
-                  style={{ width: `${limitPercentage}%` }}
-                />
-              </div>
-              <div className="text-xs text-slate-400 mt-2">
-                Formula: 3 + Will ({character.stats.WI}) + Spellcraft ({spellcraft})
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
       {/* Spellcraft Abilities & Effects Section */}
       <div className="bg-slate-800 rounded-lg p-4 mb-4">
         <div className="flex justify-between items-center mb-3">

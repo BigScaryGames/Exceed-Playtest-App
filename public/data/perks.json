@@ -1,6 +1,6 @@
 {
-  "version": "2026-01-03T23:54:21.964Z",
-  "lastUpdated": 1767484461964,
+  "version": "2026-01-04T00:45:18.837Z",
+  "lastUpdated": 1767487518838,
   "perks": {
     "combat": [
       {
@@ -5176,6 +5176,179 @@
         "Dodge",
         "Movement",
         "Stealth"
+      ]
+    },
+    {
+      "id": "aim",
+      "name": "Aim",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Interact"
+      ]
+    },
+    {
+      "id": "all-in-defense",
+      "name": "All in Defense",
+      "effect": "**AP Cost:** 2",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "block",
+      "name": "Block",
+      "effect": "**AP Cost:** -",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "dodge",
+      "name": "Dodge",
+      "effect": "**AP Cost:** -",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "endure",
+      "name": "Endure",
+      "effect": "**AP Cost:** -",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "escape",
+      "name": "Escape",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Attack"
+      ]
+    },
+    {
+      "id": "grapple",
+      "name": "Grapple",
+      "effect": "**AP Cost:** 3",
+      "tags": [
+        "Attack"
+      ]
+    },
+    {
+      "id": "melee-attack",
+      "name": "Melee Attack",
+      "effect": "# Melee Attack\n\n**AP Cost:** 2-4 (based on weapon weight)",
+      "tags": [
+        "Attack"
+      ]
+    },
+    {
+      "id": "parry",
+      "name": "Parry",
+      "effect": "**AP Cost:**",
+      "tags": [
+        "Defend"
+      ]
+    },
+    {
+      "id": "ranged-attack",
+      "name": "Ranged Attack",
+      "effect": "**AP Cost:** 2-4 (based on weapon weight)",
+      "tags": [
+        "Attack",
+        "Projectile"
+      ]
+    },
+    {
+      "id": "ready",
+      "name": "Ready",
+      "effect": "# Ready\n\n**AP Cost:** Variable (activity AP cost)",
+      "tags": [
+        "Interact"
+      ]
+    },
+    {
+      "id": "crawl",
+      "name": "Crawl",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "run",
+      "name": "Run",
+      "effect": "**AP Cost:** 2+",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "stand-up",
+      "name": "Stand Up",
+      "effect": "**AP Cost:** 2",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "step",
+      "name": "Step",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "stride",
+      "name": "Stride",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Move"
+      ]
+    },
+    {
+      "id": "comedian",
+      "name": "Comedian",
+      "effect": "**AP Cost:** R\n\nWhenever words lead to a decrease in an attitude, roll Fast-Talk against GM set DC (based on the offense level) attempting to turn it into a joke. On a success the offense taken doesn't decrease the attitude.",
+      "tags": [
+        "Reaction"
+      ]
+    },
+    {
+      "id": "deduce",
+      "name": "Deduce",
+      "effect": "# Deduce\n\n**AP Cost:** 1",
+      "tags": [
+        "Skill"
+      ]
+    },
+    {
+      "id": "demoralize",
+      "name": "Demoralize",
+      "effect": "# Demoralize\n\n**AP Cost:** 2",
+      "tags": [
+        "Skill",
+        "Bane",
+        "Mind"
+      ]
+    },
+    {
+      "id": "aid",
+      "name": "Aid",
+      "effect": "# Aid\n\n**AP Cost:** 2 + Reaction",
+      "tags": [
+        "Interact",
+        "Boon"
+      ]
+    },
+    {
+      "id": "first-aid",
+      "name": "First Aid",
+      "effect": "# First Aid\n\n**AP Cost:** 4",
+      "tags": [
+        "Interact",
+        "Healing"
       ]
     }
   ],

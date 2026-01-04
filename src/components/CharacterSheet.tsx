@@ -94,14 +94,6 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
     }
   }, [character.progressionLog]);
 
-  const handleUpdateXP = (combat: number, social: number) => {
-    onUpdate({
-      ...character,
-      combatXP: character.combatXP + combat,
-      socialXP: character.socialXP + social
-    });
-  };
-
   // Use calculated stats for display
   const displayCharacter: Character = {
     ...character,
@@ -116,7 +108,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <CharacterHeader character={displayCharacter} onUpdateXP={handleUpdateXP} onMenuToggle={onMenuToggle} />
+      <CharacterHeader character={displayCharacter} onMenuToggle={onMenuToggle} />
 
       <div className="sticky top-0 z-10 bg-slate-900 border-b border-slate-700">
         <div className="flex">
@@ -128,7 +120,7 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
                 : 'text-slate-500'
             }`}
           >
-            📓 Notes
+            👤 Character
           </button>
           <button
             onClick={() => setActiveTab('skills')}

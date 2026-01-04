@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import {
   Swords,
-  BookOpen,
   Menu,
   Dumbbell,
   Shield,
@@ -10,11 +9,12 @@ import {
   Eye,
   Sparkles,
   Brain,
-  Flame
+  Flame,
+  Gauge
 } from 'lucide-react';
 import { Character, AttributeCode } from '@/types/character';
-import { XPModal } from '@/components/modals/XPModal';
 import { ATTRIBUTE_CP_THRESHOLDS, MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS } from '@/utils/constants';
+import { calculateLimit, calculateUsedLimit } from '@/utils/spells';
 
 // Icon mapping for attributes
 const STAT_ICONS: Record<string, React.ElementType> = {
@@ -69,13 +69,11 @@ const calculateProgress = (currentCP: number, thresholds: number[]): number => {
 
 interface CharacterHeaderProps {
   character: Character;
-  onUpdateXP: (combatXP: number, socialXP: number) => void;
   onMenuToggle: () => void;
 }
 
-export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onUpdateXP, onMenuToggle }) => {
+export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onMenuToggle }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [showXPModal, setShowXPModal] = useState(false);
 
   // Calculate CP totals for each attribute from progression log
   const attributeCPTotals = useMemo(() => {
@@ -114,144 +112,133 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onU
     return { Martial: martialCP, Spellcraft: spellcraftCP };
   }, [character.progressionLog]);
 
-  const handleAddXP = (combatXP: number, socialXP: number) => {
-    onUpdateXP(combatXP, socialXP);
-    setShowXPModal(false);
+  // Calculate Limit
+  const totalLimit = calculateLimit(character);
+  const usedLimit = calculateUsedLimit(character);
+  const limitPercentage = totalLimit > 0 ? (usedLimit / totalLimit) * 100 : 0;
+
+  const getLimitBarColor = (percentage: number): string => {
+    if (percentage >= 80) return 'bg-red-600';
+    if (percentage >= 50) return 'bg-yellow-600';
+    return 'bg-green-600';
   };
 
   return (
-    <>
-      <div className="bg-black border-b border-slate-700">
-        <div className="p-4">
-          <div className="flex justify-between items-center gap-4">
-            <div className="flex items-center gap-2 flex-1 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onMenuToggle();
-                }}
-                className="text-slate-400 hover:text-white transition-colors p-1"
-                title="Open menu"
-              >
-                <Menu size={20} />
-              </button>
-              <h2 className="text-2xl font-bold text-white">
-                {character.name}
-              </h2>
-            </div>
-            <div
-              className="flex items-center gap-4 bg-slate-800 hover:bg-slate-700 rounded-lg px-4 py-2 cursor-pointer transition-colors border border-slate-600"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowXPModal(true);
-              }}
-            >
-              <div className="flex items-center gap-2">
-                <Swords size={16} className="text-red-400" />
-                <div className="flex flex-col items-center">
-                  <span className="text-xs font-semibold text-white">Combat</span>
-                  <span className="text-lg font-bold text-white">{character.combatXP}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <BookOpen size={16} className="text-blue-400" />
-                <div className="flex flex-col items-center">
-                  <span className="text-xs font-semibold text-white">Skill</span>
-                  <span className="text-lg font-bold text-white">{character.socialXP}</span>
-                </div>
-              </div>
-            </div>
+    <div className="bg-black border-b border-slate-700">
+      <div className="p-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => onMenuToggle()}
+            className="text-slate-400 hover:text-white transition-colors p-1"
+            title="Open menu"
+          >
+            <Menu size={20} />
+          </button>
+          <div className="flex items-center gap-2 flex-1 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+            <h2 className="text-2xl font-bold text-white">
+              {character.name}
+            </h2>
           </div>
         </div>
+      </div>
 
-        <div
-          className="overflow-hidden transition-all duration-250 bg-slate-950"
-          style={{ maxHeight: isExpanded ? '300px' : '0px' }}
-        >
-          {/* Attributes Grid */}
-          <div className="grid grid-cols-4 gap-2 p-3 pb-2">
-            {Object.entries(character.stats).map(([stat, value]) => {
-              const fullNames: Record<string, string> = {
-                MG: 'Might',
-                EN: 'Endurance',
-                AG: 'Agility',
-                DX: 'Dexterity',
-                WT: 'Wit',
-                WI: 'Will',
-                PR: 'Perception',
-                CH: 'Charisma'
-              };
-              const IconComponent = STAT_ICONS[stat];
-              const currentCP = attributeCPTotals[stat] || 0;
-              const progress = calculateProgress(currentCP, ATTRIBUTE_CP_THRESHOLDS);
+      <div
+        className="overflow-hidden transition-all duration-250 bg-slate-950"
+        style={{ maxHeight: isExpanded ? '300px' : '0px' }}
+      >
+        {/* Attributes Grid */}
+        <div className="grid grid-cols-4 gap-2 p-3 pb-2">
+          {Object.entries(character.stats).map(([stat, value]) => {
+            const fullNames: Record<string, string> = {
+              MG: 'Might',
+              EN: 'Endurance',
+              AG: 'Agility',
+              DX: 'Dexterity',
+              WT: 'Wit',
+              WI: 'Will',
+              PR: 'Perception',
+              CH: 'Charisma'
+            };
+            const IconComponent = STAT_ICONS[stat];
+            const currentCP = attributeCPTotals[stat] || 0;
+            const progress = calculateProgress(currentCP, ATTRIBUTE_CP_THRESHOLDS);
 
-              return (
-                <div key={stat} className="bg-slate-800 rounded px-2 py-1.5">
-                  <div className="flex items-center gap-1.5">
-                    {IconComponent && <IconComponent size={14} className="text-slate-400 flex-shrink-0" />}
-                    <span className="text-xs font-semibold text-slate-300 flex-1">
-                      <span className="hidden sm:inline">{fullNames[stat] || stat}</span>
-                      <span className="sm:hidden">{stat}</span>
-                    </span>
-                    <span className="text-base font-bold text-white">{value}</span>
-                  </div>
-                  {/* Progress bar */}
-                  <div className="h-1 bg-slate-700 rounded-full mt-1 overflow-hidden">
-                    <div
-                      className="h-full bg-green-500 transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Domains Row */}
-          <div className="px-3 pb-3">
-            <div className="flex gap-2">
-              <div className="flex-1 bg-red-900/40 border border-red-800/50 rounded px-3 py-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Swords size={14} className="text-red-400" />
-                    <span className="text-xs font-semibold text-red-300">Martial</span>
-                  </div>
-                  <span className="text-base font-bold text-white">{character.weaponDomains.Martial}</span>
+            return (
+              <div key={stat} className="bg-slate-800 rounded px-2 py-1.5">
+                <div className="flex items-center gap-1.5">
+                  {IconComponent && <IconComponent size={14} className="text-slate-400 flex-shrink-0" />}
+                  <span className="text-xs font-semibold text-slate-300 flex-1">
+                    <span className="hidden sm:inline">{fullNames[stat] || stat}</span>
+                    <span className="sm:hidden">{stat}</span>
+                  </span>
+                  <span className="text-base font-bold text-white">{value}</span>
                 </div>
                 {/* Progress bar */}
-                <div className="h-1 bg-red-950 rounded-full mt-1 overflow-hidden">
+                <div className="h-1 bg-slate-700 rounded-full mt-1 overflow-hidden">
                   <div
-                    className="h-full bg-red-500 transition-all duration-300"
-                    style={{ width: `${calculateProgress(domainCPTotals.Martial, MARTIAL_CP_THRESHOLDS)}%` }}
+                    className="h-full bg-green-500 transition-all duration-300"
+                    style={{ width: `${progress}%` }}
                   />
                 </div>
               </div>
-              <div className="flex-1 bg-purple-900/40 border border-purple-800/50 rounded px-3 py-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-purple-400" />
-                    <span className="text-xs font-semibold text-purple-300">Spellcraft</span>
-                  </div>
-                  <span className="text-base font-bold text-white">{character.weaponDomains.Spellcraft}</span>
+            );
+          })}
+        </div>
+
+        {/* Domains Row */}
+        <div className="px-3 pb-3">
+          <div className="flex gap-2">
+            <div className="flex-1 bg-red-900/40 border border-red-800/50 rounded px-2 py-1.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Swords size={12} className="text-red-400" />
+                  <span className="text-xs font-semibold text-red-300">Martial</span>
                 </div>
-                {/* Progress bar */}
-                <div className="h-1 bg-purple-950 rounded-full mt-1 overflow-hidden">
-                  <div
-                    className="h-full bg-purple-500 transition-all duration-300"
-                    style={{ width: `${calculateProgress(domainCPTotals.Spellcraft, SPELLCRAFT_CP_THRESHOLDS)}%` }}
-                  />
+                <span className="text-sm font-bold text-white">{character.weaponDomains.Martial}</span>
+              </div>
+              {/* Progress bar */}
+              <div className="h-1 bg-red-950 rounded-full mt-1 overflow-hidden">
+                <div
+                  className="h-full bg-red-500 transition-all duration-300"
+                  style={{ width: `${calculateProgress(domainCPTotals.Martial, MARTIAL_CP_THRESHOLDS)}%` }}
+                />
+              </div>
+            </div>
+            <div className="flex-1 bg-purple-900/40 border border-purple-800/50 rounded px-2 py-1.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Sparkles size={12} className="text-purple-400" />
+                  <span className="text-xs font-semibold text-purple-300">Spellcraft</span>
                 </div>
+                <span className="text-sm font-bold text-white">{character.weaponDomains.Spellcraft}</span>
+              </div>
+              {/* Progress bar */}
+              <div className="h-1 bg-purple-950 rounded-full mt-1 overflow-hidden">
+                <div
+                  className="h-full bg-purple-500 transition-all duration-300"
+                  style={{ width: `${calculateProgress(domainCPTotals.Spellcraft, SPELLCRAFT_CP_THRESHOLDS)}%` }}
+                />
+              </div>
+            </div>
+            <div className="flex-1 bg-emerald-900/40 border border-emerald-800/50 rounded px-2 py-1.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Gauge size={12} className="text-emerald-400" />
+                  <span className="text-xs font-semibold text-emerald-300">Limit</span>
+                </div>
+                <span className="text-sm font-bold text-white">{usedLimit}/{totalLimit}</span>
+              </div>
+              {/* Progress bar */}
+              <div className="h-1 bg-emerald-950 rounded-full mt-1 overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 ${getLimitBarColor(limitPercentage)}`}
+                  style={{ width: `${limitPercentage}%` }}
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <XPModal
-        isOpen={showXPModal}
-        onClose={() => setShowXPModal(false)}
-        onAddXP={handleAddXP}
-      />
-    </>
+    </div>
   );
 };

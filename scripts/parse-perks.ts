@@ -86,7 +86,7 @@ const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITH
 
 // Fallback to local path if available (for local development)
 const LOCAL_RULESET_PATH = '/home/r/Exceed/ExceedV/Ruleset/Perks';
-const LOCAL_ABILITIES_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/Actions/Abilities';
+const LOCAL_ACTIONS_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/Actions';
 const LOCAL_EFFECTS_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/References/Effects';
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'data', 'perks.json');
 
@@ -375,22 +375,91 @@ function parseGrants(content: string): PerkGrants {
 }
 
 /**
+ * Post-process perks to resolve plain ![[Name]] references in grants
+ * Determines if each reference is an ability or effect by looking up in databases
+ */
+function resolvePlainGrantReferences(
+  perks: ParsedPerk[],
+  allAbilities: ParsedAbility[],
+  allEffects: ParsedEffect[],
+  originalContents: Map<string, string>
+): void {
+  // Build lookup maps
+  const abilityLookup = new Map(allAbilities.map(a => [a.name.toLowerCase(), a.id]));
+  const effectLookup = new Map(allEffects.map(e => [e.name.toLowerCase(), e.id]));
+
+  console.log(`Ability lookup has ${abilityLookup.size} entries`);
+  console.log(`Effect lookup has ${effectLookup.size} entries`);
+  console.log(`Original contents has ${originalContents.size} entries`);
+
+  let resolvedCount = 0;
+  for (const perk of perks) {
+    const content = originalContents.get(perk.name);
+    if (!content) continue;
+
+    // Find the Grants section
+    const grantsMatch = content.match(/##\s+Grants\s*\n([\s\S]*?)(?=\n##|$)/i);
+    if (!grantsMatch) continue;
+
+    const grantsText = grantsMatch[1];
+
+    // Find all plain ![[Name]] references (not already prefixed with Ability - or Effect -)
+    const plainMatches = [...grantsText.matchAll(/!\[\[([^\]]+)\]\]/gi)]
+      .filter(m => !m[1].includes(' - ')); // Skip those with " - " (already formatted)
+
+    for (const match of plainMatches) {
+      const name = match[1].trim();
+      const nameLower = name.toLowerCase();
+      const id = nameToId(name);
+
+      // Check if it's an ability
+      if (abilityLookup.has(nameLower)) {
+        if (!perk.grants.abilities.includes(id)) {
+          perk.grants.abilities.push(id);
+          resolvedCount++;
+          console.log(`  Resolved ability "${name}" for perk "${perk.name}"`);
+        }
+      }
+      // Check if it's an effect
+      else if (effectLookup.has(nameLower)) {
+        if (!perk.grants.effects.includes(id)) {
+          perk.grants.effects.push(id);
+          resolvedCount++;
+          console.log(`  Resolved effect "${name}" for perk "${perk.name}"`);
+        }
+      }
+    }
+  }
+  console.log(`Resolved ${resolvedCount} plain references`);
+}
+
+/**
  * Parse an ability file
+ * Handles both "Ability - Name.md" and "Name.md" formats
  */
 function parseAbilityContent(filename: string, content: string): ParsedAbility | null {
   try {
-    // Extract name from filename: "Ability - Name.md" -> "Name"
-    const nameMatch = filename.match(/^Ability\s*-\s*(.+)\.md$/i);
-    if (!nameMatch) return null;
-    const name = nameMatch[1].trim();
+    // Extract name from filename
+    // Try "Ability - Name.md" format first
+    let nameMatch = filename.match(/^Ability\s*-\s*(.+)\.md$/i);
+    let name: string;
 
-    // Extract effect text (everything before **Tags:**)
-    const effectMatch = content.split(/\*\*Tags:\*\*/i)[0];
+    if (nameMatch) {
+      name = nameMatch[1].trim();
+    } else {
+      // Fall back to just removing .md extension
+      name = filename.replace(/\.md$/, '').trim();
+    }
+
+    if (!name) return null;
+
+    // Extract effect text (everything before **Tags:** or **Traits:**)
+    const effectMatch = content.split(/\*\*(Tags|Traits):\*\*/i)[0];
     const effect = effectMatch ? effectMatch.trim() : '';
 
-    // Extract tags
-    const tagsMatch = content.match(/\*\*Tags:\*\*\s*(.+?)$/m);
-    const tags = tagsMatch ? parseTags(tagsMatch[1].trim()) : [];
+    // Extract tags (look for either Tags: or Traits:)
+    const tagsMatch = content.match(/\*\*(Tags|Traits):\*\*\s*(.+?)$/m);
+    const tags = tagsMatch ? parseTags(tagsMatch[2].trim()) : [];
 
     return {
       id: nameToId(name),
@@ -504,10 +573,12 @@ async function parsePerksFromGitHub(folder: string, perkType: 'combat' | 'magic'
 
 /**
  * Parse perks from local filesystem (fallback)
+ * Returns both perks and a map of original contents for post-processing
  */
-function parsePerksFromLocal(dir: string, perkType: 'combat' | 'magic' | 'skill'): ParsedPerk[] {
+function parsePerksFromLocalWithContents(dir: string, perkType: 'combat' | 'magic' | 'skill'): { perks: ParsedPerk[], contents: Map<string, string> } {
   console.log(`Parsing ${perkType} perks from local filesystem...`);
   const perks: ParsedPerk[] = [];
+  const contents = new Map<string, string>();
 
   function findMarkdownFiles(directory: string): string[] {
     const files: string[] = [];
@@ -540,41 +611,70 @@ function parsePerksFromLocal(dir: string, perkType: 'combat' | 'magic' | 'skill'
     const perk = parsePerkContent(path.basename(file), content, perkType);
     if (perk) {
       perks.push(perk);
+      contents.set(perk.name, content);
     }
   }
 
-  return perks;
+  return { perks, contents };
 }
 
 /**
- * Parse abilities from local filesystem
+ * Parse perks from local filesystem (fallback) - simplified version
+ */
+function parsePerksFromLocal(dir: string, perkType: 'combat' | 'magic' | 'skill'): ParsedPerk[] {
+  const result = parsePerksFromLocalWithContents(dir, perkType);
+  return result.perks;
+}
+
+/**
+ * Parse abilities from local filesystem (recursive)
+ * Searches all subdirectories for .md files
  */
 function parseAbilitiesFromLocal(dir: string): ParsedAbility[] {
   console.log('Parsing abilities from local filesystem...');
   const abilities: ParsedAbility[] = [];
 
   if (!fs.existsSync(dir)) {
-    console.log(`Abilities directory not found: ${dir}`);
+    console.log(`Actions directory not found: ${dir}`);
     return abilities;
   }
 
-  try {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
+  function findMarkdownFiles(directory: string): string[] {
+    const files: string[] = [];
+    try {
+      const entries = fs.readdirSync(directory, { withFileTypes: true });
 
-    for (const entry of entries) {
-      if (entry.isFile() && entry.name.startsWith('Ability -') && entry.name.endsWith('.md')) {
-        const content = fs.readFileSync(path.join(dir, entry.name), 'utf-8');
-        const ability = parseAbilityContent(entry.name, content);
-        if (ability) {
-          abilities.push(ability);
+      for (const entry of entries) {
+        const fullPath = path.join(directory, entry.name);
+
+        if (entry.isDirectory()) {
+          files.push(...findMarkdownFiles(fullPath));
+        } else if (entry.isFile() && entry.name.endsWith('.md')) {
+          // Skip Effect - files and _index files
+          if (!entry.name.startsWith('Effect -') && !entry.name.startsWith('_')) {
+            files.push(fullPath);
+          }
         }
       }
+    } catch (error) {
+      console.error(`Error reading directory ${directory}:`, error);
     }
-  } catch (error) {
-    console.error(`Error reading abilities directory ${dir}:`, error);
+
+    return files;
   }
 
-  console.log(`Found ${abilities.length} abilities`);
+  const files = findMarkdownFiles(dir);
+  console.log(`Found ${files.length} potential ability files`);
+
+  for (const file of files) {
+    const content = fs.readFileSync(file, 'utf-8');
+    const ability = parseAbilityContent(path.basename(file), content);
+    if (ability) {
+      abilities.push(ability);
+    }
+  }
+
+  console.log(`Parsed ${abilities.length} abilities`);
   return abilities;
 }
 
@@ -652,23 +752,38 @@ async function main() {
   } else {
     // Use local files
     console.log(`Using local ruleset: ${LOCAL_RULESET_PATH}\n`);
-    combatPerks = parsePerksFromLocal(
+
+    // Parse perks with contents for post-processing
+    const combatResult = parsePerksFromLocalWithContents(
       path.join(LOCAL_RULESET_PATH, 'CombatPerks'),
       'combat'
     );
-    magicPerks = parsePerksFromLocal(
+    const magicResult = parsePerksFromLocalWithContents(
       path.join(LOCAL_RULESET_PATH, 'MagicPerks'),
       'magic'
     );
-    skillPerks = parsePerksFromLocal(
+    const skillResult = parsePerksFromLocalWithContents(
       path.join(LOCAL_RULESET_PATH, 'SkillPerks'),
       'skill'
     );
 
+    combatPerks = combatResult.perks;
+    magicPerks = magicResult.perks;
+    skillPerks = skillResult.perks;
+
     // Parse abilities and effects (MS5)
     console.log('\n--- MS5: Parsing Abilities and Effects ---');
-    abilities = parseAbilitiesFromLocal(LOCAL_ABILITIES_PATH);
+    abilities = parseAbilitiesFromLocal(LOCAL_ACTIONS_PATH);
     effects = parseEffectsFromLocal(LOCAL_EFFECTS_PATH);
+
+    // Post-process: resolve plain ![[Name]] references in grants
+    console.log('\n--- Resolving plain grant references ---');
+    const allPerks = [...combatPerks, ...magicPerks, ...skillPerks];
+    const allContents = new Map<string, string>();
+    [...combatResult.contents, ...magicResult.contents, ...skillResult.contents].forEach((v, k) => allContents.set(k, v));
+
+    resolvePlainGrantReferences(allPerks, abilities, effects, allContents);
+    console.log('Plain grant references resolved');
   }
 
   // Create database object

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, Edit2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, Edit2, Swords, BookOpen } from 'lucide-react';
 import { Character, ProgressionLogEntry } from '@/types/character';
 import { ATTRIBUTE_MAP, normalizeAttributeName } from '@/utils/constants';
 import { deleteCharacter } from '@/utils/character';
+import { XPModal } from '@/components/modals/XPModal';
 
 interface NotesTabProps {
   character: Character;
@@ -12,6 +13,7 @@ interface NotesTabProps {
 export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
   const [isProgressionExpanded, setIsProgressionExpanded] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
+  const [showXPModal, setShowXPModal] = useState(false);
   const [newName, setNewName] = useState(character.name);
   const [originalName, setOriginalName] = useState(character.name);
 
@@ -38,6 +40,15 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
 
   const handleRenameCancel = () => {
     setShowRenameModal(false);
+  };
+
+  const handleAddXP = (combatXP: number, socialXP: number) => {
+    onUpdate({
+      ...character,
+      combatXP: character.combatXP + combatXP,
+      socialXP: character.socialXP + socialXP
+    });
+    setShowXPModal(false);
   };
 
   // Calculate CP spent per attribute
@@ -149,6 +160,38 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
           />
         </div>
       </div>
+
+      {/* Combat and Skill XP Block */}
+      <div
+        className="bg-slate-800 hover:bg-slate-750 rounded-lg p-4 cursor-pointer transition-colors border border-slate-600"
+        onClick={() => setShowXPModal(true)}
+      >
+        <div className="flex items-center justify-around gap-4">
+          <div className="flex items-center gap-3">
+            <Swords size={24} className="text-red-400" />
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold text-slate-300">Combat XP</span>
+              <span className="text-2xl font-bold text-white">{character.combatXP}</span>
+            </div>
+          </div>
+          <div className="w-px h-12 bg-slate-600"></div>
+          <div className="flex items-center gap-3">
+            <BookOpen size={24} className="text-blue-400" />
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold text-slate-300">Skill XP</span>
+              <span className="text-2xl font-bold text-white">{character.socialXP}</span>
+            </div>
+          </div>
+        </div>
+        <p className="text-xs text-slate-500 mt-3 text-center">Tap to add XP</p>
+      </div>
+
+      {/* XP Modal */}
+      <XPModal
+        isOpen={showXPModal}
+        onClose={() => setShowXPModal(false)}
+        onAddXP={handleAddXP}
+      />
 
       {/* Bio Field */}
       <div className="bg-slate-800 rounded-lg p-4">
