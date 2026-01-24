@@ -42,8 +42,7 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
   const currentLevel = activeConditioning ? activeConditioning.level : 0;
   const nextLevel = currentLevel + 1;
 
-  // Cost per level is fixed: Max_Wounds XP
-  // Total perk cost = Max_Wounds × 5 (spread across 5 levels)
+  // Cost per level is simply maxWounds (flat per level, scales with each completed conditioning)
   const cost = character.maxWounds;
 
   // Can afford check
@@ -131,16 +130,26 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
       // 2. Add to combatPerks as completed perk with capstone
       // 3. Increment maxWounds by 1
       // 4. Reset extraHP to 0 (the 4 HP become part of the new wound)
+      // 5. Remove "extra-hp" effect from the completed perk's snapshot
+
+      // Create modified snapshot without "extra-hp" effect (since HP is now part of maxWounds)
+      const modifiedSnapshot = activeConditioning.perkSnapshot ? {
+        ...activeConditioning.perkSnapshot,
+        grants: {
+          ...activeConditioning.perkSnapshot.grants,
+          effects: (activeConditioning.perkSnapshot.grants?.effects || []).filter((e: string) => e !== 'extra-hp')
+        }
+      } : undefined;
 
       const completedPerk: CombatPerk = {
         id: activeConditioning.id,
         name: activeConditioning.name,
         cost: cost,
         attribute: selectedAttribute,
-        description: activePerkDetails?.description || activePerkDetails?.shortDescription || '',
+        description: activePerkDetails?.description || '',
         isCustom: false,
         source: 'database',
-        perkSnapshot: activeConditioning.perkSnapshot,
+        perkSnapshot: modifiedSnapshot,
         addedAt: Date.now()
       };
 
@@ -256,7 +265,7 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
                 </div>
 
                 <p className="text-slate-300 text-sm">
-                  {activePerkDetails.shortDescription}
+                  {activePerkDetails.description}
                 </p>
 
                 {/* Extra HP indicator */}
@@ -277,13 +286,13 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
               {/* Cost Display */}
               <div className="bg-slate-700 rounded p-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Cost:</span>
+                  <span className="text-slate-400">Cost per level:</span>
                   <span className={`font-bold ${canAfford ? 'text-green-400' : 'text-red-400'}`}>
                     {cost} XP
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mt-1">
-                  {cost} XP per level (Total: {character.maxWounds * 5} XP for all 5 levels)
+                  All levels cost {character.maxWounds} XP (Total: {character.maxWounds * 5} XP)
                 </p>
               </div>
 
@@ -377,7 +386,7 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
                     </div>
 
                     <p className="text-slate-300 text-sm">
-                      {selectedPerk.shortDescription}
+                      {selectedPerk.description}
                     </p>
 
                     <div className="mt-2 text-xs text-blue-400">
@@ -388,13 +397,13 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
                   {/* Cost Display */}
                   <div className="bg-slate-700 rounded p-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-400">Cost:</span>
+                      <span className="text-slate-400">Cost per level:</span>
                       <span className={`font-bold ${canAfford ? 'text-green-400' : 'text-red-400'}`}>
                         {cost} XP
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 mt-1">
-                      {cost} XP per level (Total: {character.maxWounds * 5} XP for all 5 levels)
+                      All levels cost {character.maxWounds} XP (Total: {character.maxWounds * 5} XP)
                     </p>
                   </div>
 

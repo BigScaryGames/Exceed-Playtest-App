@@ -75,26 +75,23 @@ interface CharacterHeaderProps {
 export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onMenuToggle }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Calculate CP totals for each attribute from progression log
-  const attributeCPTotals = useMemo(() => {
+  // Calculate CP totals for each attribute from progression log (same as ProgressionListTab)
+  const attributeCPTotals: Record<string, number> = (() => {
     const totals: Record<string, number> = {
       MG: 0, EN: 0, AG: 0, DX: 0, WT: 0, WI: 0, PR: 0, CH: 0
     };
 
     character.progressionLog.forEach(entry => {
-      // Skip staged perks - they contribute to Martial domain, not attributes
-      if (entry.type === 'stagedPerk') return;
-
-      if (entry.attribute) {
+      if (entry.attribute && entry.cost) {
         const attrCode = ATTRIBUTE_NAME_TO_CODE[entry.attribute] || entry.attribute;
         if (attrCode in totals) {
-          totals[attrCode] += entry.cost || 0;
+          totals[attrCode] += entry.cost;
         }
       }
     });
 
     return totals;
-  }, [character.progressionLog]);
+  })();
 
   // Calculate CP totals for domains
   const domainCPTotals = useMemo(() => {

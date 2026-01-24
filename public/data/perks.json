@@ -1,6 +1,6 @@
 {
-  "version": "2026-01-04T21:26:54.458Z",
-  "lastUpdated": 1767562014459,
+  "version": "2026-01-24T16:16:06.006Z",
+  "lastUpdated": 1769271366007,
   "perks": {
     "combat": [
       {
@@ -29,8 +29,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Standing still greatly extends weapon range based on aim.",
-        "effect": "Standing still greatly extends weapon range based on aim.",
+        "description": "Standing still greatly extends weapon range based on aim.",
+        "effect": "Artillery",
         "grants": {
           "abilities": [],
           "effects": [
@@ -61,8 +61,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Aimed shots at close range deal extra damage.",
-        "effect": "Aimed shots at close range deal extra damage.",
+        "description": "Aimed shots at close range deal extra damage.",
+        "effect": "Close Quarters Shooter",
         "grants": {
           "abilities": [],
           "effects": [
@@ -96,8 +96,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Parry with a bow without risking breaking it.",
-        "effect": "Parry with a bow without risking breaking it.",
+        "description": "Parry with a bow without risking breaking it.",
+        "effect": "Defensive Archer",
         "grants": {
           "abilities": [],
           "effects": [
@@ -128,8 +128,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Count as flanking partner within weapon's first range.",
-        "effect": "Count as flanking partner within weapon's first range.",
+        "description": "Count as flanking partner within weapon's first range.",
+        "effect": "Don't Turn Your Back On Me",
         "grants": {
           "abilities": [],
           "effects": [
@@ -160,8 +160,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Shoot two different targets with one attack (+2 AP).",
-        "effect": "Shoot two different targets with one attack (+2 AP).",
+        "description": "Shoot two different targets with one attack (+2 AP).",
+        "effect": "",
         "grants": {
           "abilities": [
             "double-shot"
@@ -195,8 +195,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Aim as a free action during a Stride (max Aim1).",
-        "effect": "Aim as a free action during a Stride (max Aim1).",
+        "description": "Aim as a free action during a Stride (max Aim1).",
+        "effect": "Fast Archer",
         "grants": {
           "abilities": [],
           "effects": [
@@ -227,9 +227,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Ready a strike that triggers without spending a Reaction.",
-        "effect": "Ready a strike that triggers without spending a Reaction.",
-        "description": "You keep an arrow nocked and ready, prepared to loose it the instant a target appears.",
+        "description": "Ready a strike that triggers without spending a Reaction.\n\nYou keep an arrow nocked and ready, prepared to loose it the instant a target appears.",
+        "effect": "",
         "grants": {
           "abilities": [
             "hair-trigger"
@@ -263,9 +262,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Move and shoot at the same time.",
-        "effect": "Move and shoot at the same time.",
-        "description": "You've mastered the technique of shooting on the move, loosing arrows mid-stride without breaking pace.",
+        "description": "Move and shoot at the same time.\n\nYou've mastered the technique of shooting on the move, loosing arrows mid-stride without breaking pace.",
+        "effect": "",
         "grants": {
           "abilities": [
             "mobile-draw"
@@ -296,8 +294,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "The longer you aim, the harder you shoot.",
-        "effect": "The longer you aim, the harder you shoot.",
+        "description": "The longer you aim, the harder you shoot.",
+        "effect": "Overpowered Draw",
         "grants": {
           "abilities": [],
           "effects": [
@@ -332,8 +330,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Store offensive spell in arrow for later delivery.",
-        "effect": "Store offensive spell in arrow for later delivery.",
+        "description": "Store offensive spell in arrow for later delivery.",
+        "effect": "",
         "grants": {
           "abilities": [
             "spell-shot"
@@ -368,9 +366,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Shoot at everything that moves.",
-        "effect": "Shoot at everything that moves.",
-        "description": "You keep your tower stance and wait for the enemies to arrive, meeting them with utmost contempt.",
+        "description": "Shoot at everything that moves.\n\nYou keep your tower stance and wait for the enemies to arrive, meeting them with utmost contempt.",
+        "effect": "",
         "grants": {
           "abilities": [
             "tower-defender"
@@ -401,8 +398,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Standing still grants all attacks Aim1.",
-        "effect": "Standing still grants all attacks Aim1.",
+        "description": "Standing still grants all attacks Aim1.",
+        "effect": "Tower",
         "grants": {
           "abilities": [],
           "effects": [
@@ -435,8 +432,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Change attacking attribute of bows from Dexterity to Perception.",
-        "effect": "Change attacking attribute of bows from Dexterity to Perception.",
+        "description": "Change attacking attribute of bows from Dexterity to Perception.",
+        "effect": "Zen Archer",
         "grants": {
           "abilities": [],
           "effects": [
@@ -467,9 +464,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Bounce arrows off surfaces to hit targets behind cover.",
-        "effect": "Bounce arrows off surfaces to hit targets behind cover.",
-        "description": "Through careful study of angles and arrow trajectories, you can bank shots off hard surfaces to reach targets that would otherwise be protected. This trick shot requires creativity and spatial awareness, but allows you to ignore cover and strike around corners.",
+        "description": "Bounce arrows off surfaces to hit targets behind cover.\n\nThrough careful study of angles and arrow trajectories, you can bank shots off hard surfaces to reach targets that would otherwise be protected. This trick shot requires creativity and spatial awareness, but allows you to ignore cover and strike around corners.",
+        "effect": "",
         "grants": {
           "abilities": [
             "ricochet-shot"
@@ -506,9 +502,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Fire three rapid-draw shots at -2 to hit, each dealing -1 damage die.",
-        "effect": "Fire three rapid-draw shots at -2 to hit, each dealing -1 damage die.",
-        "description": "You unleash a devastating barrage of arrows in rapid succession, your hands moving almost too fast to see. Three arrows fly toward your enemies in the time most archers take for two shots. While individually less powerful, the sheer volume of projectiles overwhelms defenses and multiplies the effects of poisons and magical enhancements.",
+        "description": "Fire three rapid-draw shots at -2 to hit, each dealing -1 damage die.\n\nYou unleash a devastating barrage of arrows in rapid succession, your hands moving almost too fast to see. Three arrows fly toward your enemies in the time most archers take for two shots. While individually less powerful, the sheer volume of projectiles overwhelms defenses and multiplies the effects of poisons and magical enhancements.",
+        "effect": "",
         "grants": {
           "abilities": [
             "storm-of-arrows"
@@ -541,9 +536,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Add your Dexterity to damage when striking vulnerable foes.",
-        "effect": "Add your Dexterity to damage when striking vulnerable foes.",
-        "description": "When attacking a flanked or off-guard target with a Light weapon, add your Dexterity modifier to the damage roll.",
+        "description": "Add your Dexterity to damage when striking vulnerable foes.\n\nWhen attacking a flanked or off-guard target with a Light weapon, add your Dexterity modifier to the damage roll.",
+        "effect": "Backstab",
         "grants": {
           "abilities": [],
           "effects": [
@@ -577,8 +571,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Increase damage with knives and daggers.",
-        "effect": "Increase damage with knives and daggers.",
+        "description": "Increase damage with knives and daggers.",
+        "effect": "Enhanced Knives",
         "grants": {
           "abilities": [],
           "effects": [
@@ -611,8 +605,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Draw your weapon instinctively when combat starts.",
-        "effect": "Draw your weapon instinctively when combat starts.",
+        "description": "Draw your weapon instinctively when combat starts.",
+        "effect": "Ready Hand",
         "grants": {
           "abilities": [],
           "effects": [
@@ -643,8 +637,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Master of edged weapons with a competitive edge.",
-        "effect": "Master of edged weapons with a competitive edge.",
+        "description": "Master of edged weapons with a competitive edge.",
+        "effect": "The Edgelord",
         "grants": {
           "abilities": [],
           "effects": [
@@ -681,8 +675,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Strike all targets within reach simultaneously.",
-        "effect": "Strike all targets within reach simultaneously.",
+        "description": "Strike all targets within reach simultaneously.",
+        "effect": "",
         "grants": {
           "abilities": [
             "all-the-birds"
@@ -713,8 +707,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Strike enemy's leg with to reduce their speed.",
-        "effect": "Strike enemy's leg with to reduce their speed.",
+        "description": "Strike enemy's leg with to reduce their speed.",
+        "effect": "",
         "grants": {
           "abilities": [
             "calf-strike"
@@ -745,8 +739,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "After hitting the enemy, use your momentum to strike again but quicker.",
-        "effect": "After hitting the enemy, use your momentum to strike again but quicker.",
+        "description": "After hitting the enemy, use your momentum to strike again but quicker.",
+        "effect": "",
         "grants": {
           "abilities": [
             "follow-up-strike"
@@ -780,8 +774,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Move in a straight line and strike with bonus damage based on distance.",
-        "effect": "Move in a straight line and strike with bonus damage based on distance.",
+        "description": "Move in a straight line and strike with bonus damage based on distance.",
+        "effect": "",
         "grants": {
           "abilities": [
             "mighty-charge"
@@ -812,9 +806,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Sacrifice accuracy for devastating damage against vulnerable foes with light weapons.",
-        "effect": "Sacrifice accuracy for devastating damage against vulnerable foes with light weapons.",
-        "description": "You know where to strike when they can't defend. Against flanked or off-guard targets, you may take a penalty to your attack roll to increase your weapon damage die.",
+        "description": "Sacrifice accuracy for devastating damage against vulnerable foes with light weapons.\n\nYou know where to strike when they can't defend. Against flanked or off-guard targets, you may take a penalty to your attack roll to increase your weapon damage die.",
+        "effect": "",
         "grants": {
           "abilities": [
             "piranha-strike"
@@ -848,8 +841,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Strike enemy's leg to knock them prone.",
-        "effect": "Strike enemy's leg to knock them prone.",
+        "description": "Strike enemy's leg to knock them prone.",
+        "effect": "",
         "grants": {
           "abilities": [
             "tripping-strike"
@@ -883,8 +876,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Strike multiple adjacent targets with one attack.",
-        "effect": "Strike multiple adjacent targets with one attack.",
+        "description": "Strike multiple adjacent targets with one attack.",
+        "effect": "",
         "grants": {
           "abilities": [
             "two-birds"
@@ -918,9 +911,8 @@
           "Conditioning",
           "Leveled"
         ],
-        "shortDescription": "Learn from surviving grievous injuries; at mastery your scars tell a story of resilience.",
-        "effect": "Learn from surviving grievous injuries; at mastery your scars tell a story of resilience.",
-        "description": "Every scar has a story. Every near-death experience has taught you something about survival. Through combat, you've learned your body's limits and how to push beyond them. You know how wounds heal, which injuries are merely painful versus truly dangerous, and how to work with healers to maximize recovery. Your flesh bears testimony to battles survived, and that experience makes you more resilient. At the peak of this conditioning, your body has been broken and remade so many times that it knows instinctively how to survive and recover.",
+        "description": "Learn from surviving grievous injuries; at mastery your scars tell a story of resilience.\n\nEvery scar has a story. Every near-death experience has taught you something about survival. Through combat, you've learned your body's limits and how to push beyond them. You know how wounds heal, which injuries are merely painful versus truly dangerous, and how to work with healers to maximize recovery. Your flesh bears testimony to battles survived, and that experience makes you more resilient. At the peak of this conditioning, your body has been broken and remade so many times that it knows instinctively how to survive and recover.",
+        "effect": "Extra HP",
         "grants": {
           "abilities": [],
           "effects": [
@@ -954,8 +946,8 @@
           "Conditioning",
           "Leveled"
         ],
-        "shortDescription": "Through rigorous training your limbs became harder than they have any right to be",
-        "effect": "Through rigorous training your limbs became harder than they have any right to be",
+        "description": "Through rigorous training your limbs became harder than they have any right to be",
+        "effect": "Extra HP",
         "grants": {
           "abilities": [],
           "effects": [
@@ -990,9 +982,8 @@
           "Conditioning",
           "Leveled"
         ],
-        "shortDescription": "Adapt to extreme cold through exposure; at mastery thrive in frigid environments.",
-        "effect": "Adapt to extreme cold through exposure; at mastery thrive in frigid environments.",
-        "description": "Whether through necessity or deliberate training, you've spent extensive time in freezing conditions. Your body has learned to conserve heat more efficiently, your blood flows better in cold temperatures, and you've developed techniques for maintaining function when others would succumb to hypothermia. Ice baths, winter survival training, or years in arctic climates have transformed your relationship with cold. At mastery, you move through blizzards as easily as others walk through spring rain.",
+        "description": "Adapt to extreme cold through exposure; at mastery thrive in frigid environments.\n\nWhether through necessity or deliberate training, you've spent extensive time in freezing conditions. Your body has learned to conserve heat more efficiently, your blood flows better in cold temperatures, and you've developed techniques for maintaining function when others would succumb to hypothermia. Ice baths, winter survival training, or years in arctic climates have transformed your relationship with cold. At mastery, you move through blizzards as easily as others walk through spring rain.",
+        "effect": "Extra HP",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1027,9 +1018,8 @@
           "Conditioning",
           "Leveled"
         ],
-        "shortDescription": "Adapt to extreme heat through exposure; at mastery thrive in scorching environments.",
-        "effect": "Adapt to extreme heat through exposure; at mastery thrive in scorching environments.",
-        "description": "Through forge work, desert survival, or deliberate heat exposure training, your body has adapted to function in temperatures that would prostrate others. You've learned to regulate your temperature, conserve moisture, and maintain clarity of thought when heat threatens to overwhelm. Whether from working beside blast furnaces, crossing sun-baked wastelands, or systematic sauna training, your tolerance for heat has been forged like steel. At mastery, you move through infernal heat as comfortably as others enjoy a warm summer day.",
+        "description": "Adapt to extreme heat through exposure; at mastery thrive in scorching environments.\n\nThrough forge work, desert survival, or deliberate heat exposure training, your body has adapted to function in temperatures that would prostrate others. You've learned to regulate your temperature, conserve moisture, and maintain clarity of thought when heat threatens to overwhelm. Whether from working beside blast furnaces, crossing sun-baked wastelands, or systematic sauna training, your tolerance for heat has been forged like steel. At mastery, you move through infernal heat as comfortably as others enjoy a warm summer day.",
+        "effect": "Extra HP",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1068,9 +1058,8 @@
           "Leveled",
           "Magic"
         ],
-        "shortDescription": "Develop resistance to transmutation through magical exposure; at mastery resist unwanted transformations.",
-        "effect": "Develop resistance to transmutation through magical exposure; at mastery resist unwanted transformations.",
-        "description": "As a mage exposed to transmutation magic and teleportation effects, your body and essence have been repeatedly subjected to magical alteration. Whether through experimental self-transformation, teleportation mishaps, or defensive training against hostile magic, you've developed a unique resistance to unwanted magical changes. Your magical nature has learned to recognize and resist foreign transmutation attempts. At mastery, your essence is so accustomed to magical forces that it instinctively rejects transmutation and forced displacement that you don't control.",
+        "description": "Develop resistance to transmutation through magical exposure; at mastery resist unwanted transformations.\n\nAs a mage exposed to transmutation magic and teleportation effects, your body and essence have been repeatedly subjected to magical alteration. Whether through experimental self-transformation, teleportation mishaps, or defensive training against hostile magic, you've developed a unique resistance to unwanted magical changes. Your magical nature has learned to recognize and resist foreign transmutation attempts. At mastery, your essence is so accustomed to magical forces that it instinctively rejects transmutation and forced displacement that you don't control.",
+        "effect": "Extra HP",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1105,9 +1094,8 @@
           "Conditioning",
           "Leveled"
         ],
-        "shortDescription": "Fortify your mind through mental discipline; at mastery develop formidable mental defenses.",
-        "effect": "Fortify your mind through mental discipline; at mastery develop formidable mental defenses.",
-        "description": "Through meditation, facing your fears, or controlled exposure to mind-affecting magic, you build walls around your consciousness. Mental exercises strengthen your will like physical training strengthens muscle. Whether through monastic meditation techniques, exposure to minor enchantments, or simply surviving traumatic experiences, you learn to compartmentalize and protect your thoughts. At the peak of this training, your mind becomes a fortress, resistant to intrusion and manipulation.",
+        "description": "Fortify your mind through mental discipline; at mastery develop formidable mental defenses.\n\nThrough meditation, facing your fears, or controlled exposure to mind-affecting magic, you build walls around your consciousness. Mental exercises strengthen your will like physical training strengthens muscle. Whether through monastic meditation techniques, exposure to minor enchantments, or simply surviving traumatic experiences, you learn to compartmentalize and protect your thoughts. At the peak of this training, your mind becomes a fortress, resistant to intrusion and manipulation.",
+        "effect": "Extra HP",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1142,9 +1130,8 @@
           "Conditioning",
           "Leveled"
         ],
-        "shortDescription": "Develop resistance to toxins through controlled exposure; at mastery gain enhanced poison resistance.",
-        "effect": "Develop resistance to toxins through controlled exposure; at mastery gain enhanced poison resistance.",
-        "description": "Through careful, measured exposure to various toxins under medical supervision, you train your body to resist poisons. Starting with mild irritants and building tolerance over time, you develop both physical resilience and the ability to identify toxins through sensory examination. At the peak of this conditioning, your body has adapted to neutralize most common poisons with remarkable efficiency.",
+        "description": "Develop resistance to toxins through controlled exposure; at mastery gain enhanced poison resistance.\n\nThrough careful, measured exposure to various toxins under medical supervision, you train your body to resist poisons. Starting with mild irritants and building tolerance over time, you develop both physical resilience and the ability to identify toxins through sensory examination. At the peak of this conditioning, your body has adapted to neutralize most common poisons with remarkable efficiency.",
+        "effect": "Extra HP",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1179,9 +1166,8 @@
           "Conditioning",
           "Leveled"
         ],
-        "shortDescription": "Train under cascading water to resist displacement; at mastery become immovable like stone.",
-        "effect": "Train under cascading water to resist displacement; at mastery become immovable like stone.",
-        "description": "Standing beneath a waterfall, feeling the relentless pressure trying to knock you down, you learn to root yourself against overwhelming force. Through countless hours of resisting the current's push and pull, your body learns to distribute force and maintain balance against displacement. At mastery, you stand as firm as the stones beneath the waterfall itself, unmoved by forces that would sweep others away.",
+        "description": "Train under cascading water to resist displacement; at mastery become immovable like stone.\n\nStanding beneath a waterfall, feeling the relentless pressure trying to knock you down, you learn to root yourself against overwhelming force. Through countless hours of resisting the current's push and pull, your body learns to distribute force and maintain balance against displacement. At mastery, you stand as firm as the stones beneath the waterfall itself, unmoved by forces that would sweep others away.",
+        "effect": "Extra HP",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1216,8 +1202,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "You use both of your hands equally well or equally poor.",
-        "effect": "You use both of your hands equally well or equally poor.",
+        "description": "You use both of your hands equally well or equally poor.",
+        "effect": "Ambidexterity",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1248,8 +1234,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Strike with both weapons, but second misses if first is blocked.",
-        "effect": "Strike with both weapons, but second misses if first is blocked.",
+        "description": "Strike with both weapons, but second misses if first is blocked.",
+        "effect": "",
         "grants": {
           "abilities": [
             "double-strike"
@@ -1280,8 +1266,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Gain parrying bonus when dual wielding.",
-        "effect": "Gain parrying bonus when dual wielding.",
+        "description": "Gain parrying bonus when dual wielding.",
+        "effect": "Twin Parry",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1318,8 +1304,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Stride covers your full speed.",
-        "effect": "Stride covers your full speed.",
+        "description": "Stride covers your full speed.",
+        "effect": "Big Steps",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1357,8 +1343,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Disappear and reappear behind enemies when you dodge.",
-        "effect": "Disappear and reappear behind enemies when you dodge.",
+        "description": "Disappear and reappear behind enemies when you dodge.",
+        "effect": "",
         "grants": {
           "abilities": [
             "vanishing-step"
@@ -1395,8 +1381,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Roll away from burst and area effects.",
-        "effect": "Roll away from burst and area effects.",
+        "description": "Roll away from burst and area effects.",
+        "effect": "",
         "grants": {
           "abilities": [
             "dodge-roll"
@@ -1430,8 +1416,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Step freely when you successfully dodge a melee attack.",
-        "effect": "Step freely when you successfully dodge a melee attack.",
+        "description": "Step freely when you successfully dodge a melee attack.",
+        "effect": "Dodging Step",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1465,8 +1451,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Each successful dodge makes the next one easier.",
-        "effect": "Each successful dodge makes the next one easier.",
+        "description": "Each successful dodge makes the next one easier.",
+        "effect": "Elusive",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1494,9 +1480,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Foundation for mobile combat techniques.",
-        "effect": "Foundation for mobile combat techniques.",
-        "description": "You've trained to fight light on your feet, using movement as defense.",
+        "description": "Foundation for mobile combat techniques.\n\nYou've trained to fight light on your feet, using movement as defense.",
+        "effect": "Footwork",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1530,8 +1515,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Step as part of your first attack each turn.",
-        "effect": "Step as part of your first attack each turn.",
+        "description": "Step as part of your first attack each turn.",
+        "effect": "Light Steps",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1565,8 +1550,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Your first Stride doesn't trigger reactions.",
-        "effect": "Your first Stride doesn't trigger reactions.",
+        "description": "Your first Stride doesn't trigger reactions.",
+        "effect": "Small Steps",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1600,8 +1585,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Instant perk that prevents death through narrative importance.",
-        "effect": "Instant perk that prevents death through narrative importance.",
+        "description": "Instant perk that prevents death through narrative importance.",
+        "effect": "The Aspiring Hero",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1628,8 +1613,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Loyal follower with enhanced mental resistance and leader protection.",
-        "effect": "Loyal follower with enhanced mental resistance and leader protection.",
+        "description": "Loyal follower with enhanced mental resistance and leader protection.",
+        "effect": "The Cult Inner Member",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1665,8 +1650,8 @@
           "Combat",
           "Skill"
         ],
-        "shortDescription": "Lead fanatical followers who have sworn loyalty to you.",
-        "effect": "Lead fanatical followers who have sworn loyalty to you.",
+        "description": "Lead fanatical followers who have sworn loyalty to you.",
+        "effect": "",
         "grants": {
           "abilities": [
             "drive-into-fervor"
@@ -1697,8 +1682,8 @@
           "Combat",
           "Skill"
         ],
-        "shortDescription": "Lead your team's resistance against fear effects.",
-        "effect": "Lead your team's resistance against fear effects.",
+        "description": "Lead your team's resistance against fear effects.",
+        "effect": "",
         "grants": {
           "abilities": [
             "the-leader"
@@ -1732,8 +1717,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Counter-attack with light weapon after critical parry success.",
-        "effect": "Counter-attack with light weapon after critical parry success.",
+        "description": "Counter-attack with light weapon after critical parry success.",
+        "effect": "",
         "grants": {
           "abilities": [
             "painful-parry"
@@ -1771,8 +1756,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Parry magical effects and protect those behind you.",
-        "effect": "Parry magical effects and protect those behind you.",
+        "description": "Parry magical effects and protect those behind you.",
+        "effect": "Magical Deflection",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1807,8 +1792,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Parry ranged physical attacks with melee weapons.",
-        "effect": "Parry ranged physical attacks with melee weapons.",
+        "description": "Parry ranged physical attacks with melee weapons.",
+        "effect": "Projectile Deflection",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1845,8 +1830,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Reflect spells back at their casters on critical parries.",
-        "effect": "Reflect spells back at their casters on critical parries.",
+        "description": "Reflect spells back at their casters on critical parries.",
+        "effect": "",
         "grants": {
           "abilities": [
             "spell-reflection"
@@ -1880,9 +1865,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Capitalize on enemy mistakes with a quick counter-attack.",
-        "effect": "Capitalize on enemy mistakes with a quick counter-attack.",
-        "description": "You know how to capitalize on enemy mistakes. In the heat of battle, when your opponent overextends or you perfectly defend against their assault, you've trained to immediately exploit these openings with a swift counter-attack.",
+        "description": "Capitalize on enemy mistakes with a quick counter-attack.\n\nYou know how to capitalize on enemy mistakes. In the heat of battle, when your opponent overextends or you perfectly defend against their assault, you've trained to immediately exploit these openings with a swift counter-attack.",
+        "effect": "",
         "grants": {
           "abilities": [
             "riposte"
@@ -1912,8 +1896,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Heroic destiny grants supernatural protection.",
-        "effect": "Heroic destiny grants supernatural protection.",
+        "description": "Heroic destiny grants supernatural protection.",
+        "effect": "Plot Armor",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1947,8 +1931,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Switch weapon grip freely during offensive actions.",
-        "effect": "Switch weapon grip freely during offensive actions.",
+        "description": "Switch weapon grip freely during offensive actions.",
+        "effect": "Grip Switch",
         "grants": {
           "abilities": [],
           "effects": [
@@ -1985,8 +1969,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Climb your weapon to jump and strike enemies in a line.",
-        "effect": "Climb your weapon to jump and strike enemies in a line.",
+        "description": "Climb your weapon to jump and strike enemies in a line.",
+        "effect": "",
         "grants": {
           "abilities": [
             "monkey-king-strike"
@@ -2020,8 +2004,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "You know how to use enemy's momentum against them.",
-        "effect": "You know how to use enemy's momentum against them.",
+        "description": "You know how to use enemy's momentum against them.",
+        "effect": "Enhanced Defensive Stance",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2054,8 +2038,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Gain defensive bonuses when wielding quarterstaffs and warstaves.",
-        "effect": "Gain defensive bonuses when wielding quarterstaffs and warstaves.",
+        "description": "Gain defensive bonuses when wielding quarterstaffs and warstaves.",
+        "effect": "Quarterstaff Defense",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2089,8 +2073,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Fight better when standing shoulder to shoulder with a brother.",
-        "effect": "Fight better when standing shoulder to shoulder with a brother.",
+        "description": "Fight better when standing shoulder to shoulder with a brother.",
+        "effect": "Spear Brothers",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2121,8 +2105,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Spin your staff to create a defensive zone that strikes approaching enemies.",
-        "effect": "Spin your staff to create a defensive zone that strikes approaching enemies.",
+        "description": "Spin your staff to create a defensive zone that strikes approaching enemies.",
+        "effect": "",
         "grants": {
           "abilities": [
             "spinning-staff"
@@ -2156,8 +2140,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Use your staff to enhance jumping and balance.",
-        "effect": "Use your staff to enhance jumping and balance.",
+        "description": "Use your staff to enhance jumping and balance.",
+        "effect": "Staff Acrobat",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2190,9 +2174,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Properly use your weapon to reduce encumbrance and increase carrying capacity.",
-        "effect": "Properly use your weapon to reduce encumbrance and increase carrying capacity.",
-        "description": "Your learned to use your weapon properly.",
+        "description": "Properly use your weapon to reduce encumbrance and increase carrying capacity.\n\nYour learned to use your weapon properly.",
+        "effect": "Walking Stick",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2227,8 +2210,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Your predictive Strike now predicts enemy's reaction as well.",
-        "effect": "Your predictive Strike now predicts enemy's reaction as well.",
+        "description": "Your predictive Strike now predicts enemy's reaction as well.",
+        "effect": "Predicted Exchange",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2263,9 +2246,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Preroll your next Parry or Dodge defenses using foresight.",
-        "effect": "Preroll your next Parry or Dodge defenses using foresight.",
-        "description": "You read your opponent's attack patterns, predicting where the strike will come before it's thrown.",
+        "description": "Preroll your next Parry or Dodge defenses using foresight.\n\nYou read your opponent's attack patterns, predicting where the strike will come before it's thrown.",
+        "effect": "",
         "grants": {
           "abilities": [
             "predictive-defense"
@@ -2297,9 +2279,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Preroll your next attack using analytical prediction.",
-        "effect": "Preroll your next attack using analytical prediction.",
-        "description": "You calculate trajectories, timing, and openings before committing to an attack.",
+        "description": "Preroll your next attack using analytical prediction.\n\nYou calculate trajectories, timing, and openings before committing to an attack.",
+        "effect": "",
         "grants": {
           "abilities": [
             "predictive-strike"
@@ -2334,9 +2315,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "React to danger by glimpsing alternate defensive outcomes.",
-        "effect": "React to danger by glimpsing alternate defensive outcomes.",
-        "description": "Your mind builds multitude of outcomes, enough to make a difference, but not enough to guarantee an outcome.",
+        "description": "React to danger by glimpsing alternate defensive outcomes.\n\nYour mind builds multitude of outcomes, enough to make a difference, but not enough to guarantee an outcome.",
+        "effect": "",
         "grants": {
           "abilities": [
             "reactive-prediction"
@@ -2367,8 +2347,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Your predictive Strike now predicts enemy's reaction as well.",
-        "effect": "Your predictive Strike now predicts enemy's reaction as well.",
+        "description": "Your predictive Strike now predicts enemy's reaction as well.",
+        "effect": "Perfect Ambush",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2399,8 +2379,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "TBD",
-        "effect": "TBD",
+        "description": "TBD",
+        "effect": "Predicted Duel",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2434,8 +2414,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Strike enemies as they retreat from your reach.",
-        "effect": "Strike enemies as they retreat from your reach.",
+        "description": "Strike enemies as they retreat from your reach.",
+        "effect": "",
         "grants": {
           "abilities": [
             "reactive-strike"
@@ -2467,8 +2447,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Your mind and body are primed to move with lightning speed.",
-        "effect": "Your mind and body are primed to move with lightning speed.",
+        "description": "Your mind and body are primed to move with lightning speed.",
+        "effect": "Second Reaction",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2503,8 +2483,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Strike from behind shield with enemy penalties to defense.",
-        "effect": "Strike from behind shield with enemy penalties to defense.",
+        "description": "Strike from behind shield with enemy penalties to defense.",
+        "effect": "",
         "grants": {
           "abilities": [
             "behind-the-shield-strike"
@@ -2539,8 +2519,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Use your shield as an off-hand weapon in dual-wielding techniques.",
-        "effect": "Use your shield as an off-hand weapon in dual-wielding techniques.",
+        "description": "Use your shield as an off-hand weapon in dual-wielding techniques.",
+        "effect": "Multipurpose Shield",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2575,8 +2555,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Make attacker off-guard after critical block success.",
-        "effect": "Make attacker off-guard after critical block success.",
+        "description": "Make attacker off-guard after critical block success.",
+        "effect": "Perfect Block",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2611,8 +2591,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Block attacks targeting adjacent allies instead of them.",
-        "effect": "Block attacks targeting adjacent allies instead of them.",
+        "description": "Block attacks targeting adjacent allies instead of them.",
+        "effect": "",
         "grants": {
           "abilities": [
             "shield-guardian"
@@ -2650,8 +2630,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Move and strike with shield, adding might to damage twice.",
-        "effect": "Move and strike with shield, adding might to damage twice.",
+        "description": "Move and strike with shield, adding might to damage twice.",
+        "effect": "",
         "grants": {
           "abilities": [
             "shield-rush"
@@ -2686,8 +2666,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Use Shield Block to protect allies taking damage.",
-        "effect": "Use Shield Block to protect allies taking damage.",
+        "description": "Use Shield Block to protect allies taking damage.",
+        "effect": "",
         "grants": {
           "abilities": [
             "shield-warden"
@@ -2722,8 +2702,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Block magical effects and spells with your shield.",
-        "effect": "Block magical effects and spells with your shield.",
+        "description": "Block magical effects and spells with your shield.",
+        "effect": "Spell Guard",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2759,8 +2739,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Provide defensive advantages to allies within aura range.",
-        "effect": "Provide defensive advantages to allies within aura range.",
+        "description": "Provide defensive advantages to allies within aura range.",
+        "effect": "",
         "grants": {
           "abilities": [
             "guardian-aura"
@@ -2795,8 +2775,8 @@
           "Combat",
           "Shield"
         ],
-        "shortDescription": "Allow adjacent allies to hide behind you and your heavy shield.",
-        "effect": "Allow adjacent allies to hide behind you and your heavy shield.",
+        "description": "Allow adjacent allies to hide behind you and your heavy shield.",
+        "effect": "",
         "grants": {
           "abilities": [
             "the-wall"
@@ -2826,9 +2806,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Rush to protect downed allies, taking their attacks.",
-        "effect": "Rush to protect downed allies, taking their attacks.",
-        "description": "They call you selfless, but maybe deep inside you are just too selfish to lose what you care about the most.",
+        "description": "Rush to protect downed allies, taking their attacks.\n\nThey call you selfless, but maybe deep inside you are just too selfish to lose what you care about the most.",
+        "effect": "",
         "grants": {
           "abilities": [
             "that-type-of-a-person"
@@ -2856,8 +2835,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Fight alone with enhanced capabilities but no allies.",
-        "effect": "Fight alone with enhanced capabilities but no allies.",
+        "description": "Fight alone with enhanced capabilities but no allies.",
+        "effect": "The Loner",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2891,8 +2870,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Throw weapon to make ally's target off guard.",
-        "effect": "Throw weapon to make ally's target off guard.",
+        "description": "Throw weapon to make ally's target off guard.",
+        "effect": "",
         "grants": {
           "abilities": [
             "throwing-distraction"
@@ -2926,8 +2905,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Learn to throw one-handed weapons effectively.",
-        "effect": "Learn to throw one-handed weapons effectively.",
+        "description": "Learn to throw one-handed weapons effectively.",
+        "effect": "Throwing Hand",
         "grants": {
           "abilities": [],
           "effects": [
@@ -2957,8 +2936,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Instant perk that activates when protecting someone fails.",
-        "effect": "Instant perk that activates when protecting someone fails.",
+        "description": "Instant perk that activates when protecting someone fails.",
+        "effect": "",
         "grants": {
           "abilities": [
             "too-selfish"
@@ -2989,9 +2968,8 @@
         "tags": [
           "Combat"
         ],
-        "shortDescription": "Protect adjacent allies from being flanked.",
-        "effect": "Protect adjacent allies from being flanked.",
-        "description": "You watch the back of someone else. Maybe you are just that type of a person who is always there.",
+        "description": "Protect adjacent allies from being flanked.\n\nYou watch the back of someone else. Maybe you are just that type of a person who is always there.",
+        "effect": "Watching your back",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3020,8 +2998,8 @@
           "Combat",
           "WeaponTraining"
         ],
-        "shortDescription": "Ax in your hands is a weapon of block destruction. Be it magic or thick skin you have the best weapon to cleave through such an obstacle.",
-        "effect": "Ax in your hands is a weapon of block destruction. Be it magic or thick skin you have the best weapon to cleave through such an obstacle.",
+        "description": "Ax in your hands is a weapon of block destruction. Be it magic or thick skin you have the best weapon to cleave through such an obstacle.",
+        "effect": "",
         "grants": {
           "abilities": [
             "overswing"
@@ -3050,9 +3028,8 @@
           "Combat",
           "WeaponTraining"
         ],
-        "shortDescription": "Be it a dagger or a greatsword, your edge is aligned.",
-        "effect": "Be it a dagger or a greatsword, your edge is aligned.",
-        "description": "First blades were created to quickly bring the fighting to its conclusion. You have stepped on that path.",
+        "description": "Be it a dagger or a greatsword, your edge is aligned.\n\nFirst blades were created to quickly bring the fighting to its conclusion. You have stepped on that path.",
+        "effect": "Expanded Blade Critical Range",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3081,8 +3058,8 @@
           "Combat",
           "WeaponTraining"
         ],
-        "shortDescription": "Shooting is not only about drawing and knocking an arrow. Well, on short distances it might be. Longer ones require you to take a breather and adjust where you shoot.",
-        "effect": "Shooting is not only about drawing and knocking an arrow. Well, on short distances it might be. Longer ones require you to take a breather and adjust where you shoot.",
+        "description": "Shooting is not only about drawing and knocking an arrow. Well, on short distances it might be. Longer ones require you to take a breather and adjust where you shoot.",
+        "effect": "",
         "grants": {
           "abilities": [
             "aim"
@@ -3111,9 +3088,8 @@
           "Combat",
           "WeaponTraining"
         ],
-        "shortDescription": "Your body is your weapon.",
-        "effect": "Your body is your weapon.",
-        "description": "Honing a body you had yours hardened. While not as efficient as a quick slice of a dagger or a strike from a staff, you are never truly unarmed.",
+        "description": "Your body is your weapon.\n\nHoning a body you had yours hardened. While not as efficient as a quick slice of a dagger or a strike from a staff, you are never truly unarmed.",
+        "effect": "",
         "grants": {
           "abilities": [
             "unarmed-combat"
@@ -3142,9 +3118,8 @@
           "Combat",
           "WeaponTraining"
         ],
-        "shortDescription": "Its not sharp, but its heavy. Heavy enough to move your enemies away.",
-        "effect": "Its not sharp, but its heavy. Heavy enough to move your enemies away.",
-        "description": "Impact weapons don't require finesse, most require pure might to smash and force your foes back.",
+        "description": "Its not sharp, but its heavy. Heavy enough to move your enemies away.\n\nImpact weapons don't require finesse, most require pure might to smash and force your foes back.",
+        "effect": "",
         "grants": {
           "abilities": [
             "shoving-strike"
@@ -3173,9 +3148,8 @@
           "Combat",
           "WeaponTraining"
         ],
-        "shortDescription": "Staff, spear, or halberd - you made a point where to point the point.",
-        "effect": "Staff, spear, or halberd - you made a point where to point the point.",
-        "description": "Pointy stick or just a stick, it does't matter. You are trained to anyone who dares to approach you, why sticks are the bread and butter of any army.",
+        "description": "Staff, spear, or halberd - you made a point where to point the point.\n\nPointy stick or just a stick, it does't matter. You are trained to anyone who dares to approach you, why sticks are the bread and butter of any army.",
+        "effect": "Defensive Stance",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3203,9 +3177,8 @@
           "Combat",
           "WeaponTraining"
         ],
-        "shortDescription": "You learn to wield a shield, allowing you to negate some of the damage.",
-        "effect": "You learn to wield a shield, allowing you to negate some of the damage.",
-        "description": "You have learned the hard way that having something between you and the enemy is a godsend. Some find it not worth the effort. You know better.",
+        "description": "You learn to wield a shield, allowing you to negate some of the damage.\n\nYou have learned the hard way that having something between you and the enemy is a godsend. Some find it not worth the effort. You know better.",
+        "effect": "",
         "grants": {
           "abilities": [
             "shield-block"
@@ -3234,9 +3207,8 @@
           "Combat",
           "WeaponTraining"
         ],
-        "shortDescription": "Like a kite in the sky, you were born to move with wind.",
-        "effect": "Like a kite in the sky, you were born to move with wind.",
-        "description": "The whole point of thrown weapons is to be away from the enemy just enough not to get killed. You have learned the basics.",
+        "description": "Like a kite in the sky, you were born to move with wind.\n\nThe whole point of thrown weapons is to be away from the enemy just enough not to get killed. You have learned the basics.",
+        "effect": "",
         "grants": {
           "abilities": [
             "skirmisher-s-strike"
@@ -3270,8 +3242,8 @@
           "Spellcraft",
           "Spellshape"
         ],
-        "shortDescription": "You learn the [[Basic Elemental Invokation]], a universal spell",
-        "effect": "You learn the [[Basic Elemental Invokation]], a universal spell",
+        "description": "You learn the [[Basic Elemental Invokation]], a universal spell",
+        "effect": "",
         "grants": {
           "abilities": [],
           "effects": []
@@ -3304,9 +3276,8 @@
           "Instant",
           "GM"
         ],
-        "shortDescription": "Awaken your magical talent and unlock spellcasting.",
-        "effect": "Awaken your magical talent and unlock spellcasting.",
-        "description": "Everyone wants to bend reality to their will. Unlike most, you can, because you are a mage.\n\nPerhaps you were trained by a journeyman or master mage, paid to try to awaken your talent. Or maybe, like most mages, during a pivotal moment in your life, your talent awakened.\n\nYou might have been a child lost in the darkness who summoned light or adapted your eyes to see in it, a pilgrim whose legs were so tired that all you wanted was for your backpack to become weightless or the mud less clingy, or maybe you saw your loved ones dying and willed their wounds to stop bleeding.\n\nWhen Selecting this perk, also select a tier 0 spell or a spell of GM's offering.",
+        "description": "Awaken your magical talent and unlock spellcasting.\n\nEveryone wants to bend reality to their will. Unlike most, you can, because you are a mage.\n\nPerhaps you were trained by a journeyman or master mage, paid to try to awaken your talent. Or maybe, like most mages, during a pivotal moment in your life, your talent awakened.\n\nYou might have been a child lost in the darkness who summoned light or adapted your eyes to see in it, a pilgrim whose legs were so tired that all you wanted was for your backpack to become weightless or the mud less clingy, or maybe you saw your loved ones dying and willed their wounds to stop bleeding.\n\nWhen Selecting this perk, also select a tier 0 spell or a spell of GM's offering.",
+        "effect": "Mage",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3338,9 +3309,8 @@
           "Spellcraft",
           "Spellshape"
         ],
-        "shortDescription": "When you select this perk, select attribute it is going to work with.",
-        "effect": "When you select this perk, select attribute it is going to work with.",
-        "description": "When **surrounded by or adjacent to** an element, or if you were attacked by a spell with that **elemental trait** on the previous turn, the **AP cost of casting a spell of that same element is reduced by 1** (minimum 1).",
+        "description": "When you select this perk, select attribute it is going to work with.\n\nWhen **surrounded by or adjacent to** an element, or if you were attacked by a spell with that **elemental trait** on the previous turn, the **AP cost of casting a spell of that same element is reduced by 1** (minimum 1).",
+        "effect": "",
         "grants": {
           "abilities": [],
           "effects": []
@@ -3372,8 +3342,8 @@
           "Skill",
           "Exploration"
         ],
-        "shortDescription": "From the birds eye view you can see the hints of ruins undergound.",
-        "effect": "From the birds eye view you can see the hints of ruins undergound.",
+        "description": "From the birds eye view you can see the hints of ruins undergound.",
+        "effect": "Aerial Archaeologist",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3404,9 +3374,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Deduce monster weaknesses through anatomical knowledge.",
-        "effect": "Deduce monster weaknesses through anatomical knowledge.",
-        "description": "Your comprehensive study of anatomy across various species allows you to quickly assess living creatures and identify potential weak points, resistances, and anatomical peculiarities that can be exploited tactically.",
+        "description": "Deduce monster weaknesses through anatomical knowledge.\n\nYour comprehensive study of anatomy across various species allows you to quickly assess living creatures and identify potential weak points, resistances, and anatomical peculiarities that can be exploited tactically.",
+        "effect": "",
         "grants": {
           "abilities": [
             "anatomical-knowledge"
@@ -3437,9 +3406,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You and your team have a short window to negotiate with Animals to prevent combat.",
-        "effect": "You and your team have a short window to negotiate with Animals to prevent combat.",
-        "description": "One day you noticed that cats and dogs love you more then others. Unless on a guarding duty they never bark at you or try to harm you, horses generally don't throw you off, even wild animals don't attack you instantly on sight, and may allow you to walk away.",
+        "description": "You and your team have a short window to negotiate with Animals to prevent combat.\n\nOne day you noticed that cats and dogs love you more then others. Unless on a guarding duty they never bark at you or try to harm you, horses generally don't throw you off, even wild animals don't attack you instantly on sight, and may allow you to walk away.",
+        "effect": "Animal Affinity",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3474,9 +3442,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Your knowledge in magic aids you in protecting your mind against it.",
-        "effect": "Your knowledge in magic aids you in protecting your mind against it.",
-        "description": "Your deep understanding of mental magic allows you to recognize and defend against such threats with your own magic.",
+        "description": "Your knowledge in magic aids you in protecting your mind against it.\n\nYour deep understanding of mental magic allows you to recognize and defend against such threats with your own magic.",
+        "effect": "",
         "grants": {
           "abilities": [
             "arcane-mind"
@@ -3512,9 +3479,8 @@
           "Skill",
           "Scrying"
         ],
-        "shortDescription": "Enhance your ability to perceive magic.",
-        "effect": "Enhance your ability to perceive magic.",
-        "description": "Arcane sight had its moment of glory among nobles and mages alike upon its invention two centuries ago. People passed the quite painful ritual to gain the knowledge on whom to challenge and whom to avoid.\nThe boom ended overnight with the invention of #Illusion enchantments mimicking the Spellcraft Tier. [[Mislieading Rings]] are mass produced ever since.",
+        "description": "Enhance your ability to perceive magic.\n\nArcane sight had its moment of glory among nobles and mages alike upon its invention two centuries ago. People passed the quite painful ritual to gain the knowledge on whom to challenge and whom to avoid.\nThe boom ended overnight with the invention of #Illusion enchantments mimicking the Spellcraft Tier. [[Mislieading Rings]] are mass produced ever since.",
+        "effect": "Arcane Sight",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3549,9 +3515,8 @@
           "Skill",
           "Illusion"
         ],
-        "shortDescription": "Skill to hide from scrying.",
-        "effect": "Skill to hide from scrying.",
-        "description": "You have learned specialized techniques to mask your magical presence and emanations, making it difficult for creatures relying on magical senses, and wards to detect you.",
+        "description": "Skill to hide from scrying.\n\nYou have learned specialized techniques to mask your magical presence and emanations, making it difficult for creatures relying on magical senses, and wards to detect you.",
+        "effect": "Arcane Veil",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3582,9 +3547,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "When gathering information throug gossip, your interest in target subject remains hidden.",
-        "effect": "When gathering information throug gossip, your interest in target subject remains hidden.",
-        "description": "As an Avid Gossiper you know that to gather what you need without being detected, you also need to Gossip about things that are completely irrelevant. By spending more time gossping about different topic you can hide the topics you really gather information about.",
+        "description": "When gathering information throug gossip, your interest in target subject remains hidden.\n\nAs an Avid Gossiper you know that to gather what you need without being detected, you also need to Gossip about things that are completely irrelevant. By spending more time gossping about different topic you can hide the topics you really gather information about.",
+        "effect": "Avid Gossiper",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3615,9 +3579,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You are an expert in corruption.",
-        "effect": "You are an expert in corruption.",
-        "description": "A silken shirt, a silver sword hilt that isn't an old heirloom, the attitude. They don't need to rub their hands for you to sense corruption. You sense it when it's in front of you, and know when to offer people to participate in it. You know the words and hints to suggest it in the most vague forms. How do you use that knowledge is a different question.",
+        "description": "You are an expert in corruption.\n\nA silken shirt, a silver sword hilt that isn't an old heirloom, the attitude. They don't need to rub their hands for you to sense corruption. You sense it when it's in front of you, and know when to offer people to participate in it. You know the words and hints to suggest it in the most vague forms. How do you use that knowledge is a different question.",
+        "effect": "Bribery Expert",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3649,8 +3612,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You have perfect recall of routes and distances.",
-        "effect": "You have perfect recall of routes and distances.",
+        "description": "You have perfect recall of routes and distances.",
+        "effect": "Cartographer's Mind",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3682,9 +3645,8 @@
           "Skill",
           "GM"
         ],
-        "shortDescription": "Others have a hard time detecting the falsehoods in your words.",
-        "effect": "Others have a hard time detecting the falsehoods in your words.",
-        "description": "With a pretty face like yours getting away with lying is just too easy.",
+        "description": "Others have a hard time detecting the falsehoods in your words.\n\nWith a pretty face like yours getting away with lying is just too easy.",
+        "effect": "Cheat",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3718,9 +3680,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You know how to turn everything into a joke.",
-        "effect": "You know how to turn everything into a joke.",
-        "description": "Your natural comedic timing and charismatic delivery can frame some offensive statements or requests as harmless jokes, but each time you do you get the reputation of a [[Jester]].",
+        "description": "You know how to turn everything into a joke.\n\nYour natural comedic timing and charismatic delivery can frame some offensive statements or requests as harmless jokes, but each time you do you get the reputation of a [[Jester]].",
+        "effect": "",
         "grants": {
           "abilities": [
             "comedian"
@@ -3751,9 +3712,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You learn about a culture, its norms, history, and language.",
-        "effect": "You learn about a culture, its norms, history, and language.",
-        "description": "When taking this perk, select a specific culture you've studied. You gain knowledge of their cultural norms, basic language skills, and commonly known historical facts about that culture.",
+        "description": "You learn about a culture, its norms, history, and language.\n\nWhen taking this perk, select a specific culture you've studied. You gain knowledge of their cultural norms, basic language skills, and commonly known historical facts about that culture.",
+        "effect": "Cultural Explorer",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3784,9 +3744,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You learn Enchantement.",
-        "effect": "You learn Enchantement.",
-        "description": "Your understanding of magical theory extends to the practical application of imbuing mundane items with magical properties.",
+        "description": "You learn Enchantement.\n\nYour understanding of magical theory extends to the practical application of imbuing mundane items with magical properties.",
+        "effect": "Enchanter",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3817,9 +3776,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You are good at mitigating the enviornmental effects.",
-        "effect": "You are good at mitigating the enviornmental effects.",
-        "description": "You prepare yourself and your party for harsh environmental conditions, reducing their effects.",
+        "description": "You are good at mitigating the enviornmental effects.\n\nYou prepare yourself and your party for harsh environmental conditions, reducing their effects.",
+        "effect": "Environmental Grace",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3850,9 +3808,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "First responder training.",
-        "effect": "First responder training.",
-        "description": "You have seen some terrible wounds and know the best practice to handle them quickly and efficiently.",
+        "description": "First responder training.\n\nYou have seen some terrible wounds and know the best practice to handle them quickly and efficiently.",
+        "effect": "First Responder",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3883,8 +3840,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Procuring food in the wilderness is a second nature.",
-        "effect": "Procuring food in the wilderness is a second nature.",
+        "description": "Procuring food in the wilderness is a second nature.",
+        "effect": "Forager",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3916,8 +3873,8 @@
           "Skill",
           "Combat"
         ],
-        "shortDescription": "Your Initimidation can make enemies reconsider fighting you.",
-        "effect": "Your Initimidation can make enemies reconsider fighting you.",
+        "description": "Your Initimidation can make enemies reconsider fighting you.",
+        "effect": "Fuck I'm Out",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3949,9 +3906,8 @@
           "Skill",
           "Downtime"
         ],
-        "shortDescription": "Experienced Haggler doesn't make thing worse.",
-        "effect": "Experienced Haggler doesn't make thing worse.",
-        "description": "When bargaining, you don't worsen the bargain on a failure.",
+        "description": "Experienced Haggler doesn't make thing worse.\n\nWhen bargaining, you don't worsen the bargain on a failure.",
+        "effect": "Haggler",
         "grants": {
           "abilities": [],
           "effects": [
@@ -3982,8 +3938,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You have learned of heraldic symbolism and historic context for it.",
-        "effect": "You have learned of heraldic symbolism and historic context for it.",
+        "description": "You have learned of heraldic symbolism and historic context for it.",
+        "effect": "Heraldist",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4016,9 +3972,8 @@
           "Skill",
           "Exploration"
         ],
-        "shortDescription": "Gather herbs on the move without slowing down.",
-        "effect": "Gather herbs on the move without slowing down.",
-        "description": "Your trained eye instantly distinguishes useful plants from weeds and poisonous ones.",
+        "description": "Gather herbs on the move without slowing down.\n\nYour trained eye instantly distinguishes useful plants from weeds and poisonous ones.",
+        "effect": "Herbalist's Eye",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4049,9 +4004,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "The shadowy parts of towns are your natural habitat.",
-        "effect": "The shadowy parts of towns are your natural habitat.",
-        "description": "You are quick to know a guy who knows a guy, and as a fella who is quick to know people, you know the code of conduct to pass a message to someone higher in the hierarchy, learn of black markets, fences and other people operating outside the law.",
+        "description": "The shadowy parts of towns are your natural habitat.\n\nYou are quick to know a guy who knows a guy, and as a fella who is quick to know people, you know the code of conduct to pass a message to someone higher in the hierarchy, learn of black markets, fences and other people operating outside the law.",
+        "effect": "In the Know",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4082,8 +4036,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "After succeeding at a check, you can inspire an ally to perform better on their next similar attempt.",
-        "effect": "After succeeding at a check, you can inspire an ally to perform better on their next similar attempt.",
+        "description": "After succeeding at a check, you can inspire an ally to perform better on their next similar attempt.",
+        "effect": "",
         "grants": {
           "abilities": [
             "inspirer"
@@ -4118,9 +4072,8 @@
           "Skill",
           "GM"
         ],
-        "shortDescription": "Lying as second nature.",
-        "effect": "Lying as second nature.",
-        "description": "You lie as naturally as breathing. When you speak truth it feels unnatural to you. One day when all your lies surface, you will sink. But with your skills it won't be soon.",
+        "description": "Lying as second nature.\n\nYou lie as naturally as breathing. When you speak truth it feels unnatural to you. One day when all your lies surface, you will sink. But with your skills it won't be soon.",
+        "effect": "Liar Liar",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4152,9 +4105,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Work fast when time is short, or slow when mistakes aren't an option.",
-        "effect": "Work fast when time is short, or slow when mistakes aren't an option.",
-        "description": "Experience in crime tough you when to go fast as nothing can go wrong, and when to take your time to avoid complications.",
+        "description": "Work fast when time is short, or slow when mistakes aren't an option.\n\nExperience in crime tough you when to go fast as nothing can go wrong, and when to take your time to avoid complications.",
+        "effect": "Lock Consul",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4188,9 +4140,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Experience in coordinated strikes in the natural environments.",
-        "effect": "Experience in coordinated strikes in the natural environments.",
-        "description": "In nature you know the timing against your prey, know the best strategies to lay an ambush and how to make a good camo to hide from humans and animals alike. You can use your stealth as the leader of the team to hide the whole team.",
+        "description": "Experience in coordinated strikes in the natural environments.\n\nIn nature you know the timing against your prey, know the best strategies to lay an ambush and how to make a good camo to hide from humans and animals alike. You can use your stealth as the leader of the team to hide the whole team.",
+        "effect": "Natural Predator",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4221,9 +4172,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Failed Deduce checks provide conflicting information instead of nothing.",
-        "effect": "Failed Deduce checks provide conflicting information instead of nothing.",
-        "description": "Your mind fills gaps in knowledge with half-remembered details, conflicting sources, and plausible theories. Sometimes this leads to brilliant insights, sometimes to spectacular mistakes. The false information should be plausible and based on real misconceptions or incomplete understanding.",
+        "description": "Failed Deduce checks provide conflicting information instead of nothing.\n\nYour mind fills gaps in knowledge with half-remembered details, conflicting sources, and plausible theories. Sometimes this leads to brilliant insights, sometimes to spectacular mistakes. The false information should be plausible and based on real misconceptions or incomplete understanding.",
+        "effect": "Not Sherlock",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4256,9 +4206,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Learn Potion Brewing.",
-        "effect": "Learn Potion Brewing.",
-        "description": "Your understanding of medicine and chemistry extends to the magical properties contained in them allowing to effectively brew quickly acting potions.",
+        "description": "Learn Potion Brewing.\n\nYour understanding of medicine and chemistry extends to the magical properties contained in them allowing to effectively brew quickly acting potions.",
+        "effect": "Potion Brewer",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4290,8 +4239,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You know of animals' habitats.",
-        "effect": "You know of animals' habitats.",
+        "description": "You know of animals' habitats.",
+        "effect": "Primeval Awareness",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4325,8 +4274,8 @@
           "Skill",
           "Rank"
         ],
-        "shortDescription": "You are a respected figure in the criminal underworld, ensuring better treatment and respect from all criminal interactions.",
-        "effect": "You are a respected figure in the criminal underworld, ensuring better treatment and respect from all criminal interactions.",
+        "description": "You are a respected figure in the criminal underworld, ensuring better treatment and respect from all criminal interactions.",
+        "effect": "Crime in-Law",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4360,8 +4309,8 @@
           "Skill",
           "Rank"
         ],
-        "shortDescription": "Your fearsome reputation causes people to avoid investigating your activities and look the other way when you're involved.",
-        "effect": "Your fearsome reputation causes people to avoid investigating your activities and look the other way when you're involved.",
+        "description": "Your fearsome reputation causes people to avoid investigating your activities and look the other way when you're involved.",
+        "effect": "Fear Means Respect",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4395,8 +4344,8 @@
           "Skill",
           "Rank"
         ],
-        "shortDescription": "You are a certified witch hunter with legal authority to request aid against supernatural threats.",
-        "effect": "You are a certified witch hunter with legal authority to request aid against supernatural threats.",
+        "description": "You are a certified witch hunter with legal authority to request aid against supernatural threats.",
+        "effect": "Inquisitor",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4430,9 +4379,8 @@
           "Skill",
           "GM"
         ],
-        "shortDescription": "You gain the Jester immunity.",
-        "effect": "You gain the Jester immunity.",
-        "description": "You can't offend people who know of you and your reputation of a clown. At least they can't admit it publicly.",
+        "description": "You gain the Jester immunity.\n\nYou can't offend people who know of you and your reputation of a clown. At least they can't admit it publicly.",
+        "effect": "Jester",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4466,8 +4414,8 @@
           "Skill",
           "Rank"
         ],
-        "shortDescription": "Your criminal syndicate generates passive income as you establish yourself as a significant power in the underworld.",
-        "effect": "Your criminal syndicate generates passive income as you establish yourself as a significant power in the underworld.",
+        "description": "Your criminal syndicate generates passive income as you establish yourself as a significant power in the underworld.",
+        "effect": "King on the Hill",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4502,8 +4450,8 @@
           "Skill",
           "Rank"
         ],
-        "shortDescription": "Your reputation as a court-appointed physician grants you exceptional social standing and resources.",
-        "effect": "Your reputation as a court-appointed physician grants you exceptional social standing and resources.",
+        "description": "Your reputation as a court-appointed physician grants you exceptional social standing and resources.",
+        "effect": "Licensed Healer",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4534,8 +4482,8 @@
           "Skill",
           "Rank"
         ],
-        "shortDescription": "You are a licensed priest of a deity with official standing and religious authority.",
-        "effect": "You are a licensed priest of a deity with official standing and religious authority.",
+        "description": "You are a licensed priest of a deity with official standing and religious authority.",
+        "effect": "Ordained",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4569,8 +4517,8 @@
           "Skill",
           "Rank"
         ],
-        "shortDescription": "Your positive reputation as a folk hero or champion of the common people works opposite to fear-based intimidation.",
-        "effect": "Your positive reputation as a folk hero or champion of the common people works opposite to fear-based intimidation.",
+        "description": "Your positive reputation as a folk hero or champion of the common people works opposite to fear-based intimidation.",
+        "effect": "Robin Hood",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4605,8 +4553,8 @@
           "Skill",
           "Rank"
         ],
-        "shortDescription": "There is a chance you will be recognized and gain preferential treatment from scholars and nobles.",
-        "effect": "There is a chance you will be recognized and gain preferential treatment from scholars and nobles.",
+        "description": "There is a chance you will be recognized and gain preferential treatment from scholars and nobles.",
+        "effect": "Since It Is You",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4638,9 +4586,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Learn the rules of behavior in a culture, that is not your own. Can be taken Multiple times.",
-        "effect": "Learn the rules of behavior in a culture, that is not your own. Can be taken Multiple times.",
-        "description": "More than 1 is not supported by the current up i the current version. Make a custom feat for this.",
+        "description": "Learn the rules of behavior in a culture, that is not your own. Can be taken Multiple times.\n\nMore than 1 is not supported by the current up i the current version. Make a custom feat for this.",
+        "effect": "Savoir Faire",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4673,9 +4620,8 @@
           "Combat",
           "Exploration"
         ],
-        "shortDescription": "Move swiftly without breaking silence.",
-        "effect": "Move swiftly without breaking silence.",
-        "description": "You know how to move quickly and quietly as a second nature.",
+        "description": "Move swiftly without breaking silence.\n\nYou know how to move quickly and quietly as a second nature.",
+        "effect": "Silent Steps",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4706,9 +4652,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "You know how to work as a fence or as an information broker.",
-        "effect": "You know how to work as a fence or as an information broker.",
-        "description": "You can earn income with Streetwise and purchase illicit goods and information at significant discounts.",
+        "description": "You know how to work as a fence or as an information broker.\n\nYou can earn income with Streetwise and purchase illicit goods and information at significant discounts.",
+        "effect": "Sitting on the Fence",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4739,9 +4684,8 @@
         "tags": [
           "Skill"
         ],
-        "shortDescription": "Tracking is your second nature.",
-        "effect": "Tracking is your second nature.",
-        "description": "You have honed your skills in reading the subtle signs left by creatures passing through the wilderness, and can do so while maintaining normal movement speed without sacrificing accuracy.",
+        "description": "Tracking is your second nature.\n\nYou have honed your skills in reading the subtle signs left by creatures passing through the wilderness, and can do so while maintaining normal movement speed without sacrificing accuracy.",
+        "effect": "Tracker",
         "grants": {
           "abilities": [],
           "effects": [
@@ -4771,8 +4715,8 @@
         },
         "apCost": null,
         "tags": [],
-        "shortDescription": "Wargames that you organize, blend the training and reality, allowing people to progress as if during war.",
-        "effect": "Wargames that you organize, blend the training and reality, allowing people to progress as if during war.",
+        "description": "Wargames that you organize, blend the training and reality, allowing people to progress as if during war.",
+        "effect": "Wargame Master",
         "grants": {
           "abilities": [],
           "effects": [

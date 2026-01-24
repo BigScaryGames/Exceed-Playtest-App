@@ -13,6 +13,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
+
   },
   "homepage": "https://BigScaryGames.github.io/Exceed-Playtest-App",
   "dependencies": {
@@ -42,3 +43,4 @@
   },
   "private": true
 }
+

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronRight, BookOpen, Swords, ScrollText } from 'lucide-react';
+import { ChevronDown, ChevronRight, BookOpen, Swords, ScrollText, Plus, Search, X } from 'lucide-react';
 import { Character } from '@/types/character';
 import type { PerkDatabase, Perk } from '@/types/perks';
 import {
@@ -9,23 +9,13 @@ import {
   ActiveEffect
 } from '@/utils/effectCalculator';
 import { AddPerkModal } from '@/components/modals/AddPerkModal';
+import { PerkBrowserModal } from '@/components/modals/PerkBrowserModal';
+import { ATTRIBUTE_MAP } from '@/utils/constants';
 
 interface PerksTabProps {
   character: Character;
   onUpdate: (character: Character) => void;
   perkDatabase: PerkDatabase | null;
-}
-
-type PerkSection = 'spellcraft' | 'martial' | 'skill';
-type ViewMode = 'owned' | 'browse';
-
-interface SectionConfig {
-  id: PerkSection;
-  title: string;
-  icon: React.ReactNode;
-  tag: string;
-  ownedPerks: (Perk | { name: string; cost: number; attribute: string; description?: string; perkSnapshot?: Perk })[];
-  allPerks: Perk[];
 }
 
 // Ability/Effect card component
@@ -92,13 +82,16 @@ const AbilityEffectCard: React.FC<AbilityEffectCardProps> = ({ item, isAbility }
 
 // Perk card component
 interface PerkCardProps {
-  perk: Perk | { name: string; cost: number; attribute: string; description?: string };
-  onEdit?: () => void;
+  perk: Perk | { name: string; cost: number | { xp: number; variable: boolean }; attribute: string; description?: string };
   onDelete?: () => void;
 }
-const PerkCard: React.FC<PerkCardProps> = ({ perk, onEdit, onDelete }) => {
+const PerkCard: React.FC<PerkCardProps> = ({ perk, onDelete }) => {
   const snapshot = (perk as any).perkSnapshot;
   const tags = snapshot?.tags || [];
+
+  // Extract cost value - handle both number and object formats
+  const costValue = typeof (perk as any).cost === 'object' ? (perk as any).cost.xp : (perk as any).cost;
+  const costDisplay = (perk as any).cost?.variable ? 'Variable' : `${costValue} XP`;
 
   return (
     <div className="bg-slate-800 rounded overflow-hidden">
@@ -107,27 +100,17 @@ const PerkCard: React.FC<PerkCardProps> = ({ perk, onEdit, onDelete }) => {
           <div className="flex-1">
             <span className="text-white font-medium text-sm">{perk.name}</span>
             <div className="text-slate-400 text-xs mt-0.5">
-              {(perk as any).cost} XP • {(perk as any).attribute}
+              {costDisplay} • {(perk as any).attribute}
             </div>
           </div>
-          <div className="flex gap-1 ml-2">
-            {onEdit && (
-              <button
-                onClick={onEdit}
-                className="text-slate-400 hover:text-white p-1"
-              >
-                ✏️
-              </button>
-            )}
-            {onDelete && (
-              <button
-                onClick={onDelete}
-                className="text-slate-400 hover:text-red-400 p-1"
-              >
-                🗑️
-              </button>
-            )}
-          </div>
+          {onDelete && (
+            <button
+              onClick={onDelete}
+              className="text-slate-400 hover:text-red-400 p-1"
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">
@@ -146,146 +129,233 @@ const PerkCard: React.FC<PerkCardProps> = ({ perk, onEdit, onDelete }) => {
   );
 };
 
-// Section component
+// Perk section component
 interface PerkSectionProps {
-  config: SectionConfig;
-  isExpanded: boolean;
-  onToggle: () => void;
-  viewMode: ViewMode;
-  onViewChange: (view: ViewMode) => void;
+  title: string;
+  icon: React.ReactNode;
+  perks: (Perk | { name: string; cost: number; attribute: string; description?: string; perkSnapshot?: Perk })[];
   abilities: ActiveAbility[];
   effects: ActiveEffect[];
   onAddPerk: () => void;
   onPerkDelete?: (index: number) => void;
 }
 const PerkSection: React.FC<PerkSectionProps> = ({
-  config,
-  isExpanded,
-  onToggle,
-  viewMode,
-  onViewChange,
+  title,
+  icon,
+  perks,
   abilities,
   effects,
   onAddPerk,
   onPerkDelete
 }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+
   return (
     <div className="bg-slate-800 rounded-lg overflow-hidden">
-      {/* Section Header */}
-      <button
-        onClick={onToggle}
-        className="w-full px-4 py-3 flex items-center justify-between bg-slate-750 hover:bg-slate-700 transition-colors"
-      >
-        <div className="flex items-center gap-3">
+      {/* Header */}
+      <div className="px-4 py-3 flex items-center justify-between bg-slate-750">
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex items-center gap-2 flex-1"
+        >
           <div className="text-slate-300">
-            {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+            {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
           </div>
           <div className="flex items-center gap-2">
-            {config.icon}
-            <span className="text-white font-semibold">{config.title}</span>
+            {icon}
+            <span className="text-white font-semibold">{title}</span>
+            <span className="text-slate-400 text-sm">({perks.length})</span>
           </div>
-        </div>
-        <div className="flex items-center gap-3 text-slate-400 text-sm">
-          <span>{config.ownedPerks.length} perks</span>
-          <span>{abilities.length + effects.length} abilities/effects</span>
-        </div>
-      </button>
+        </button>
+        <button
+          onClick={onAddPerk}
+          className="flex items-center gap-1 bg-blue-700 hover:bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded"
+        >
+          <Plus size={14} />
+          Add Perk
+        </button>
+      </div>
 
-      {/* Section Content */}
+      {/* Content */}
       {isExpanded && (
-        <div className="p-4">
-          {/* View Toggle */}
-          <div className="flex gap-2 mb-4">
-            <button
-              onClick={() => onViewChange('owned')}
-              className={`flex-1 py-2 px-3 rounded text-sm font-semibold transition-colors ${
-                viewMode === 'owned'
-                  ? 'bg-blue-700 text-white'
-                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-              }`}
-            >
-              Owned
-            </button>
-            <button
-              onClick={() => onViewChange('browse')}
-              className={`flex-1 py-2 px-3 rounded text-sm font-semibold transition-colors ${
-                viewMode === 'browse'
-                  ? 'bg-blue-700 text-white'
-                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-              }`}
-            >
-              Browse
-            </button>
-          </div>
-
-          {/* Owned View */}
-          {viewMode === 'owned' && (
-            <div className="space-y-3">
-              {/* Perks */}
-              {config.ownedPerks.length === 0 ? (
-                <div className="text-slate-500 text-sm text-center py-4">
-                  No {config.title.toLowerCase()} perks yet
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {config.ownedPerks.map((perk, index) => (
-                    <PerkCard
-                      key={`${config.id}-perk-${index}-${(perk as any).id || perk.name}`}
-                      perk={perk}
-                      onDelete={onPerkDelete ? () => onPerkDelete(index) : undefined}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Abilities & Effects */}
-              {(abilities.length > 0 || effects.length > 0) && (
-                <div className="border-t border-slate-700 pt-3">
-                  <h4 className="text-slate-300 text-sm font-semibold mb-2">
-                    Granted Abilities & Effects
-                  </h4>
-                  {abilities.length === 0 && effects.length === 0 ? (
-                    <div className="text-slate-500 text-xs text-center py-2">
-                      No abilities or effects
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {abilities.map((ability, index) => (
-                        <AbilityEffectCard
-                          key={`${config.id}-ability-${index}`}
-                          item={ability}
-                          isAbility={true}
-                        />
-                      ))}
-                      {effects.map((effect, index) => (
-                        <AbilityEffectCard
-                          key={`${config.id}-effect-${index}`}
-                          item={effect}
-                          isAbility={false}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+        <div className="p-4 space-y-3">
+          {/* Perks */}
+          {perks.length === 0 ? (
+            <div className="text-slate-500 text-sm text-center py-4">
+              No perks yet
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {perks.map((perk, index) => (
+                <PerkCard
+                  key={`${title}-perk-${index}-${(perk as any).id || perk.name}`}
+                  perk={perk}
+                  onDelete={onPerkDelete ? () => onPerkDelete(index) : undefined}
+                />
+              ))}
             </div>
           )}
 
-          {/* Browse View */}
-          {viewMode === 'browse' && (
-            <div className="space-y-3">
-              <div className="text-slate-400 text-sm text-center py-4">
-                Browse functionality coming soon
+          {/* Abilities & Effects */}
+          {(abilities.length > 0 || effects.length > 0) && (
+            <div className="border-t border-slate-700 pt-3">
+              <h4 className="text-slate-300 text-sm font-semibold mb-2">
+                Granted Abilities & Effects
+              </h4>
+              <div className="space-y-2">
+                {abilities.map((ability, index) => (
+                  <AbilityEffectCard
+                    key={`${title}-ability-${index}`}
+                    item={ability}
+                    isAbility={true}
+                  />
+                ))}
+                {effects.map((effect, index) => (
+                  <AbilityEffectCard
+                    key={`${title}-effect-${index}`}
+                    item={effect}
+                    isAbility={false}
+                  />
+                ))}
               </div>
-              <button
-                onClick={onAddPerk}
-                className="w-full bg-blue-700 hover:bg-blue-600 rounded py-2 text-white text-sm font-semibold"
-              >
-                Add {config.title} Perk
-              </button>
             </div>
           )}
         </div>
+      )}
+    </div>
+  );
+};
+
+// Conditioning perk card with level-up UI
+interface ConditioningCardProps {
+  stagedPerk: any;
+  character: Character;
+  onLevelUp: (attribute: string) => void;
+  onAbandon: () => void;
+  perkDatabase: PerkDatabase | null;
+}
+const ConditioningCard: React.FC<ConditioningCardProps> = ({
+  stagedPerk,
+  character,
+  onLevelUp,
+  onAbandon,
+  perkDatabase
+}) => {
+  const [selectedAttribute, setSelectedAttribute] = useState('');
+
+  const currentLevel = stagedPerk.level || 1;
+  const nextLevel = currentLevel + 1;
+  const isComplete = currentLevel >= 5;
+
+  // Cost = maxWounds (flat per level)
+  const cost = character.maxWounds;
+  const canAfford = character.combatXP >= cost;
+
+  const perkDetails = perkDatabase?.perks.combat.find(p => p.id === stagedPerk.id);
+
+  const handleLevelUp = () => {
+    if (selectedAttribute && canAfford) {
+      onLevelUp(selectedAttribute);
+      setSelectedAttribute('');
+    }
+  };
+
+  return (
+    <div className="bg-slate-700 rounded-lg p-4 space-y-3">
+      {/* Header */}
+      <div className="flex justify-between items-start">
+        <div>
+          <h4 className="text-white font-semibold">{stagedPerk.name}</h4>
+          <p className="text-slate-400 text-sm">{perkDetails?.description || ''}</p>
+        </div>
+        {!isComplete && (
+          <button
+            onClick={onAbandon}
+            className="text-red-400 hover:text-red-300 text-xs"
+          >
+            Abandon
+          </button>
+        )}
+      </div>
+
+      {/* Level Progress */}
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-slate-300 text-sm">Level {currentLevel}/5</span>
+          {isComplete && (
+            <span className="text-yellow-400 text-xs font-semibold">CAPSTONE!</span>
+          )}
+        </div>
+        <div className="flex gap-1.5">
+          {[1, 2, 3, 4, 5].map(n => (
+            <div
+              key={n}
+              className={`flex-1 h-3 rounded ${
+                n <= currentLevel
+                  ? 'bg-green-500'
+                  : n === nextLevel && !isComplete
+                    ? 'bg-green-500/50 animate-pulse'
+                    : 'bg-slate-600'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* HP Gain Info */}
+      {!isComplete && (
+        <div className="text-blue-400 text-xs">
+          Next level: +1 HP (Cost: {cost} XP)
+        </div>
+      )}
+
+      {isComplete && (
+        <div className="text-yellow-400 text-xs">
+          Completed! Grants +1 Max Wounds and capstone effect.
+        </div>
+      )}
+
+      {/* Level Up UI */}
+      {!isComplete && (
+        <>
+          {/* Attribute Selection */}
+          <div>
+            <label className="block text-sm font-semibold text-slate-300 mb-2">
+              Select Attribute
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {Object.entries(ATTRIBUTE_MAP).map(([abbr, full]) => (
+                <button
+                  key={abbr}
+                  onClick={() => setSelectedAttribute(full)}
+                  className={`py-2 rounded font-semibold transition-colors text-sm ${
+                    selectedAttribute === full
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-600 hover:bg-slate-500 text-slate-300'
+                  }`}
+                >
+                  {abbr}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Level Up Button */}
+          <button
+            onClick={handleLevelUp}
+            disabled={!selectedAttribute || !canAfford}
+            className={`w-full py-2 rounded font-semibold text-sm ${
+              !selectedAttribute || !canAfford
+                ? 'bg-slate-600 text-slate-400 cursor-not-allowed'
+                : 'bg-green-700 hover:bg-green-600 text-white'
+            }`}
+          >
+            {canAfford
+              ? `Train Level ${nextLevel} (${cost} XP)`
+              : `Not Enough XP (Need ${cost})`
+            }
+          </button>
+        </>
       )}
     </div>
   );
@@ -296,36 +366,22 @@ export const PerksTab: React.FC<PerksTabProps> = ({
   onUpdate,
   perkDatabase
 }) => {
-  // Section expansion states
-  const [expandedSections, setExpandedSections] = useState<{
-    spellcraft: boolean;
-    martial: boolean;
-    skill: boolean;
-  }>({
-    spellcraft: true,
-    martial: true,
-    skill: true
-  });
-
-  // View mode for each section
-  const [sectionViews, setSectionViews] = useState<{
-    spellcraft: ViewMode;
-    martial: ViewMode;
-    skill: ViewMode;
-  }>({
-    spellcraft: 'owned',
-    martial: 'owned',
-    skill: 'owned'
-  });
-
   // Modal states
   const [showAddMagicPerkModal, setShowAddMagicPerkModal] = useState(false);
   const [showAddCombatPerkModal, setShowAddCombatPerkModal] = useState(false);
   const [showAddSkillPerkModal, setShowAddSkillPerkModal] = useState(false);
+  const [showPerkBrowser, setShowPerkBrowser] = useState(false);
 
   // Get abilities and effects with inherited tags
   const abilities = getActiveAbilitiesWithInheritedTags(character, perkDatabase);
   const effects = getActiveEffectsWithInheritedTags(character, perkDatabase);
+
+  // Helper to extract XP cost from cost (number or object)
+  const getPerkCost = (perk: any): number => {
+    if (typeof perk.cost === 'number') return perk.cost;
+    if (typeof perk.cost === 'object' && perk.cost?.xp !== undefined) return perk.cost.xp;
+    return 0;
+  };
 
   // Filter by tag for each section
   const spellcraftAbilities = abilities.filter(a => a.tags.includes('Spellcraft'));
@@ -341,13 +397,14 @@ export const PerksTab: React.FC<PerksTabProps> = ({
     if (!perk) return;
 
     const updatedMagicPerks = character.magicPerks?.filter((_, i) => i !== index) || [];
+    const cost = getPerkCost(perk);
 
     // Remove from progression log
     const updatedLog = [...character.progressionLog];
     for (let i = updatedLog.length - 1; i >= 0; i--) {
       if (updatedLog[i].type === 'magicPerk' &&
           updatedLog[i].name === perk.name &&
-          updatedLog[i].cost === perk.cost &&
+          updatedLog[i].cost === cost &&
           updatedLog[i].attribute === perk.attribute) {
         updatedLog.splice(i, 1);
         break;
@@ -357,7 +414,7 @@ export const PerksTab: React.FC<PerksTabProps> = ({
     onUpdate({
       ...character,
       magicPerks: updatedMagicPerks,
-      combatXP: character.combatXP + perk.cost,
+      combatXP: character.combatXP + cost,
       progressionLog: updatedLog
     });
   };
@@ -367,29 +424,35 @@ export const PerksTab: React.FC<PerksTabProps> = ({
     const perk = character.combatPerks[index];
     const updatedPerks = character.combatPerks.filter((_, i) => i !== index);
 
-    // Check if this is a completed conditioning perk
+    // Check if this is a conditioning perk
     const isConditioningPerk = perk.perkSnapshot?.tags?.includes('Conditioning') ||
-      perk.name.includes('(Completed)');
-    const basePerkName = perk.name.replace(' (Completed)', '');
+      perk.name.includes('Conditioning');
 
     let updatedLog = [...character.progressionLog];
     let totalRefund = 0;
     let shouldDecrementWounds = false;
+    let extraHPToRemove = 0;
 
     if (isConditioningPerk) {
-      // For conditioning perks: remove ALL stagedPerk entries with this name
-      updatedLog = character.progressionLog.filter(entry => {
-        if (entry.type === 'stagedPerk' && entry.name === basePerkName) {
-          totalRefund += entry.cost || 0;
-          return false;
+      // For conditioning perks: find and remove the matching entry
+      for (let i = updatedLog.length - 1; i >= 0; i--) {
+        if (updatedLog[i].type === 'combatPerk' &&
+            updatedLog[i].name === perk.name &&
+            updatedLog[i].attribute === perk.attribute) {
+          totalRefund = updatedLog[i].cost || 0;
+          updatedLog.splice(i, 1);
+          break;
         }
-        if (entry.type === 'combatPerk' &&
-            (entry.name === perk.name || entry.name === `${basePerkName} (Completed)`)) {
-          return false;
-        }
-        return true;
-      });
-      shouldDecrementWounds = true;
+      }
+      extraHPToRemove = 1;
+      // Check if this was the last of a set of 5 - need to decrement maxWounds
+      const basePerkName = perk.name.replace(' (Completed)', '');
+      const samePerkCount = character.combatPerks.filter(p =>
+        p.name.includes(basePerkName) || p.name === perk.name
+      ).length;
+      if (perk.name.includes('(Completed)') || samePerkCount <= 1) {
+        shouldDecrementWounds = true;
+      }
     } else {
       // Regular combat perk: just remove the single entry
       for (let i = updatedLog.length - 1; i >= 0; i--) {
@@ -410,8 +473,11 @@ export const PerksTab: React.FC<PerksTabProps> = ({
       progressionLog: updatedLog
     };
 
-    // Handle wound decrement for conditioning perks
-    if (shouldDecrementWounds && character.maxWounds > 1) {
+    // Handle HP and wound adjustments for conditioning perks
+    if (extraHPToRemove > 0) {
+      updatedCharacter.extraHP = Math.max(0, character.extraHP - extraHPToRemove);
+    }
+    if (shouldDecrementWounds && character.maxWounds > 2) {
       updatedCharacter.maxWounds = character.maxWounds - 1;
     }
 
@@ -422,13 +488,14 @@ export const PerksTab: React.FC<PerksTabProps> = ({
   const handleDeleteSkillPerk = (index: number) => {
     const perk = character.perks[index];
     const updatedPerks = character.perks.filter((_, i) => i !== index);
+    const cost = getPerkCost(perk);
 
     // Remove from progression log - find the most recent matching entry
     const updatedLog = [...character.progressionLog];
     for (let i = updatedLog.length - 1; i >= 0; i--) {
       if (updatedLog[i].type === 'perk' &&
           updatedLog[i].name === perk.name &&
-          updatedLog[i].cost === perk.cost &&
+          updatedLog[i].cost === cost &&
           updatedLog[i].attribute === perk.attribute) {
         updatedLog.splice(i, 1);
         break;
@@ -438,95 +505,226 @@ export const PerksTab: React.FC<PerksTabProps> = ({
     onUpdate({
       ...character,
       perks: updatedPerks,
-      socialXP: character.socialXP + perk.cost,
+      socialXP: character.socialXP + cost,
       progressionLog: updatedLog
     });
   };
 
-  // Section configurations
-  const sections: SectionConfig[] = [
-    {
-      id: 'spellcraft',
-      title: 'Spellcraft',
-      icon: <ScrollText size={18} />,
-      tag: 'Spellcraft',
-      ownedPerks: character.magicPerks || [],
-      allPerks: perkDatabase?.perks.magic || []
-    },
-    {
-      id: 'martial',
-      title: 'Martial',
-      icon: <Swords size={18} />,
-      tag: 'Combat',
-      ownedPerks: character.combatPerks,
-      allPerks: perkDatabase?.perks.combat || []
-    },
-    {
-      id: 'skill',
-      title: 'Skill',
-      icon: <BookOpen size={18} />,
-      tag: 'Skill',
-      ownedPerks: character.perks,
-      allPerks: perkDatabase?.perks.skill || []
-    }
-  ];
+  // Handle conditioning level up
+  const handleConditioningLevelUp = (stagedPerkIndex: number, attribute: string) => {
+    const stagedPerk = character.stagedPerks?.[stagedPerkIndex];
+    if (!stagedPerk) return;
 
-  const toggleSection = (section: PerkSection) => {
-    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+    const currentLevel = stagedPerk.level || 1;
+    const nextLevel = currentLevel + 1;
+    const cost = character.maxWounds; // flat per level
+
+    if (character.combatXP < cost) return;
+
+    // Check if reaching level 5 (completion - move from staged to combat perks)
+    if (nextLevel >= 5) {
+      // LEVEL 5 COMPLETION
+      // 1. Remove from stagedPerks
+      // 2. Add to combatPerks as completed perk
+      // 3. Increment maxWounds by 1
+      // 4. Reset extraHP to 0 (the 4 HP become part of the new wound)
+      // 5. Remove "extra-hp" effect from the completed perk's snapshot
+
+      // Create modified snapshot without "extra-hp" effect (since HP is now part of maxWounds)
+      const modifiedSnapshot = stagedPerk.perkSnapshot ? {
+        ...stagedPerk.perkSnapshot,
+        grants: {
+          ...stagedPerk.perkSnapshot.grants,
+          effects: (stagedPerk.perkSnapshot.grants?.effects || []).filter((e: string) => e !== 'extra-hp')
+        }
+      } : undefined;
+
+      const completedPerk = {
+        id: stagedPerk.id,
+        name: stagedPerk.name,
+        cost: cost,
+        attribute: attribute,
+        description: stagedPerk.perkSnapshot?.description || '',
+        isCustom: false,
+        source: 'database' as const,
+        perkSnapshot: modifiedSnapshot,
+        addedAt: Date.now()
+      };
+
+      // Remove from stagedPerks
+      const updatedStagedPerks = character.stagedPerks?.filter((_, i) => i !== stagedPerkIndex) || [];
+
+      onUpdate({
+        ...character,
+        stagedPerks: updatedStagedPerks,
+        combatPerks: [...character.combatPerks, completedPerk],
+        maxWounds: character.maxWounds + 1,
+        extraHP: 0, // Reset - HP consolidated into new wound
+        combatXP: character.combatXP - cost,
+        progressionLog: [
+          ...character.progressionLog,
+          {
+            type: 'stagedPerk' as const,
+            name: stagedPerk.name,
+            cost,
+            attribute,
+            xpType: 'combat' as const,
+            stagedLevel: nextLevel
+          },
+          {
+            type: 'combatPerk' as const,
+            name: `${stagedPerk.name} (Completed)`,
+            cost: 0,
+            attribute
+          }
+        ]
+      });
+    } else {
+      // LEVEL UP (1-4)
+      const updatedStagedPerks = [...(character.stagedPerks || [])];
+      updatedStagedPerks[stagedPerkIndex] = {
+        ...stagedPerk,
+        level: nextLevel,
+        attribute,
+        levelHistory: [
+          ...(stagedPerk.levelHistory || []),
+          { level: nextLevel, attribute, cost }
+        ]
+      };
+
+      onUpdate({
+        ...character,
+        stagedPerks: updatedStagedPerks,
+        extraHP: character.extraHP + 1,
+        combatXP: character.combatXP - cost,
+        progressionLog: [
+          ...character.progressionLog,
+          {
+            type: 'stagedPerk' as const,
+            name: stagedPerk.name,
+            cost,
+            attribute,
+            xpType: 'combat' as const,
+            stagedLevel: nextLevel
+          }
+        ]
+      });
+    }
   };
 
-  const handleAddPerk = (section: PerkSection) => {
-    switch (section) {
-      case 'spellcraft':
-        setShowAddMagicPerkModal(true);
-        break;
-      case 'martial':
-        setShowAddCombatPerkModal(true);
-        break;
-      case 'skill':
-        setShowAddSkillPerkModal(true);
-        break;
+  // Handle abandon conditioning
+  const handleAbandonConditioning = (stagedPerkIndex: number) => {
+    const stagedPerk = character.stagedPerks?.[stagedPerkIndex];
+    if (!stagedPerk) return;
+
+    // Calculate total refund from all levels
+    const totalRefund = stagedPerk.levelHistory?.reduce((sum, entry) => sum + (entry.cost || 0), 0) || 0;
+    const perkLevel = stagedPerk.level || 1;
+
+    // Remove from stagedPerks
+    const updatedStagedPerks = character.stagedPerks?.filter((_, i) => i !== stagedPerkIndex) || [];
+
+    // Calculate new values
+    let newMaxWounds = character.maxWounds;
+    if (perkLevel >= 5) {
+      // Was completed - remove the maxWound bonus
+      newMaxWounds = character.maxWounds - 1;
     }
+
+    const newExtraHP = Math.max(0, character.extraHP - perkLevel);
+
+    onUpdate({
+      ...character,
+      stagedPerks: updatedStagedPerks,
+      extraHP: newExtraHP,
+      maxWounds: newMaxWounds,
+      combatXP: character.combatXP + totalRefund
+    });
   };
 
   return (
     <div className="p-4 space-y-4">
-      {/* Section for each perk type */}
-      <PerkSection
-        config={sections[0]}
-        isExpanded={expandedSections.spellcraft}
-        onToggle={() => toggleSection('spellcraft')}
-        viewMode={sectionViews.spellcraft}
-        onViewChange={(view) => setSectionViews(prev => ({ ...prev, spellcraft: view }))}
-        abilities={spellcraftAbilities}
-        effects={spellcraftEffects}
-        onAddPerk={() => handleAddPerk('spellcraft')}
-        onPerkDelete={handleDeleteMagicPerk}
-      />
+      {/* Browse Perks Button */}
+      <button
+        onClick={() => setShowPerkBrowser(true)}
+        className="w-full flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+      >
+        <Search size={20} />
+        Browse Perks
+      </button>
 
+      {/* Martial Section */}
       <PerkSection
-        config={sections[1]}
-        isExpanded={expandedSections.martial}
-        onToggle={() => toggleSection('martial')}
-        viewMode={sectionViews.martial}
-        onViewChange={(view) => setSectionViews(prev => ({ ...prev, martial: view }))}
+        title="Martial"
+        icon={<Swords size={18} />}
+        perks={character.combatPerks}
         abilities={martialAbilities}
         effects={martialEffects}
-        onAddPerk={() => handleAddPerk('martial')}
+        onAddPerk={() => setShowAddCombatPerkModal(true)}
         onPerkDelete={handleDeleteCombatPerk}
       />
 
+      {/* Spellcraft Section */}
       <PerkSection
-        config={sections[2]}
-        isExpanded={expandedSections.skill}
-        onToggle={() => toggleSection('skill')}
-        viewMode={sectionViews.skill}
-        onViewChange={(view) => setSectionViews(prev => ({ ...prev, skill: view }))}
+        title="Spellcraft"
+        icon={<ScrollText size={18} />}
+        perks={character.magicPerks || []}
+        abilities={spellcraftAbilities}
+        effects={spellcraftEffects}
+        onAddPerk={() => setShowAddMagicPerkModal(true)}
+        onPerkDelete={handleDeleteMagicPerk}
+      />
+
+      {/* Skill Section */}
+      <PerkSection
+        title="Skill"
+        icon={<BookOpen size={18} />}
+        perks={character.perks}
         abilities={skillAbilities}
         effects={skillEffects}
-        onAddPerk={() => handleAddPerk('skill')}
+        onAddPerk={() => setShowAddSkillPerkModal(true)}
         onPerkDelete={handleDeleteSkillPerk}
       />
+
+      {/* Conditioning Section */}
+      {character.stagedPerks && character.stagedPerks.length > 0 && (
+        <div className="bg-slate-800 rounded-lg overflow-hidden">
+          <div className="px-4 py-3 flex items-center justify-between bg-slate-750">
+            <div className="flex items-center gap-2">
+              <ScrollText size={18} />
+              <span className="text-white font-semibold">Conditioning</span>
+              <span className="text-slate-400 text-sm">({character.stagedPerks.length})</span>
+            </div>
+            <button
+              onClick={() => setShowPerkBrowser(true)}
+              className="flex items-center gap-1 bg-green-700 hover:bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded"
+            >
+              <Plus size={14} />
+              Add Conditioning
+            </button>
+          </div>
+
+          <div className="p-4 space-y-3">
+            {/* Total Extra HP Display */}
+            <div className="text-center text-sm">
+              <span className="text-slate-400">Total Bonus HP: </span>
+              <span className="text-blue-400 font-bold">+{character.extraHP}</span>
+            </div>
+
+            {/* Individual Conditioning Perks */}
+            {character.stagedPerks.map((stagedPerk, index) => (
+              <ConditioningCard
+                key={stagedPerk.id || index}
+                stagedPerk={stagedPerk}
+                character={character}
+                perkDatabase={perkDatabase}
+                onLevelUp={(attr) => handleConditioningLevelUp(index, attr)}
+                onAbandon={() => handleAbandonConditioning(index)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Modals */}
       <AddPerkModal
@@ -553,6 +751,14 @@ export const PerksTab: React.FC<PerksTabProps> = ({
         character={character}
         onUpdate={onUpdate}
         category="skill"
+        perkDatabase={perkDatabase}
+      />
+
+      <PerkBrowserModal
+        isOpen={showPerkBrowser}
+        onClose={() => setShowPerkBrowser(false)}
+        character={character}
+        onUpdate={onUpdate}
         perkDatabase={perkDatabase}
       />
     </div>

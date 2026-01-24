@@ -63,7 +63,7 @@ export function searchPerks(database: PerkDatabase, query: string): Perk[] {
     return (
       perk.name.toLowerCase().includes(lowerQuery) ||
       perk.tags.some(tag => tag.toLowerCase().includes(lowerQuery)) ||
-      perk.shortDescription.toLowerCase().includes(lowerQuery) ||
+      perk.description.toLowerCase().includes(lowerQuery) ||
       perk.effect.toLowerCase().includes(lowerQuery)
     );
   });

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Character, Weapon, InventoryItem } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import { WEAPONS } from '@/data/weapons';
-import { ConditioningPerkModal } from '@/components/modals/ConditioningPerkModal';
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
 import {
   getEquippedWeapons,
@@ -24,7 +23,7 @@ import {
   ActiveAbility,
   ActiveEffect
 } from '@/utils/effectCalculator';
-import { Swords, Plus } from 'lucide-react';
+import { Swords } from 'lucide-react';
 
 // Ability/Effect card component
 interface AbilityEffectCardProps {
@@ -177,7 +176,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragStartHP, setDragStartHP] = useState(0);
-  const [showConditioningModal, setShowConditioningModal] = useState(false);
   const [isRollerOpen, setIsRollerOpen] = useState(false);
   const [rollData, setRollData] = useState<RollData | null>(null);
 
@@ -494,47 +492,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
                   className="bg-slate-600 text-white text-lg font-bold w-16 px-2 py-1 rounded"
                 />
               </div>
-
-              {/* Conditioning Perks */}
-              <div
-                className="bg-slate-700 rounded p-2 cursor-pointer hover:bg-slate-600 transition-colors"
-                onClick={() => setShowConditioningModal(true)}
-              >
-                <div className="flex justify-between items-center mb-1">
-                  <div className="text-slate-400 text-xs">Conditioning</div>
-                  <div className="bg-green-700 rounded p-1">
-                    <Plus size={14} />
-                  </div>
-                </div>
-                {(character.stagedPerks && character.stagedPerks.length > 0) ? (
-                  <div className="space-y-1">
-                    {character.stagedPerks.slice(0, 1).map((perk) => (
-                      <div key={perk.id}>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-white text-xs truncate flex-1">{perk.name}</span>
-                          <div className="flex gap-0.5">
-                            {[1, 2, 3, 4, 5].map(n => (
-                              <div
-                                key={n}
-                                className={`w-1.5 h-1.5 rounded-full ${
-                                  n <= perk.level ? 'bg-green-500' : 'bg-slate-600'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        {character.extraHP > 0 && (
-                          <div className="text-blue-400 text-xs mt-0.5">
-                            +{character.extraHP} HP
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-slate-500 text-xs">Tap to start</div>
-                )}
-              </div>
             </div>
 
             {/* Reset Buttons Row */}
@@ -701,15 +658,6 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
         isOpen={isRollerOpen}
         onClose={() => setIsRollerOpen(false)}
         rollData={rollData}
-      />
-
-      {/* Conditioning Perk Modal */}
-      <ConditioningPerkModal
-        isOpen={showConditioningModal}
-        onClose={() => setShowConditioningModal(false)}
-        character={character}
-        onUpdate={onUpdate}
-        perkDatabase={perkDatabase}
       />
     </div>
   );

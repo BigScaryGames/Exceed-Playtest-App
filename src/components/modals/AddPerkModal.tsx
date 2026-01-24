@@ -141,7 +141,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         name: perk.name,
         cost: perkCost,
         attribute: effectiveAttribute,
-        description: perk.effect || perk.shortDescription,
+        description: perk.description,
         isCustom: false,
         source: 'database',
         perkSnapshot: perk,
@@ -156,7 +156,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         name: perk.name,
         cost: perkCost,
         attribute: effectiveAttribute,
-        description: perk.effect || perk.shortDescription,
+        description: perk.description,
         isCustom: false,
         source: 'database',
         perkSnapshot: perk,
@@ -171,7 +171,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         name: perk.name,
         cost: perkCost,
         attribute: effectiveAttribute,
-        description: perk.effect || perk.shortDescription,
+        description: perk.description,
         isCustom: false,
         source: 'database',
         perkSnapshot: perk,
@@ -423,10 +423,10 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
                           {selectedPerk.tags.map(tag => `#${tag}`).join(' ')}
                         </div>
                       )}
-                      {selectedPerk.shortDescription && (
+                      {selectedPerk.description && (
                         <div className="pt-2">
                           <span className="text-slate-400">Summary:</span>
-                          <p className="text-slate-300 mt-1 text-xs">{selectedPerk.shortDescription}</p>
+                          <p className="text-slate-300 mt-1 text-xs">{selectedPerk.description}</p>
                         </div>
                       )}
                       <div className="pt-2 border-t border-slate-600">

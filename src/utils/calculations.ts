@@ -366,22 +366,23 @@ export const calculateDodgeFromEquipped = (character: Character): number => {
   return character.stats.AG + character.stats.PR + (armorPenalty || 0);
 };
 
-// MS5: Calculate max wounds based on completed conditioning perks
-// Max Wounds = 2 (base) + number of completed conditioning perks
+// Calculate max wounds based on completed conditioning perks (level 5)
+// Max Wounds = 2 (base) + number of conditioning perks at level 5
+// Note: This is for reference only - actual maxWounds is stored on character
 export const calculateMaxWounds = (character: Character): number => {
   const baseWounds = 2;
 
-  // Get all completed staged perks (level 5 = completed)
-  const completedStagedPerks = character.stagedPerks?.filter(
-    sp => sp.level >= 5
-  ) || [];
+  // Count conditioning perks at level 5 in stagedPerks (in progress)
+  const inStaged = character.stagedPerks?.filter(
+    sp => sp.level >= 5 && (sp.perkSnapshot?.tags?.includes('Conditioning') || sp.name.includes('Conditioning'))
+  ).length || 0;
 
-  // Count how many of those have #Conditioning tag (from perkSnapshot)
-  const completedConditioning = completedStagedPerks.filter(
-    sp => sp.perkSnapshot?.tags?.includes('Conditioning')
-  ).length;
+  // Count completed conditioning perks in combatPerks (with Conditioning tag or name ending in (Completed))
+  const inCombat = character.combatPerks?.filter(
+    cp => cp.perkSnapshot?.tags?.includes('Conditioning') || cp.name.includes('Conditioning')
+  ).length || 0;
 
-  return baseWounds + completedConditioning;
+  return baseWounds + inStaged + inCombat;
 };
 
 // Calculate comprehensive HP values with bar percentages

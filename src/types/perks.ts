@@ -53,9 +53,8 @@ export interface Perk {
   tags: string[]; // e.g., ["Shield", "Combat", "Strike"]
 
   // Content sections
-  shortDescription: string;
+  description: string;
   effect: string;
-  description?: string; // Flavor text (optional)
 
   // Granted abilities and effects (MS5)
   grants: PerkGrants;

@@ -53,9 +53,8 @@ interface ParsedPerk {
   };
   apCost: number | null;
   tags: string[];
-  shortDescription: string;
+  description: string;
   effect: string;
-  description?: string;
   grants: PerkGrants;  // MS5: Abilities and effects granted by this perk
 }
 
@@ -510,7 +509,8 @@ function parseEffectContent(filename: string, content: string): ParsedEffect | n
 /**
  * Parse perk from markdown content
  * MS5: Name is now extracted from filename, not from # header
- * New format: Description section contains short desc (first line) and full description (rest)
+ * New format: Description section contains full description
+ * Effect is extracted from Grants section (e.g., ![[Effect - Name]])
  */
 function parsePerkContent(filename: string, content: string, perkType: 'combat' | 'magic' | 'skill'): ParsedPerk | null {
   try {
@@ -524,19 +524,13 @@ function parsePerkContent(filename: string, content: string, perkType: 'combat' 
     const apCostMatch = content.match(/\*\*AP Cost:\*\*\s*(.+?)$/m);
     const tagsMatch = content.match(/\*\*Tags:\*\*\s*(.+?)$/m);
 
-    // New format: Description section (first line = short, rest = full)
+    // Description section - full content as description
     const descriptionMatch = content.match(/##\s+Description\s*\n([\s\S]*?)(?=\n##|$)/);
+    const description = descriptionMatch ? descriptionMatch[1].trim() : '';
 
-    let shortDescription = '';
-    let description = '';
-    if (descriptionMatch) {
-      const descText = descriptionMatch[1].trim();
-      // First line is short description
-      const lines = descText.split('\n');
-      shortDescription = lines[0].trim();
-      // Rest is full description
-      description = lines.slice(1).join('\n').trim() || undefined;
-    }
+    // Extract effect from Grants section - first ![[Effect - Name]] reference
+    const effectMatch = content.match(/!\[\[Effect\s*-\s*([^\]]+)\]\]/i);
+    const effect = effectMatch ? effectMatch[1].trim() : '';
 
     if (!costMatch) return null;
 
@@ -550,9 +544,8 @@ function parsePerkContent(filename: string, content: string, perkType: 'combat' 
       cost: parseCost(costMatch[1].trim()),
       apCost: parseApCost(apCostMatch ? apCostMatch[1].trim() : '-'),
       tags: parseTags(tagsMatch ? tagsMatch[1].trim() : '-'),
-      shortDescription,
-      effect: shortDescription,  // Use short desc as effect for compatibility
       description,
+      effect,
       grants: parseGrants(content),  // Extract ability/effect grants
     };
 
