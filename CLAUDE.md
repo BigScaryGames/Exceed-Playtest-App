@@ -143,12 +143,11 @@ src/
 4. Updates: increments level, appends to `attributeHistory[]`, deducts XP, logs progression
 5. Stats auto-recalculate from updated progression log
 
-#### Buying Extra HP
-1. User clicks "Buy Extra HP" in CombatTab
-2. AttributeSelector prompts for attribute choice
-3. Cost equals current `maxWounds` CP
-4. Updates: increments `extraHP`, increments `extraHPCount`, deducts combat XP
-5. When `extraHPCount` reaches 5: resets to 0, increments `maxWounds`, increments `extraWoundCount`
+#### Adding Conditioning Perks
+1. User clicks "Add Conditioning" in PerksTab
+2. ConditioningPerkModal opens with available conditioning perks
+3. Levels 1-4: +1 extraHP each, cost = `maxWounds` XP per level
+4. Level 5: Completion - moves to combatPerks, `extraHP` → 0, `maxWounds` +1, removes extra-hp effect
 
 #### Adding Combat Perks
 1. User clicks "+" in Combat Perks section
@@ -299,3 +298,62 @@ When adding tests, focus on:
 - ✅ **Do** create new array: `progressionLog: [...character.progressionLog, entry]`
 - ❌ **Don't** calculate stats manually in components
 - ✅ **Do** use utility functions from `calculations.ts`
+
+## Perk System
+
+### Conditioning Perks
+- **Cost per level**: `maxWounds` XP (flat, not scaling by level)
+  - Base (2 maxWounds): 2/2/2/2/2 XP per level (10 total)
+  - After 1 complete (3 maxWounds): 3/3/3/3/3 XP per level (15 total)
+  - After 2 complete (4 maxWounds): 4/4/4/4/4 XP per level (20 total)
+- **Levels 1-4**: Each grants +1 extraHP
+- **Level 5 (Completion)**:
+  - Perk moves from `stagedPerks` to `combatPerks`
+  - `extraHP` resets to 0 (4 HP consolidated into new wound)
+  - `maxWounds` increases by 1
+  - `extra-hp` effect is removed from the perk's `grants.effects`
+- **Stored in two places**:
+  - `stagedPerks`: While in progress (levels 1-4)
+  - `combatPerks`: After completion (level 5)
+
+### Perk Data Structure
+```typescript
+interface Perk {
+  id: string;
+  name: string;
+  type: 'combat' | 'magic' | 'skill';
+  source: 'database' | 'custom';
+  requirements: PerkRequirements;
+  attributes: string[];
+  cost: PerkCost;
+  apCost: number | null;
+  tags: string[];
+  description: string;      // Full description (no shortDescription field)
+  effect: string;          // Effect name (extracted from ![[Effect - Name]])
+  grants: PerkGrants;      // { abilities: string[], effects: string[] }
+}
+```
+
+### Perk Data Flow
+1. **Source**: Markdown files in `/home/r/Exceed/ExceedV/Ruleset/Perks/`
+   - CombatPerks/, MagicPerks/, SkillPerks/
+   - Core Rules/Actions (abilities)
+   - Core Rules/References/Effects (effects)
+2. **Parser**: `scripts/parse-perks.ts`
+   - Reads markdown files
+   - Generates `public/data/perks.json`
+   - Run with: `npx tsx scripts/parse-perks.ts`
+3. **Runtime**: App loads from `public/data/perks.json`
+   - Cached in localStorage (7-day cache)
+   - Background GitHub fetch (not fully implemented)
+
+### Attribute Bar Updates
+- **CharacterHeader** calculates CP totals directly from `progressionLog` on every render
+- NO useMemo - ensures updates propagate immediately
+- All perk types (combat, magic, social) contribute to attribute CP
+- `stagedPerk` entries also count (except when used for conditioning)
+
+### Known Issues
+- **Parser effect field**: Currently stores effect NAME instead of effect CONTENT
+  - Line 532-533 in `parse-perks.ts` extracts name from `![[Effect - Name]]`
+  - Should fetch actual effect text from parsed effects array
