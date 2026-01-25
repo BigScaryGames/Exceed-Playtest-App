@@ -407,39 +407,90 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 
                   <div className="bg-slate-700 rounded p-3">
                     <h4 className="text-white font-semibold mb-2">{selectedPerk.name}</h4>
-                    <div className="text-sm text-slate-300 space-y-1">
-                      <div><span className="text-slate-400">Category:</span> {selectedPerk.type}</div>
-                      <div><span className="text-slate-400">Cost:</span> {selectedPerk.cost.xp} XP {selectedPerk.cost.variable && '(Variable)'}</div>
-                      <div><span className="text-slate-400">Attributes:</span> {selectedPerk.attributes.join(' / ')}</div>
-                      {selectedPerk.requirements.text && selectedPerk.requirements.text !== '-' && (
-                        <div><span className="text-slate-400">Requirements:</span> {selectedPerk.requirements.text}</div>
-                      )}
-                      {selectedPerk.apCost !== null && (
-                        <div><span className="text-slate-400">AP Cost:</span> {selectedPerk.apCost}</div>
-                      )}
-                      {selectedPerk.tags.length > 0 && (
-                        <div>
-                          <span className="text-slate-400">Tags:</span>{' '}
-                          {selectedPerk.tags.map(tag => `#${tag}`).join(' ')}
-                        </div>
-                      )}
-                      {selectedPerk.description && (
-                        <div className="pt-2">
-                          <span className="text-slate-400">Summary:</span>
-                          <p className="text-slate-300 mt-1 text-xs">{selectedPerk.description}</p>
-                        </div>
-                      )}
-                      <div className="pt-2 border-t border-slate-600">
-                        <span className="text-slate-400">Effect:</span>
-                        <pre className="text-slate-300 mt-1 whitespace-pre-wrap text-xs">{selectedPerk.effect}</pre>
+
+                    {/* Row 1: Cost | Attributes */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div>
+                        <span className="text-slate-400 text-xs">Cost:</span>{' '}
+                        <span className="text-white text-sm">
+                          {selectedPerk.cost.xp} XP{selectedPerk.cost.variable && ' (Variable)'}
+                        </span>
                       </div>
-                      {selectedPerk.description && (
-                        <div className="pt-2 border-t border-slate-600">
-                          <span className="text-slate-400">Description:</span>
-                          <pre className="text-slate-300 mt-1 whitespace-pre-wrap text-xs">{selectedPerk.description}</pre>
+                      <div>
+                        <span className="text-slate-400 text-xs">Attributes:</span>{' '}
+                        <span className="text-white text-sm">{selectedPerk.attributes.join(' / ')}</span>
+                      </div>
+                    </div>
+
+                    {/* Row 2: Requirements | Tags */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {selectedPerk.requirements.text && selectedPerk.requirements.text !== '-' && (
+                        <div>
+                          <span className="text-slate-400 text-xs">Requirements:</span>{' '}
+                          <span className="text-white text-sm">{selectedPerk.requirements.text}</span>
                         </div>
                       )}
+                      <div className={selectedPerk.requirements.text && selectedPerk.requirements.text !== '-' ? '' : 'col-span-2'}>
+                        {selectedPerk.tags.length > 0 && (
+                          <>
+                            <span className="text-slate-400 text-xs">Tags:</span>{' '}
+                            <span className="text-white text-sm">
+                              {selectedPerk.tags.map(tag => `#${tag}`).join(' ')}
+                            </span>
+                          </>
+                        )}
+                        {selectedPerk.apCost !== null && (
+                          <div className="mt-1">
+                            <span className="text-slate-400 text-xs">AP Cost:</span>{' '}
+                            <span className="text-white text-sm">{selectedPerk.apCost}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
+
+                    {/* Grants Section - Abilities */}
+                    {selectedPerk.grants.abilities.length > 0 && perkDatabase?.abilities && (
+                      <div className="mb-3">
+                        <h5 className="text-sm font-semibold text-slate-400 mb-1">Grants Abilities</h5>
+                        <div className="space-y-1">
+                          {selectedPerk.grants.abilities
+                            .map(id => perkDatabase.abilities.find(a => a.id === id))
+                            .filter(Boolean)
+                            .map(ability => (
+                              <div key={ability!.id} className="bg-slate-600 rounded px-2 py-1.5">
+                                <div className="text-white text-sm font-medium">{ability!.name}</div>
+                                <div className="text-slate-300 text-xs">{ability!.effect}</div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Grants Section - Effects */}
+                    {selectedPerk.grants.effects.length > 0 && perkDatabase?.effects && (
+                      <div className="mb-3">
+                        <h5 className="text-sm font-semibold text-slate-400 mb-1">Grants Effects</h5>
+                        <div className="space-y-1">
+                          {selectedPerk.grants.effects
+                            .map(id => perkDatabase.effects.find(e => e.id === id))
+                            .filter(Boolean)
+                            .map(effect => (
+                              <div key={effect!.id} className="bg-slate-600 rounded px-2 py-1.5">
+                                <div className="text-white text-sm font-medium">{effect!.name}</div>
+                                <div className="text-slate-300 text-xs">{effect!.effect}</div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Description */}
+                    {selectedPerk.description && (
+                      <div className="pt-2 border-t border-slate-600">
+                        <span className="text-slate-400 text-xs">Description:</span>
+                        <p className="text-slate-300 mt-1 text-xs whitespace-pre-wrap">{selectedPerk.description}</p>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
