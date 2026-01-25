@@ -281,8 +281,9 @@ export default function App() {
             </button>
           </div>
 
-          <div className="text-center text-slate-500 text-sm">
+          <div className="text-center text-slate-500 text-sm space-y-1">
             <p>A skill-based fantasy TTRPG system</p>
+            <p className="text-xs text-slate-600">Build: {(import.meta.env as any).__BUILD_TIME__ || new Date().toLocaleString()}</p>
           </div>
         </div>
       </div>
