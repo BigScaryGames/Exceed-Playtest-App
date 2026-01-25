@@ -31,6 +31,7 @@ export const createEmptyCharacter = (): Character => ({
   currentStamina: null,
   currentHealth: null,
   markedWounds: 0,
+  woundsNotes: '',
   extraHPCount: 0,
   extraHPHistory: [],
   extraWoundCount: 0,
@@ -76,6 +77,10 @@ const migrateCharacter = (character: Character): Character => {
   // Add magicPerks if missing
   if (!character.magicPerks) {
     character.magicPerks = [];
+  }
+  // Add woundsNotes if missing
+  if (!character.woundsNotes) {
+    character.woundsNotes = '';
   }
   // Clean up old fields that no longer exist
   if ('spellcraft' in character) {

@@ -489,7 +489,16 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
                   max={character.maxWounds}
                   value={character.markedWounds}
                   onChange={(e) => onUpdate({...character, markedWounds: Math.min(character.maxWounds, Math.max(0, parseInt(e.target.value) || 0))})}
-                  className="bg-slate-600 text-white text-lg font-bold w-16 px-2 py-1 rounded"
+                  className="bg-slate-600 text-white text-lg font-bold w-14 px-2 py-1 rounded"
+                />
+              </div>
+              {/* Wounds Notes */}
+              <div className="bg-slate-700 rounded p-2">
+                <textarea
+                  placeholder="Wounds notes"
+                  value={character.woundsNotes || ''}
+                  onChange={(e) => onUpdate({...character, woundsNotes: e.target.value})}
+                  className="w-full h-12 bg-slate-600 text-white text-xs px-2 py-1 rounded resize-none placeholder:text-slate-500"
                 />
               </div>
             </div>

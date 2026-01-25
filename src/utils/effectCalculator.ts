@@ -63,7 +63,7 @@ export function getActiveAbilities(
   const abilityLookup = new Map(perkDatabase.abilities.map(a => [a.id, a]));
 
   // Helper to extract abilities from a perk snapshot
-  const extractFromPerk = (perkSnapshot: DatabasePerk | undefined, perkName: string) => {
+  const extractFromPerk = (perkSnapshot: DatabasePerk | undefined, perkName: string, perkWithGrants?: any) => {
     // Fallback: if snapshot doesn't have grants field, try to look up the perk in the database
     let effectivePerk = perkSnapshot;
     if (!effectivePerk?.grants?.abilities && effectivePerk?.id) {
@@ -74,6 +74,29 @@ export function getActiveAbilities(
         ...perkDatabase.perks.skill
       ];
       effectivePerk = allPerks.find(p => p.id === effectivePerk!.id) || effectivePerk;
+    }
+
+    // Second fallback: try direct grants field on perk object (for old characters)
+    if (!effectivePerk?.grants?.abilities && perkWithGrants?.grants?.abilities) {
+      const abilityIds = perkWithGrants.grants.abilities;
+      const inherited = inheritTags && effectivePerk ? getInheritedTags(effectivePerk) : [];
+      for (const abilityId of abilityIds) {
+        const ability = abilityLookup.get(abilityId);
+        if (ability) {
+          const mergedTags = inheritTags ? mergeTags(ability.tags, inherited) : ability.tags;
+          if (!abilities.find(a => a.id === ability.id && a.sourcePerk === perkName)) {
+            abilities.push({
+              id: ability.id,
+              name: ability.name,
+              effect: ability.effect,
+              tags: mergedTags,
+              sourcePerk: perkName,
+              sourcePerkId: effectivePerk?.id
+            });
+          }
+        }
+      }
+      return;
     }
 
     if (!effectivePerk?.grants?.abilities) return;
@@ -108,22 +131,22 @@ export function getActiveAbilities(
 
   // Collect from skill perks
   for (const perk of character.perks) {
-    extractFromPerk(perk.perkSnapshot, perk.name);
+    extractFromPerk(perk.perkSnapshot, perk.name, perk);
   }
 
   // Collect from combat perks
   for (const perk of character.combatPerks) {
-    extractFromPerk(perk.perkSnapshot, perk.name);
+    extractFromPerk(perk.perkSnapshot, perk.name, perk);
   }
 
   // Collect from magic perks
   for (const perk of (character.magicPerks || [])) {
-    extractFromPerk(perk.perkSnapshot, perk.name);
+    extractFromPerk(perk.perkSnapshot, perk.name, perk);
   }
 
   // Collect from staged perks (conditioning perks in progress)
   for (const perk of (character.stagedPerks || [])) {
-    extractFromPerk(perk.perkSnapshot, perk.name);
+    extractFromPerk(perk.perkSnapshot, perk.name, perk);
   }
 
   return abilities;
@@ -157,7 +180,7 @@ export function getActiveEffects(
   const effectLookup = new Map(perkDatabase.effects.map(e => [e.id, e]));
 
   // Helper to extract effects from a perk snapshot
-  const extractFromPerk = (perkSnapshot: DatabasePerk | undefined, perkName: string) => {
+  const extractFromPerk = (perkSnapshot: DatabasePerk | undefined, perkName: string, perkWithGrants?: any) => {
     // Fallback: if snapshot doesn't have grants field, try to look up the perk in the database
     let effectivePerk = perkSnapshot;
     if (!effectivePerk?.grants?.effects && effectivePerk?.id) {
@@ -168,6 +191,29 @@ export function getActiveEffects(
         ...perkDatabase.perks.skill
       ];
       effectivePerk = allPerks.find(p => p.id === effectivePerk!.id) || effectivePerk;
+    }
+
+    // Second fallback: try direct grants field on perk object (for old characters)
+    if (!effectivePerk?.grants?.effects && perkWithGrants?.grants?.effects) {
+      const effectIds = perkWithGrants.grants.effects;
+      const inherited = inheritTags && effectivePerk ? getInheritedTags(effectivePerk) : [];
+      for (const effectId of effectIds) {
+        const effect = effectLookup.get(effectId);
+        if (effect) {
+          const mergedTags = inheritTags ? mergeTags(effect.tags, inherited) : effect.tags;
+          if (!effects.find(e => e.id === effect.id && e.sourcePerk === perkName)) {
+            effects.push({
+              id: effect.id,
+              name: effect.name,
+              effect: effect.effect,
+              tags: mergedTags,
+              sourcePerk: perkName,
+              sourcePerkId: effectivePerk?.id
+            });
+          }
+        }
+      }
+      return;
     }
 
     if (!effectivePerk?.grants?.effects) return;
@@ -202,22 +248,22 @@ export function getActiveEffects(
 
   // Collect from skill perks
   for (const perk of character.perks) {
-    extractFromPerk(perk.perkSnapshot, perk.name);
+    extractFromPerk(perk.perkSnapshot, perk.name, perk);
   }
 
   // Collect from combat perks
   for (const perk of character.combatPerks) {
-    extractFromPerk(perk.perkSnapshot, perk.name);
+    extractFromPerk(perk.perkSnapshot, perk.name, perk);
   }
 
   // Collect from magic perks
   for (const perk of (character.magicPerks || [])) {
-    extractFromPerk(perk.perkSnapshot, perk.name);
+    extractFromPerk(perk.perkSnapshot, perk.name, perk);
   }
 
   // Collect from staged perks (conditioning perks in progress)
   for (const perk of (character.stagedPerks || [])) {
-    extractFromPerk(perk.perkSnapshot, perk.name);
+    extractFromPerk(perk.perkSnapshot, perk.name, perk);
   }
 
   return effects;

@@ -12,8 +12,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "update-data": "npm run parse-data && sleep 2 && git add public/data/*.json dist/data/*.json && git commit -m 'chore: update parsed perk/spell data' && git push || true",
-    "deploy": "npm run parse-data && sleep 2 && git add public/data/*.json dist/data/*.json && git commit -m 'chore: update parsed perk/spell data' && git push && tsc && vite build && gh-pages -d dist || true"
+    "update-data": "npm run parse-data && sleep 2 && git add public/data/*.json && git commit -m 'chore: update parsed perk/spell data' && git push || true",
+    "deploy": "npm run parse-data && sleep 2 && git add public/data/*.json && git commit -m 'chore: update parsed perk/spell data' && git push && tsc && vite build && gh-pages -d dist || true"
 
   },
   "homepage": "https://BigScaryGames.github.io/Exceed-Playtest-App",

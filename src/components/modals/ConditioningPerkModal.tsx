@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Character, CombatPerk } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
@@ -48,6 +48,17 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
   // Can afford check
   const canAfford = character.combatXP >= cost;
 
+  // Initialize selected attribute to previously chosen attribute when opening modal
+  useEffect(() => {
+    if (isOpen && activeConditioning && !selectedAttribute) {
+      setSelectedAttribute(activeConditioning.attribute);
+    }
+    if (!isOpen) {
+      setSelectedAttribute('');
+      setSelectedPerkId('');
+    }
+  }, [isOpen, activeConditioning, selectedAttribute]);
+
   if (!isOpen) return null;
 
   // Handle close and reset
@@ -74,7 +85,7 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
   };
 
   const attributeOptions = activeConditioning
-    ? getAttributeOptions(activePerkDetails)
+    ? getAttributeOptions(activePerkDetails || activeConditioning.perkSnapshot)
     : getAttributeOptions(selectedPerk);
 
   // Check which conditioning perks are already completed
@@ -302,35 +313,19 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
                   Select Attribute {selectedAttribute && <span className="text-blue-400">({selectedAttribute})</span>}
                 </label>
                 <div className="grid grid-cols-4 gap-2">
-                  {attributeOptions.length > 0 ? (
-                    attributeOptions.map(attr => (
-                      <button
-                        key={attr}
-                        onClick={() => setSelectedAttribute(attr)}
-                        className={`py-2 rounded font-semibold transition-colors ${
-                          selectedAttribute === attr
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-                        }`}
-                      >
-                        {Object.entries(ATTRIBUTE_MAP).find(([, v]) => v === attr)?.[0] || attr}
-                      </button>
-                    ))
-                  ) : (
-                    Object.entries(ATTRIBUTE_MAP).map(([abbr, full]) => (
-                      <button
-                        key={abbr}
-                        onClick={() => setSelectedAttribute(full)}
-                        className={`py-2 rounded font-semibold transition-colors ${
-                          selectedAttribute === full
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-                        }`}
-                      >
-                        {abbr}
-                      </button>
-                    ))
-                  )}
+                  {attributeOptions.map(attr => (
+                    <button
+                      key={attr}
+                      onClick={() => setSelectedAttribute(attr)}
+                      className={`py-2 rounded font-semibold transition-colors ${
+                        selectedAttribute === attr
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                      }`}
+                    >
+                      {Object.entries(ATTRIBUTE_MAP).find(([, v]) => v === attr)?.[0] || attr}
+                    </button>
+                  ))}
                 </div>
               </div>
             </>
@@ -413,35 +408,19 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
                       Select Attribute {selectedAttribute && <span className="text-blue-400">({selectedAttribute})</span>}
                     </label>
                     <div className="grid grid-cols-4 gap-2">
-                      {attributeOptions.length > 0 ? (
-                        attributeOptions.map(attr => (
-                          <button
-                            key={attr}
-                            onClick={() => setSelectedAttribute(attr)}
-                            className={`py-2 rounded font-semibold transition-colors ${
-                              selectedAttribute === attr
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-                            }`}
-                          >
-                            {Object.entries(ATTRIBUTE_MAP).find(([, v]) => v === attr)?.[0] || attr}
-                          </button>
-                        ))
-                      ) : (
-                        Object.entries(ATTRIBUTE_MAP).map(([abbr, full]) => (
-                          <button
-                            key={abbr}
-                            onClick={() => setSelectedAttribute(full)}
-                            className={`py-2 rounded font-semibold transition-colors ${
-                              selectedAttribute === full
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-                            }`}
-                          >
-                            {abbr}
-                          </button>
-                        ))
-                      )}
+                      {attributeOptions.map(attr => (
+                        <button
+                          key={attr}
+                          onClick={() => setSelectedAttribute(attr)}
+                          className={`py-2 rounded font-semibold transition-colors ${
+                            selectedAttribute === attr
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
+                          }`}
+                        >
+                          {Object.entries(ATTRIBUTE_MAP).find(([, v]) => v === attr)?.[0] || attr}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </>

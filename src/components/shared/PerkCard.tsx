@@ -89,7 +89,7 @@ export const PerkCard: React.FC<PerkCardProps> = ({
           </div>
 
           {/* Expand Button */}
-          {(perk.effect || perk.description || grantedAbilities.length > 0 || grantedEffects.length > 0) && (
+          {(perk.attributes.length > 0 || perk.description || grantedAbilities.length > 0 || grantedEffects.length > 0 || perk.requirements.tier || perk.requirements.skills?.length || perk.requirements.perks?.length) && (
             <button
               onClick={onToggleExpand}
               className="text-slate-400 hover:text-white p-1 flex-shrink-0"
@@ -153,22 +153,6 @@ export const PerkCard: React.FC<PerkCardProps> = ({
       {/* Expanded Details */}
       {isExpanded && (
         <div className="px-3 pb-3 border-t border-slate-700 pt-3 space-y-3">
-          {/* Effect */}
-          {perk.effect && (
-            <div>
-              <h5 className="text-sm font-semibold text-slate-400 mb-1">Effect</h5>
-              <p className="text-white text-sm whitespace-pre-wrap">{perk.effect}</p>
-            </div>
-          )}
-
-          {/* Description */}
-          {perk.description && (
-            <div>
-              <h5 className="text-sm font-semibold text-slate-400 mb-1">Description</h5>
-              <p className="text-slate-300 text-sm whitespace-pre-wrap">{perk.description}</p>
-            </div>
-          )}
-
           {/* Attributes */}
           {perk.attributes.length > 0 && (
             <div>
@@ -183,10 +167,18 @@ export const PerkCard: React.FC<PerkCardProps> = ({
             </div>
           )}
 
-          {/* Granted Abilities */}
-          {grantedAbilities.length > 0 && (
+          {/* Description */}
+          {perk.description && (
             <div>
-              <h5 className="text-sm font-semibold text-slate-400 mb-1">Grants Abilities</h5>
+              <h5 className="text-sm font-semibold text-slate-400 mb-1">Description</h5>
+              <p className="text-slate-300 text-sm whitespace-pre-wrap">{perk.description}</p>
+            </div>
+          )}
+
+          {/* Grants - Merged Abilities and Effects */}
+          {(grantedAbilities.length > 0 || grantedEffects.length > 0) && (
+            <div>
+              <h5 className="text-sm font-semibold text-slate-400 mb-1">Grants</h5>
               <div className="space-y-1">
                 {grantedAbilities.map(ability => (
                   <div key={ability.id} className="bg-slate-700 rounded px-2 py-1.5">
@@ -201,15 +193,6 @@ export const PerkCard: React.FC<PerkCardProps> = ({
                     )}
                   </div>
                 ))}
-              </div>
-            </div>
-          )}
-
-          {/* Granted Effects */}
-          {grantedEffects.length > 0 && (
-            <div>
-              <h5 className="text-sm font-semibold text-slate-400 mb-1">Grants Effects</h5>
-              <div className="space-y-1">
                 {grantedEffects.map(effect => (
                   <div key={effect.id} className="bg-slate-700 rounded px-2 py-1.5">
                     <div className="text-white text-sm font-medium">{effect.name}</div>
@@ -227,15 +210,7 @@ export const PerkCard: React.FC<PerkCardProps> = ({
             </div>
           )}
 
-          {/* AP Cost */}
-          {perk.apCost !== null && (
-            <div>
-              <span className="text-slate-400 text-sm">AP Cost: </span>
-              <span className="text-white text-sm">{perk.apCost}</span>
-            </div>
-          )}
-
-          {/* Full Requirements Breakdown */}
+          {/* Requirements */}
           {(perk.requirements.tier || perk.requirements.skills?.length || perk.requirements.perks?.length) && (
             <div>
               <h5 className="text-sm font-semibold text-slate-400 mb-1">Requirements</h5>

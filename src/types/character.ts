@@ -123,6 +123,7 @@ export interface Character {
   currentStamina: number | null;
   currentHealth: number | null;
   markedWounds: number;
+  woundsNotes?: string;
   extraHPCount: number;
   extraHPHistory: ExtraHPEntry[];
   extraWoundCount: number;

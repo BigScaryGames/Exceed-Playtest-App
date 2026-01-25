@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, BookOpen, Swords, ScrollText, Plus, Search, X } from 'lucide-react';
 import { Character } from '@/types/character';
 import type { PerkDatabase, Perk } from '@/types/perks';
@@ -251,7 +251,18 @@ const ConditioningCard: React.FC<ConditioningCardProps> = ({
   const cost = character.maxWounds;
   const canAfford = character.combatXP >= cost;
 
-  const perkDetails = perkDatabase?.perks.combat.find(p => p.id === stagedPerk.id);
+  // Get perk details from database or stored snapshot
+  const perkDetails = perkDatabase?.perks.combat.find(p => p.id === stagedPerk.id) || stagedPerk.perkSnapshot;
+
+  // Get valid attributes from the perk (from snapshot or database)
+  const validAttributes = perkDetails?.attributes || [];
+
+  // Initialize selected attribute to previously chosen one
+  useEffect(() => {
+    if (!selectedAttribute && stagedPerk.attribute) {
+      setSelectedAttribute(stagedPerk.attribute);
+    }
+  }, [stagedPerk.attribute, selectedAttribute]);
 
   const handleLevelUp = () => {
     if (selectedAttribute && canAfford) {
@@ -324,19 +335,22 @@ const ConditioningCard: React.FC<ConditioningCardProps> = ({
               Select Attribute
             </label>
             <div className="grid grid-cols-4 gap-2">
-              {Object.entries(ATTRIBUTE_MAP).map(([abbr, full]) => (
-                <button
-                  key={abbr}
-                  onClick={() => setSelectedAttribute(full)}
-                  className={`py-2 rounded font-semibold transition-colors text-sm ${
-                    selectedAttribute === full
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-600 hover:bg-slate-500 text-slate-300'
-                  }`}
-                >
-                  {abbr}
-                </button>
-              ))}
+              {validAttributes.map((attr: string) => {
+                const abbr = Object.entries(ATTRIBUTE_MAP).find(([, v]) => v === attr)?.[0] || attr;
+                return (
+                  <button
+                    key={attr}
+                    onClick={() => setSelectedAttribute(attr)}
+                    className={`py-2 rounded font-semibold transition-colors text-sm ${
+                      selectedAttribute === attr
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-slate-600 hover:bg-slate-500 text-slate-300'
+                    }`}
+                  >
+                    {abbr}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -687,23 +701,25 @@ export const PerksTab: React.FC<PerksTabProps> = ({
       />
 
       {/* Conditioning Section */}
-      {character.stagedPerks && character.stagedPerks.length > 0 && (
-        <div className="bg-slate-800 rounded-lg overflow-hidden">
-          <div className="px-4 py-3 flex items-center justify-between bg-slate-750">
-            <div className="flex items-center gap-2">
-              <ScrollText size={18} />
-              <span className="text-white font-semibold">Conditioning</span>
+      <div className="bg-slate-800 rounded-lg overflow-hidden">
+        <div className="px-4 py-3 flex items-center justify-between bg-slate-750">
+          <div className="flex items-center gap-2">
+            <ScrollText size={18} />
+            <span className="text-white font-semibold">Conditioning</span>
+            {character.stagedPerks && character.stagedPerks.length > 0 && (
               <span className="text-slate-400 text-sm">({character.stagedPerks.length})</span>
-            </div>
-            <button
-              onClick={() => setShowPerkBrowser(true)}
-              className="flex items-center gap-1 bg-green-700 hover:bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded"
-            >
-              <Plus size={14} />
-              Add Conditioning
-            </button>
+            )}
           </div>
+          <button
+            onClick={() => setShowPerkBrowser(true)}
+            className="flex items-center gap-1 bg-green-700 hover:bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded"
+          >
+            <Plus size={14} />
+            Add Conditioning
+          </button>
+        </div>
 
+        {character.stagedPerks && character.stagedPerks.length > 0 && (
           <div className="p-4 space-y-3">
             {/* Total Extra HP Display */}
             <div className="text-center text-sm">
@@ -723,8 +739,8 @@ export const PerksTab: React.FC<PerksTabProps> = ({
               />
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Modals */}
       <AddPerkModal

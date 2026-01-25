@@ -293,20 +293,17 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
 
     const updatedCharacter = { ...character };
 
-    // Create the perk entry
+    // Create the perk entry with proper perkSnapshot
     const perkEntry = {
       id: perk.id,
       name: perk.name,
-      type: perk.type,
-      source: 'database' as const,
-      requirements: perk.requirements,
-      attributes: perk.attributes,
-      cost: perk.cost,
-      tags: perk.tags,
+      cost: xpCost,
+      attribute: selectedAttr,
       description: perk.description,
-      effect: perk.effect,
-      grants: perk.grants,
-      addedToCharacterAt: Date.now(),
+      isCustom: false,
+      source: 'database' as const,
+      perkSnapshot: perk,
+      addedAt: Date.now()
     };
 
     // Deduct XP
