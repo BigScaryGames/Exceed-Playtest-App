@@ -166,7 +166,7 @@ async function fetchAllMarkdownFiles(apiPath: string, rawBasePath: string, skipT
       if (entry.type === 'dir') {
         // Recursively fetch subdirectory
         const subFiles = await fetchAllMarkdownFiles(
-          `${GITHUB_API_BASE}/${entry.path.replace('Ruleset/Perks/', '')}`,
+          `${apiPath}/${entry.name}`,
           `${rawBasePath}/${entry.name}`,
           skipTemplates
         );
