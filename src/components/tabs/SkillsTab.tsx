@@ -270,40 +270,65 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
     }
   };
 
-  // Handle skill level down
+  // Handle skill level down (or remove if level 1)
   const handleSkillLevelDown = (index: number) => {
     const skill = character.skills[index];
-    if (skill.level <= 1) return;
+    if (skill.level <= 1) {
+      // Remove the skill entirely
+      const cost = 2; // Refund level 1 cost
 
-    const cost = skill.level * 2; // Refund the cost of current level
+      const updatedSkills = character.skills.filter((_, i) => i !== index);
 
-    const updatedSkill: Skill = {
-      ...skill,
-      level: skill.level - 1,
-      attributeHistory: skill.attributeHistory.slice(0, -1)
-    };
-
-    const updatedSkills = [...character.skills];
-    updatedSkills[index] = updatedSkill;
-
-    // Remove the last matching progression entry for this skill
-    const updatedLog = [...character.progressionLog];
-    for (let i = updatedLog.length - 1; i >= 0; i--) {
-      if (
-        updatedLog[i].type === 'skill' &&
-        updatedLog[i].name === skill.name
-      ) {
-        updatedLog.splice(i, 1);
-        break;
+      // Remove the matching progression entry for this skill
+      const updatedLog = [...character.progressionLog];
+      for (let i = updatedLog.length - 1; i >= 0; i--) {
+        if (
+          updatedLog[i].type === 'skill' &&
+          updatedLog[i].name === skill.name
+        ) {
+          updatedLog.splice(i, 1);
+          break;
+        }
       }
-    }
 
-    onUpdate({
-      ...character,
-      skills: updatedSkills,
-      socialXP: character.socialXP + cost,
-      progressionLog: updatedLog
-    });
+      onUpdate({
+        ...character,
+        skills: updatedSkills,
+        socialXP: character.socialXP + cost,
+        progressionLog: updatedLog
+      });
+    } else {
+      // Lower the skill level
+      const cost = skill.level * 2; // Refund the cost of current level
+
+      const updatedSkill: Skill = {
+        ...skill,
+        level: skill.level - 1,
+        attributeHistory: skill.attributeHistory.slice(0, -1)
+      };
+
+      const updatedSkills = [...character.skills];
+      updatedSkills[index] = updatedSkill;
+
+      // Remove the last matching progression entry for this skill
+      const updatedLog = [...character.progressionLog];
+      for (let i = updatedLog.length - 1; i >= 0; i--) {
+        if (
+          updatedLog[i].type === 'skill' &&
+          updatedLog[i].name === skill.name
+        ) {
+          updatedLog.splice(i, 1);
+          break;
+        }
+      }
+
+      onUpdate({
+        ...character,
+        skills: updatedSkills,
+        socialXP: character.socialXP + cost,
+        progressionLog: updatedLog
+      });
+    }
   };
 
   // Handle editing a perk
@@ -459,15 +484,10 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
                       e.stopPropagation();
                       handleSkillLevelDown(index);
                     }}
-                    disabled={skill.level <= 1}
-                    className={`flex-1 rounded py-2 text-white font-semibold flex items-center justify-center gap-1 ${
-                      skill.level <= 1
-                        ? 'bg-slate-600 cursor-not-allowed opacity-50'
-                        : 'bg-red-700 hover:bg-red-600'
-                    }`}
+                    className="flex-1 rounded py-2 text-white font-semibold flex items-center justify-center gap-1 bg-red-700 hover:bg-red-600"
                   >
                     <span className="text-lg leading-none">−</span>
-                    Level Down [{skill.level * 2} XP]
+                    {skill.level === 1 ? `Remove [2 XP]` : `Level Down [${skill.level * 2} XP]`}
                   </button>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 {
-  "version": "2026-01-26T10:13:20.820Z",
-  "lastUpdated": 1769422400821,
+  "version": "2026-02-02T10:44:13.487Z",
+  "lastUpdated": 1770029053488,
   "perks": {
     "combat": [
       {
@@ -5153,6 +5153,12 @@
       ]
     },
     {
+      "id": "faint-wip",
+      "name": "Faint (WIP)",
+      "effect": "Martial+CH/WT vs",
+      "tags": []
+    },
+    {
       "id": "grapple",
       "name": "Grapple",
       "effect": "**AP Cost:** 3",
@@ -5194,6 +5200,14 @@
       ]
     },
     {
+      "id": "taunt",
+      "name": "Taunt",
+      "effect": "**AP Cost:** 1",
+      "tags": [
+        "Social"
+      ]
+    },
+    {
       "id": "crawl",
       "name": "Crawl",
       "effect": "**AP Cost:** 1",
@@ -5220,7 +5234,7 @@
     {
       "id": "step",
       "name": "Step",
-      "effect": "**AP Cost:** 1",
+      "effect": "**AP Cost:** -",
       "tags": [
         "Move"
       ]
