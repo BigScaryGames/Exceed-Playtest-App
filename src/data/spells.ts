@@ -8,34 +8,108 @@ const BUNDLED_SPELLS_PATH = `${import.meta.env.BASE_URL}data/spells.json`;
 let spellDatabase: Spell[] = [];
 let spellDatabaseLoaded = false;
 
+// Cache configuration (matches perks cache duration)
+const SPELL_CACHE_KEY = 'exceed-spells-cache';
+const CACHE_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
 interface SpellDatabaseJSON {
   version: string;
   lastUpdated: number;
   spells: Spell[];
 }
 
+interface SpellCache {
+  database: SpellDatabaseJSON;
+  timestamp: number;
+  expiresAt: number;
+}
+
 /**
- * Load the spell database from JSON file
+ * Get cached spells from localStorage
+ */
+function getCachedSpells(): Spell[] | null {
+  try {
+    const cacheStr = localStorage.getItem(SPELL_CACHE_KEY);
+    if (!cacheStr) return null;
+
+    const cache: SpellCache = JSON.parse(cacheStr);
+
+    // Check if cache is expired
+    if (Date.now() > cache.expiresAt) {
+      localStorage.removeItem(SPELL_CACHE_KEY);
+      return null;
+    }
+
+    console.log('[SpellLoader] Using cached spells from localStorage');
+    return cache.database.spells;
+  } catch (error) {
+    console.error('[SpellLoader] Error reading cache:', error);
+    return null;
+  }
+}
+
+/**
+ * Save spells to cache
+ */
+function cacheSpells(database: SpellDatabaseJSON): void {
+  try {
+    const cache: SpellCache = {
+      database,
+      timestamp: Date.now(),
+      expiresAt: Date.now() + CACHE_DURATION_MS,
+    };
+
+    localStorage.setItem(SPELL_CACHE_KEY, JSON.stringify(cache));
+    console.log('[SpellLoader] Cached spells in localStorage');
+  } catch (error) {
+    console.error('[SpellLoader] Error caching spells:', error);
+  }
+}
+
+/**
+ * Load the spell database from JSON file with cache fallback
  * Should be called at app startup
  */
 export async function loadSpellDatabase(): Promise<void> {
   if (spellDatabaseLoaded) return;
 
+  // Try cache first
+  const cached = getCachedSpells();
+  if (cached) {
+    spellDatabase = cached;
+    spellDatabaseLoaded = true;
+    return;
+  }
+
+  // Load from bundled file
   try {
+    console.log('[SpellLoader] Fetching spells from:', BUNDLED_SPELLS_PATH);
     const response = await fetch(BUNDLED_SPELLS_PATH);
     if (!response.ok) {
-      throw new Error(`Failed to load spells.json: ${response.status}`);
+      throw new Error(`Failed to load spells.json: ${response.status} ${response.statusText}`);
     }
     const data: SpellDatabaseJSON = await response.json();
     spellDatabase = data.spells;
     spellDatabaseLoaded = true;
-    console.log(`Loaded ${spellDatabase.length} spells from database`);
+
+    // Cache the results
+    cacheSpells(data);
+
+    console.log(`[SpellLoader] Loaded ${spellDatabase.length} spells from database`);
   } catch (error) {
-    console.error('Error loading spell database:', error);
+    console.error('[SpellLoader] Error loading spell database:', error);
     // Fallback to empty - app can still function with custom spells
     spellDatabase = [];
     spellDatabaseLoaded = true;
   }
+}
+
+/**
+ * Clear spell cache (for debugging/testing)
+ */
+export function clearSpellCache(): void {
+  localStorage.removeItem(SPELL_CACHE_KEY);
+  console.log('[SpellLoader] Cache cleared');
 }
 
 /**
