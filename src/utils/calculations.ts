@@ -33,11 +33,8 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
   };
 
   // Sum up all CP spent on each attribute
-  // Note: stagedPerk (conditioning) contributes to Martial domain but NOT to attribute totals
+  // Conditioning perks (stagedPerk) contribute to BOTH Martial domain AND the chosen attribute
   progressionLog.forEach(entry => {
-    // Skip staged perks - they contribute to Martial domain, not attributes
-    if (entry.type === 'stagedPerk') return;
-
     if (entry.attribute) {
       // Map full attribute name to code
       const attrCode = ATTRIBUTE_NAME_TO_CODE[entry.attribute] || entry.attribute;
@@ -92,8 +89,8 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]): W
 
   // Sum up CP for each domain
   progressionLog.forEach(entry => {
-    // Combat perks contribute to Martial domain
-    if (entry.type === 'combatPerk') {
+    // Perks with xpType='combat' contribute to Martial domain
+    if (entry.type === 'perk' && entry.xpType === 'combat') {
       martialCP += entry.cost;
     }
     // Staged perks (conditioning) contribute to Martial domain
@@ -104,8 +101,8 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]): W
     else if (entry.type === 'spell') {
       spellcraftCP += entry.cost;
     }
-    // Magic perks contribute to Spellcraft domain
-    else if (entry.type === 'magicPerk') {
+    // Perks with xpType='social' contribute to Spellcraft domain
+    else if (entry.type === 'perk' && entry.xpType === 'social') {
       spellcraftCP += entry.cost;
     }
   });
@@ -135,24 +132,24 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]): W
 // Calculate extra HP from staged perks (conditioning perks)
 // Stage 1-4: extraHP equals stage number (1, 2, 3, or 4)
 // Stage 5: no extraHP (converted to +1 Max Wounds)
-export const calculateExtraHPFromStagedPerks = (stagedPerks: import('@/types/character').StagedPerk[]): number => {
+export const calculateExtraHPFromStagedPerks = (perks: import('@/types/character').CharacterPerk[]): number => {
   let extraHP = 0;
-  
-  stagedPerks.forEach(perk => {
+
+  perks.filter(p => p.isStaged).forEach(perk => {
     if (perk.level >= 1 && perk.level <= 4) {
       // Levels 1-4: extraHP equals level
       extraHP += perk.level;
     }
     // Level 5: no extraHP (converted to wound via Extra Wound effect)
   });
-  
+
   return extraHP;
 };
 
 // Calculate HP values (stamina and health)
 export const calculateHP = (character: Character) => {
   // Calculate extraHP from staged perks instead of stored field
-  const extraHP = calculateExtraHPFromStagedPerks(character.stagedPerks || []);
+  const extraHP = calculateExtraHPFromStagedPerks(character.perks || []);
   const maxHP = character.maxWounds * character.hpPerWound + extraHP;
   const staminaMax = maxHP;
   const healthMax = character.maxWounds * 5;
@@ -450,17 +447,12 @@ export const calculateDodgeFromEquipped = (character: Character): number => {
 export const calculateMaxWounds = (character: Character): number => {
   const baseWounds = 2;
 
-  // Count conditioning perks at level 5 in stagedPerks (in progress)
-  const inStaged = character.stagedPerks?.filter(
-    sp => sp.level >= 5 && (sp.perkSnapshot?.tags?.includes('Conditioning') || sp.name.includes('Conditioning'))
+  // Count conditioning perks at level 5 (completed staged perks)
+  const completedConditioning = character.perks?.filter(
+    p => p.isStaged && p.level >= 5 && p.perkSnapshot?.tags?.includes('Conditioning')
   ).length || 0;
 
-  // Count completed conditioning perks in combatPerks (with Conditioning tag or name ending in (Completed))
-  const inCombat = character.combatPerks?.filter(
-    cp => cp.perkSnapshot?.tags?.includes('Conditioning') || cp.name.includes('Conditioning')
-  ).length || 0;
-
-  return baseWounds + inStaged + inCombat;
+  return baseWounds + completedConditioning;
 };
 
 // Calculate comprehensive HP values with bar percentages
@@ -477,7 +469,7 @@ export const calculateHPValues = (character: Character) => {
   const armorBonus = armorData.bonus;
 
   // Calculate extraHP from staged perks instead of stored field
-  const extraHP = calculateExtraHPFromStagedPerks(character.stagedPerks || []);
+  const extraHP = calculateExtraHPFromStagedPerks(character.perks || []);
 
   const maxStamina = (armorBonus + character.stats.EN) * effectiveMaxWounds;
   const maxHealth = (character.hpPerWound * effectiveMaxWounds) + extraHP;

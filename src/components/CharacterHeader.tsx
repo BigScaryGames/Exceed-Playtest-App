@@ -121,9 +121,12 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onM
     let spellcraftCP = 0;
 
     character.progressionLog.forEach(entry => {
-      if (entry.type === 'combatPerk' || entry.type === 'stagedPerk') {
+      // Combat perks and staged perks contribute to Martial
+      if ((entry.type === 'perk' && entry.xpType === 'combat') || entry.type === 'stagedPerk') {
         martialCP += entry.cost || 0;
-      } else if (entry.type === 'spell' || entry.type === 'magicPerk') {
+      }
+      // Spells and social perks contribute to Spellcraft
+      else if (entry.type === 'spell' || (entry.type === 'perk' && entry.xpType === 'social')) {
         spellcraftCP += entry.cost || 0;
       }
     });

@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { Plus, Dice6, BookOpen } from 'lucide-react';
-import { Character, Skill, Perk, SkillDefinition, AttributeCode } from '@/types/character';
+import { Character, Skill, SkillDefinition, AttributeCode } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import { Modal } from '@/components/shared/Modal';
 import { AttributeSelector } from '@/components/shared/AttributeSelector';
 import { SkillSelectModal } from '@/components/modals/SkillSelectModal';
 import { PerkModal } from '@/components/modals/PerkModal';
+
+// Local interface for perk form data (not stored in character)
+interface PerkFormData {
+  name: string;
+  cost: number;
+  attribute: string;
+  description?: string;
+}
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
 import {
   getActiveAbilitiesWithInheritedTags,
@@ -332,14 +340,22 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
   };
 
   // Handle editing a perk
-  const handleEditPerk = (perk: Perk) => {
+  const handleEditPerk = (perk: PerkFormData) => {
     if (editingPerkIndex === null) return;
 
     const oldPerk = character.perks[editingPerkIndex];
-    const costDifference = perk.cost - oldPerk.cost;
+    // Find the original cost from progression log
+    const originalEntry = character.progressionLog.find(
+      e => e.type === 'perk' && e.xpType === 'social' && e.name === oldPerk.name
+    );
+    const originalCost = originalEntry?.cost || 0;
+    const costDifference = perk.cost - originalCost;
 
     const updatedPerks = [...character.perks];
-    updatedPerks[editingPerkIndex] = perk;
+    updatedPerks[editingPerkIndex] = {
+      ...oldPerk,
+      attribute: perk.attribute
+    };
 
     // Update progression log - remove old entry and add new one
     const updatedLog = character.progressionLog.filter(
@@ -347,7 +363,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
         !(
           entry.type === 'perk' &&
           entry.name === oldPerk.name &&
-          entry.cost === oldPerk.cost
+          entry.xpType === 'social'
         )
     );
 
@@ -361,7 +377,8 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
           type: 'perk',
           name: perk.name,
           attribute: perk.attribute,
-          cost: perk.cost
+          cost: perk.cost,
+          xpType: 'social' as const
         }
       ]
     });
@@ -377,15 +394,16 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
     const perk = character.perks[perkIndex];
     const updatedPerks = character.perks.filter((_, i) => i !== perkIndex);
 
-    // Remove from progression log - find the most recent matching entry
+    // Find and remove from progression log - find the most recent matching entry
     const updatedLog = [...character.progressionLog];
+    let removedCost = 0;
     for (let i = updatedLog.length - 1; i >= 0; i--) {
       if (
         updatedLog[i].type === 'perk' &&
         updatedLog[i].name === perk.name &&
-        updatedLog[i].cost === perk.cost &&
-        updatedLog[i].attribute === perk.attribute
+        updatedLog[i].xpType === 'social'
       ) {
+        removedCost = updatedLog[i].cost;
         updatedLog.splice(i, 1);
         break;
       }
@@ -394,7 +412,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
     onUpdate({
       ...character,
       perks: updatedPerks,
-      socialXP: character.socialXP + perk.cost,
+      socialXP: character.socialXP + removedCost,
       progressionLog: updatedLog
     });
   };
@@ -579,8 +597,13 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
           }}
           onSave={handleEditPerk}
           availableCP={character.socialXP}
-          editingPerk={character.perks[editingPerkIndex]}
-          existingCost={character.perks[editingPerkIndex].cost}
+          editingPerk={{
+            name: character.perks[editingPerkIndex].name,
+            cost: character.progressionLog.find(e => e.type === 'perk' && e.xpType === 'social' && e.name === character.perks[editingPerkIndex].name)?.cost || 0,
+            attribute: character.perks[editingPerkIndex].attribute,
+            description: ''
+          }}
+          existingCost={character.progressionLog.find(e => e.type === 'perk' && e.xpType === 'social' && e.name === character.perks[editingPerkIndex].name)?.cost || 0}
         />
       )}
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { Character, Perk, CombatPerk } from '@/types/character';
+import { Character, CharacterPerk, PerkType } from '@/types/character';
 import type { PerkDatabase, Perk as DatabasePerk } from '@/types/perks';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
 
@@ -59,15 +59,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 
     // Filter out already learned perks
     for (const perk of perksToCheck) {
-      let alreadyLearned = false;
-
-      if (perk.type === 'skill') {
-        alreadyLearned = character.perks.some(p => p.id === perk.id || p.name === perk.name);
-      } else if (perk.type === 'magic') {
-        alreadyLearned = (character.magicPerks || []).some(p => p.id === perk.id || p.name === perk.name);
-      } else if (perk.type === 'combat') {
-        alreadyLearned = character.combatPerks.some(p => p.id === perk.id || p.name === perk.name);
-      }
+      const alreadyLearned = character.perks.some(p => p.perkId === perk.id || p.name === perk.name);
 
       if (!alreadyLearned) {
         availablePerks.push(perk);
@@ -122,7 +114,6 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     }
 
     // Determine which XP pool to use
-    // Magic now uses Combat XP only
     const xpType: 'combat' | 'social' = perk.type === 'skill' ? 'social' : 'combat';
     const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
     const perkCost = perk.cost.xp;
@@ -132,64 +123,39 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
       return;
     }
 
-    let updatedCharacter = { ...character };
+    // Create unified CharacterPerk
+    const newPerk: CharacterPerk = {
+      id: `${perk.id}-${Date.now()}`,
+      perkId: perk.id,
+      name: perk.name,
+      type: perk.type as PerkType,
+      level: 1,
+      attribute: effectiveAttribute,
+      isFlaw: false,
+      isStaged: perk.tags.includes('Conditioning'),
+      acquiredAt: Date.now(),
+      perkSnapshot: perk
+    };
 
-    if (perk.type === 'skill') {
-      // Add to perks array (social perks) with snapshot
-      const newPerk: Perk = {
-        id: perk.id,
-        name: perk.name,
-        cost: perkCost,
-        attribute: effectiveAttribute,
-        description: perk.description,
-        isCustom: false,
-        source: 'database',
-        perkSnapshot: perk,
-        addedAt: Date.now()
-      };
-      updatedCharacter.perks = [...character.perks, newPerk];
+    let updatedCharacter = { ...character };
+    updatedCharacter.perks = [...character.perks, newPerk];
+    
+    if (xpType === 'social') {
       updatedCharacter.socialXP -= perkCost;
-    } else if (perk.type === 'magic') {
-      // Add to magicPerks array with snapshot - uses Combat XP
-      const newMagicPerk: Perk = {
-        id: perk.id,
-        name: perk.name,
-        cost: perkCost,
-        attribute: effectiveAttribute,
-        description: perk.description,
-        isCustom: false,
-        source: 'database',
-        perkSnapshot: perk,
-        addedAt: Date.now()
-      };
-      updatedCharacter.magicPerks = [...(character.magicPerks || []), newMagicPerk];
-      updatedCharacter.combatXP -= perkCost;
-    } else if (perk.type === 'combat') {
-      // Add to combatPerks array with snapshot - MS5: No domain needed, all combat perks use Martial
-      const newCombatPerk: CombatPerk = {
-        id: perk.id,
-        name: perk.name,
-        cost: perkCost,
-        attribute: effectiveAttribute,
-        description: perk.description,
-        isCustom: false,
-        source: 'database',
-        perkSnapshot: perk,
-        addedAt: Date.now()
-      };
-      updatedCharacter.combatPerks = [...character.combatPerks, newCombatPerk];
+    } else {
       updatedCharacter.combatXP -= perkCost;
     }
 
-    // Add to progression log - MS5: No domain field needed
+    // Add to progression log
     updatedCharacter.progressionLog = [
       ...updatedCharacter.progressionLog,
       {
-        type: perk.type === 'skill' ? 'perk' : (perk.type === 'magic' ? 'magicPerk' : 'combatPerk'),
+        type: newPerk.isStaged ? 'stagedPerk' : 'perk',
         name: perk.name,
         cost: perkCost,
         attribute: effectiveAttribute,
-        xpType: xpType
+        xpType: xpType,
+        stagedLevel: newPerk.isStaged ? 1 : undefined
       }
     ];
 
@@ -205,8 +171,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     }
 
     // Determine category and XP type
-    // Magic now uses Combat XP only
-    const perkCategory = category || 'skill'; // Default to skill if not specified
+    const perkCategory = category || 'skill';
     const xpType: 'combat' | 'social' = perkCategory === 'skill' ? 'social' : 'combat';
     const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
 
@@ -215,58 +180,44 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
       return;
     }
 
-    let updatedCharacter = { ...character };
+    // Map category to PerkType
+    const typeMap: Record<string, PerkType> = {
+      skill: 'Skill',
+      magic: 'Magic',
+      combat: 'Combat'
+    };
 
-    if (perkCategory === 'skill') {
-      // Social perks go to perks array
-      const newPerk: Perk = {
-        name: customName,
-        cost,
-        attribute: customAttribute,
-        description: customDescription,
-        isCustom: true,
-        source: 'custom',
-        addedAt: Date.now()
-      };
-      updatedCharacter.perks = [...character.perks, newPerk];
+    // Create unified CharacterPerk
+    const newPerk: CharacterPerk = {
+      id: `custom-${Date.now()}`,
+      perkId: '',
+      name: customName,
+      type: typeMap[perkCategory] || 'Skill',
+      level: 1,
+      attribute: customAttribute,
+      isFlaw: false,
+      isStaged: false,
+      acquiredAt: Date.now()
+    };
+
+    let updatedCharacter = { ...character };
+    updatedCharacter.perks = [...character.perks, newPerk];
+    
+    if (xpType === 'social') {
       updatedCharacter.socialXP -= cost;
-    } else if (perkCategory === 'magic') {
-      // Magic perks go to magicPerks array - uses Combat XP
-      const newMagicPerk: Perk = {
-        name: customName,
-        cost,
-        attribute: customAttribute,
-        description: customDescription,
-        isCustom: true,
-        source: 'custom',
-        addedAt: Date.now()
-      };
-      updatedCharacter.magicPerks = [...(character.magicPerks || []), newMagicPerk];
-      updatedCharacter.combatXP -= cost;
-    } else if (perkCategory === 'combat') {
-      // Combat perks go to combatPerks array - MS5: No domain needed
-      const newCombatPerk: CombatPerk = {
-        name: customName,
-        cost,
-        attribute: customAttribute,
-        description: customDescription,
-        isCustom: true,
-        source: 'custom',
-        addedAt: Date.now()
-      };
-      updatedCharacter.combatPerks = [...character.combatPerks, newCombatPerk];
+    } else {
       updatedCharacter.combatXP -= cost;
     }
 
-    // Add to progression log - MS5: No domain field needed
+    // Add to progression log
     updatedCharacter.progressionLog = [
       ...updatedCharacter.progressionLog,
       {
-        type: perkCategory === 'skill' ? 'perk' : (perkCategory === 'magic' ? 'magicPerk' : 'combatPerk'),
+        type: 'perk',
         name: customName,
         cost,
         attribute: customAttribute,
-        xpType
+        xpType: xpType
       }
     ];
 

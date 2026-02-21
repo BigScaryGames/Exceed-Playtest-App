@@ -190,32 +190,33 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
 
   // Handle deleting a magic perk (by name, from abilities/effects section)
   const handleDeleteMagicPerkByName = (perkName: string) => {
-    const perks = character.magicPerks || [];
-    const perkIndex = perks.findIndex(p => p.name === perkName);
-    if (perkIndex === -1) return;
+    const perks = character.perks.filter(p => p.type === 'Magic');
+    const perk = perks.find(p => p.name === perkName);
+    if (!perk) return;
 
-    const perk = perks[perkIndex];
-    const updatedMagicPerks = perks.filter((_, i) => i !== perkIndex);
-
-    // Remove from progression log - find the most recent matching entry
+    // Find and remove from progression log
     const updatedLog = [...character.progressionLog];
+    let removedCost = 0;
     for (let i = updatedLog.length - 1; i >= 0; i--) {
       if (
-        updatedLog[i].type === 'magicPerk' &&
-        updatedLog[i].name === perk.name &&
-        updatedLog[i].cost === perk.cost &&
-        updatedLog[i].attribute === perk.attribute
+        updatedLog[i].type === 'perk' &&
+        updatedLog[i].xpType === 'combat' &&
+        updatedLog[i].name === perk.name
       ) {
+        removedCost = updatedLog[i].cost || 0;
         updatedLog.splice(i, 1);
         break;
       }
     }
 
+    // Remove perk from unified array
+    const updatedPerks = character.perks.filter(p => p.id !== perk.id);
+
     // Refund XP to Combat pool (magic only uses Combat XP)
     onUpdate({
       ...character,
-      magicPerks: updatedMagicPerks,
-      combatXP: character.combatXP + perk.cost,
+      perks: updatedPerks,
+      combatXP: character.combatXP + removedCost,
       progressionLog: updatedLog
     });
   };

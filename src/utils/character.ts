@@ -12,9 +12,6 @@ export const createEmptyCharacter = (): Character => ({
   },
   skills: [],
   perks: [],
-  combatPerks: [],
-  magicPerks: [],
-  flaws: [],  // MS5: Flaws
   equipment: [],
   customItems: [],
   progressionLog: [],
@@ -38,7 +35,8 @@ export const createEmptyCharacter = (): Character => ({
   attunedSpells: [],
   bio: '',
   notes: '',
-  reputation: ''
+  reputation: '',
+  lastOpened: 0
 });
 
 // Save character to localStorage
@@ -72,13 +70,9 @@ const migrateCharacter = (character: Character): Character => {
   if (!character.inventory) {
     character.inventory = [];
   }
-  // Add magicPerks if missing
-  if (!character.magicPerks) {
-    character.magicPerks = [];
-  }
-  // Add flaws if missing (MS5)
-  if (!character.flaws) {
-    character.flaws = [];
+  // Add perks array if missing
+  if (!character.perks) {
+    character.perks = [];
   }
   // Add woundsNotes if missing
   if (!character.woundsNotes) {
@@ -90,6 +84,18 @@ const migrateCharacter = (character: Character): Character => {
   }
   if ('magicXP' in character) {
     delete (character as any).magicXP;
+  }
+  if ('combatPerks' in character) {
+    delete (character as any).combatPerks;
+  }
+  if ('magicPerks' in character) {
+    delete (character as any).magicPerks;
+  }
+  if ('flaws' in character) {
+    delete (character as any).flaws;
+  }
+  if ('stagedPerks' in character) {
+    delete (character as any).stagedPerks;
   }
 
   // MS5: Migrate old per-weapon domains to new Martial/Spellcraft system

@@ -78,10 +78,7 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
 
     if (p.requirements.perks) {
       for (const prereq of p.requirements.perks) {
-        const hasPrereq =
-          char.combatPerks.some(perk => perk.name.toLowerCase() === prereq.toLowerCase()) ||
-          char.perks.some(perk => perk.name.toLowerCase() === prereq.toLowerCase()) ||
-          (char.magicPerks || []).some(perk => perk.name.toLowerCase() === prereq.toLowerCase());
+        const hasPrereq = character.perks.some(perk => perk.name.toLowerCase() === prereq.toLowerCase());
         if (!hasPrereq) {
           reasons.push(prereq);
         }
@@ -135,21 +132,17 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
         (perk.cost.variable && perk.cost.formula?.includes('Max_Wounds'));
 
       if (isConditioning) {
-        // Hide if already in stagedPerks
-        if (character.stagedPerks?.some(sp => sp.id === perk.id)) return false;
+        // Hide if already in stagedPerks (isStaged: true and level < 5)
+        const stagedPerk = character.perks.find(p => p.perkId === perk.id && p.isStaged && p.level < 5);
+        if (stagedPerk) return false;
+        // Also hide if already completed (level 5)
+        const completedPerk = character.perks.find(p => p.perkId === perk.id && p.isStaged && p.level >= 5);
+        if (completedPerk) return false;
         return true;
       }
 
       // Regular perks: check if already learned
-      if (perk.type === 'skill') {
-        if (character.perks.some(p => p.id === perk.id || p.name === perk.name)) return false;
-      } else if (perk.type === 'magic') {
-        if ((character.magicPerks || []).some(p => p.id === perk.id || p.name === perk.name)) return false;
-      } else {
-        if (character.combatPerks.some(p => p.id === perk.id || p.name === perk.name)) return false;
-      }
-
-      return true;
+      return !character.perks.some(p => p.perkId === perk.id || p.name === perk.name);
     });
 
     // Apply search query
@@ -218,7 +211,7 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
         (perk.cost.variable && perk.cost.formula?.includes('Max_Wounds'));
 
     if (isConditioning) {
-      // Conditioning perks use stagedPerks system
+      // Conditioning perks use stagedPerks system (isStaged: true)
       if (!attribute && perk.attributes.length > 1) {
         setPendingPerk(perk);
         setShowAttributeSelector(true);
@@ -229,31 +222,30 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
       // Level 1 cost = maxWounds × 1
       const cost = character.maxWounds * 1;
 
-      // Check if this conditioning already exists in stagedPerks
-      const existingStaged = character.stagedPerks?.find(sp => sp.id === perk.id);
+      // Check if this conditioning already exists (staged or completed)
+      const existingStaged = character.perks.find(p => p.perkId === perk.id && p.isStaged);
       if (existingStaged) {
         // Already training this conditioning - can't add again
         return;
       }
 
-      // Create new staged perk entry
-      const newStagedPerk = {
-        id: perk.id,
+      // Create new staged perk entry (unified CharacterPerk)
+      const newStagedPerk: import('@/types/character').CharacterPerk = {
+        id: `${perk.id}-${Date.now()}`,
+        perkId: perk.id,
         name: perk.name,
+        type: 'Combat',
         level: 1,
         attribute: selectedAttr,
-        levelHistory: [{
-          level: 1,
-          attribute: selectedAttr,
-          cost
-        }],
-        perkSnapshot: perk,
-        addedAt: Date.now()
+        isFlaw: false,
+        isStaged: true,
+        acquiredAt: Date.now(),
+        perkSnapshot: perk
       };
 
       onUpdate({
         ...character,
-        stagedPerks: [...(character.stagedPerks || []), newStagedPerk],
+        perks: [...character.perks, newStagedPerk],
         combatXP: character.combatXP - cost,
         progressionLog: [
           ...character.progressionLog,
@@ -292,40 +284,35 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
 
     const updatedCharacter = { ...character };
 
-    // Create the perk entry with proper perkSnapshot
-    const perkEntry = {
-      id: perk.id,
+    // Create unified CharacterPerk
+    const perkEntry: import('@/types/character').CharacterPerk = {
+      id: `${perk.id}-${Date.now()}`,
+      perkId: perk.id,
       name: perk.name,
-      cost: xpCost,
+      type: perk.type === 'skill' ? 'Skill' : perk.type === 'magic' ? 'Magic' : 'Combat',
+      level: 1,
       attribute: selectedAttr,
-      description: perk.description,
-      isCustom: false,
-      source: 'database' as const,
-      perkSnapshot: perk,
-      addedAt: Date.now()
+      isFlaw: false,
+      isStaged: false,
+      acquiredAt: Date.now(),
+      perkSnapshot: perk
     };
 
     // Deduct XP
     (updatedCharacter as any)[xpPool] = (character as any)[xpPool] - xpCost;
 
-    // Add to appropriate array
-    if (perk.type === 'skill') {
-      (updatedCharacter as any).perks = [...character.perks, perkEntry];
-    } else if (perk.type === 'magic') {
-      (updatedCharacter as any).magicPerks = [...(character.magicPerks || []), perkEntry];
-    } else {
-      (updatedCharacter as any).combatPerks = [...character.combatPerks, perkEntry];
-    }
+    // Add to unified perks array
+    updatedCharacter.perks = [...character.perks, perkEntry];
 
     // Add to progression log
-    (updatedCharacter as any).progressionLog = [
-      ...(character.progressionLog || []),
+    updatedCharacter.progressionLog = [
+      ...character.progressionLog,
       {
-        type: perk.type === 'skill' ? 'skill' : perk.type === 'magic' ? 'magicPerk' : 'combatPerk',
+        type: 'perk' as const,
         name: perk.name,
         attribute: selectedAttr,
         cost: xpCost,
-        xpType: perk.type === 'skill' ? 'social' : 'combat',
+        xpType: perk.type === 'skill' ? 'social' as const : 'combat' as const,
       },
     ];
 

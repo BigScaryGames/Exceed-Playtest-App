@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Character } from '@/types/character';
+import { Character, CharacterPerk } from '@/types/character';
 import { Modal } from '@/components/shared';
 import { MARTIAL_CP_THRESHOLDS } from '@/utils/constants';
 
@@ -37,7 +37,7 @@ export const CombatPerkModal: React.FC<CombatPerkModalProps> = ({
 
   // MS5: Calculate current Martial domain XP from all combat perks
   const currentMartialXP = character.progressionLog
-    .filter(entry => entry.type === 'combatPerk' || entry.type === 'stagedPerk')
+    .filter(entry => (entry.type === 'perk' && entry.xpType === 'combat') || entry.type === 'stagedPerk')
     .reduce((sum, entry) => sum + (entry.cost || 0), 0);
 
   // Calculate next threshold
@@ -55,11 +55,17 @@ export const CombatPerkModal: React.FC<CombatPerkModalProps> = ({
   const handleAddCombatPerk = () => {
     const cost = parseInt(newCombatPerk.cost);
     if (newCombatPerk.name.trim() && cost && newCombatPerk.attribute && character.combatXP >= cost) {
-      const perkData = {
+      // Create unified CharacterPerk
+      const newPerk: CharacterPerk = {
+        id: `custom-${Date.now()}`,
+        perkId: '',
         name: newCombatPerk.name.trim(),
-        cost: cost,
+        type: 'Combat',
+        level: 1,
         attribute: newCombatPerk.attribute,
-        description: newCombatPerk.description.trim()
+        isFlaw: false,
+        isStaged: false,
+        acquiredAt: Date.now()
       };
 
       // MS5: Calculate new Martial domain level based on cumulative XP
@@ -73,17 +79,18 @@ export const CombatPerkModal: React.FC<CombatPerkModalProps> = ({
 
       onUpdate({
         ...character,
-        combatPerks: [...character.combatPerks, perkData],
+        perks: [...character.perks, newPerk],
         weaponDomains: {
           ...character.weaponDomains,
           Martial: newLevel
         },
         combatXP: character.combatXP - cost,
         progressionLog: [...character.progressionLog, {
-          type: 'combatPerk',
-          name: perkData.name,
-          attribute: perkData.attribute,
-          cost: perkData.cost
+          type: 'perk',
+          name: newPerk.name,
+          attribute: newPerk.attribute,
+          cost: cost,
+          xpType: 'combat' as const
         }]
       });
       setNewCombatPerk({ name: '', cost: '', attribute: '', description: '' });

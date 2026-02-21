@@ -1,8 +1,11 @@
 // Character Type Definitions for EXCEED RPG
 
-import type { Perk as DatabasePerk, PerkSource } from './perks';
+import type { Perk as DatabasePerk } from './perks';
 
 export type AttributeCode = 'MG' | 'EN' | 'AG' | 'DX' | 'WT' | 'WI' | 'PR' | 'CH';
+
+// MS6: Perk type enum
+export type PerkType = 'Combat' | 'Magic' | 'Skill';
 
 // MS5: Consolidated domains - all weapon types merged into Martial
 export type WeaponDomain = 'Martial' | 'Spellcraft';
@@ -32,62 +35,19 @@ export interface Skill {
   attributeHistory: string[];
 }
 
-export interface Perk {
+// MS6: Unified Perk type (handles perks, flaws, and staged perks)
+export interface CharacterPerk {
+  id: string;                    // Unique ID for this instance
+  perkId: string;                // Reference to perk definition in database
   name: string;
-  cost: number;
-  attribute: string;
-  description: string;
-  // New fields for database perk snapshot system
-  id?: string; // Perk ID from database (e.g., "shield-rush")
-  isCustom?: boolean; // True if custom perk, false if from database
-  source?: PerkSource; // 'database', 'archived', or 'custom'
-  perkSnapshot?: DatabasePerk; // Full snapshot of perk data from database
-  addedAt?: number; // Timestamp when added to character
+  type: PerkType;                // Combat | Magic | Skill
+  level: number;                 // 1-5 for staged, 1 for regular
+  attribute: string;             // Chosen attribute
+  isFlaw: boolean;               // true = flaw (negative XP), false = perk
+  isStaged: boolean;             // true for conditioning perks
+  acquiredAt: number;            // Timestamp when acquired
+  perkSnapshot?: DatabasePerk;   // Full snapshot from database
 }
-
-export interface CombatPerk {
-  name: string;
-  cost: number;
-  attribute: string;
-  description: string;
-  // New fields for database perk snapshot system
-  id?: string; // Perk ID from database
-  isCustom?: boolean; // True if custom perk, false if from database
-  source?: PerkSource; // 'database', 'archived', or 'custom'
-  perkSnapshot?: DatabasePerk; // Full snapshot of perk data from database
-  addedAt?: number; // Timestamp when added to character
-}
-
-// MS5: Flaws (negative perks with negative XP cost)
-export interface Flaw {
-  name: string;
-  xpValue: number;  // Negative XP granted (e.g., -5, -10, -15)
-  attribute?: string;  // Optional attribute restriction
-  description: string;
-  id?: string;
-  isCustom?: boolean;
-  source?: 'database' | 'custom';
-  perkSnapshot?: DatabasePerk;  // Reuse perk snapshot system
-  addedAt?: number;
-}
-
-// MS5: Staged perks (conditioning perks with 5 levels)
-export interface StagedPerkLevel {
-  level: number;
-  attribute: string;
-  cost: number;
-}
-
-export interface StagedPerk {
-  id: string;
-  name: string;
-  level: number;           // Current level 1-5
-  attribute: string;       // Last attribute chosen
-  levelHistory: StagedPerkLevel[];
-  perkSnapshot?: DatabasePerk;
-  addedAt?: number;
-}
-
 
 export interface Equipment {
   name: string;
@@ -96,11 +56,11 @@ export interface Equipment {
 }
 
 export interface ProgressionLogEntry {
-  type: 'skill' | 'perk' | 'combatPerk' | 'magicPerk' | 'stagedPerk' | 'extraWound' | 'spell' | 'flaw';
+  type: 'skill' | 'perk' | 'stagedPerk' | 'extraWound' | 'spell';
   name?: string;
   level?: number;
   attribute?: string;
-  cost: number;  // Negative for flaws
+  cost: number;
   tier?: number; // For spells
   spellType?: 'basic' | 'advanced'; // For spells
   xpType?: 'combat' | 'social'; // Track which XP pool was used
@@ -114,10 +74,7 @@ export interface Character {
   socialXP: number;
   stats: Stats;
   skills: Skill[];
-  perks: Perk[];
-  combatPerks: CombatPerk[];
-  magicPerks: Perk[];
-  flaws: Flaw[];  // MS5: Flaws (negative perks)
+  perks: CharacterPerk[];        // Unified: perks, flaws, and staged perks
   equipment: Equipment[];
   customItems: Equipment[];
   progressionLog: ProgressionLogEntry[];
@@ -133,21 +90,15 @@ export interface Character {
   markedWounds: number;
   woundsNotes?: string;
   extraWoundCount: number;
-  // Unified Inventory System (new)
-  inventory?: InventoryItem[]; // Optional for backward compatibility
-  stowedWeightReduction?: number; // Weight reduction for stowed items (e.g., bag of holding)
-  money?: number; // Currency/gold carried
-  // Magic System (new)
+  inventory?: InventoryItem[];
+  stowedWeightReduction?: number;
+  money?: number;
   knownSpells?: KnownSpell[];
-  attunedSpells?: string[]; // Array of spell IDs currently attuned
-  // Character notes and bio (new)
+  attunedSpells?: string[];
   bio?: string;
   notes?: string;
   reputation?: string;
-  // Timestamp tracking
-  lastOpened?: number; // Timestamp when character was last opened
-  // MS5: Staged perks (conditioning perks)
-  stagedPerks?: StagedPerk[];
+  lastOpened?: number;
 }
 
 export interface ArmorType {

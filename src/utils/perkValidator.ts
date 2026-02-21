@@ -57,9 +57,7 @@ export const validatePerkRequirements = (
       if (prereq.includes(' or ')) {
         const options = prereq.split(' or ').map(s => s.trim().toLowerCase());
         const hasAny = options.some(opt =>
-          character.combatPerks.some(p => p.name.toLowerCase() === opt) ||
-          character.perks.some(p => p.name.toLowerCase() === opt) ||
-          (character.magicPerks || []).some(p => p.name.toLowerCase() === opt)
+          character.perks.some(p => p.name.toLowerCase() === opt)
         );
 
         if (!hasAny) {
@@ -67,10 +65,7 @@ export const validatePerkRequirements = (
         }
       } else {
         // Single perk requirement
-        const hasPrereq =
-          character.combatPerks.some(p => p.name.toLowerCase() === prereq.toLowerCase()) ||
-          character.perks.some(p => p.name.toLowerCase() === prereq.toLowerCase()) ||
-          (character.magicPerks || []).some(p => p.name.toLowerCase() === prereq.toLowerCase());
+        const hasPrereq = character.perks.some(p => p.name.toLowerCase() === prereq.toLowerCase());
 
         if (!hasPrereq) {
           reasons.push(`Requires perk: ${prereq}`);

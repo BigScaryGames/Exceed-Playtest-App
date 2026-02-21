@@ -272,14 +272,19 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
   };
 
   const handleDeleteCombatPerk = (index: number) => {
-    const perk = character.combatPerks[index];
-    const updatedPerks = character.combatPerks.filter((_, i) => i !== index);
+    // Find the perk in unified perks array (combat type, includes completed conditioning at level 5)
+    const combatPerks = character.perks.filter(p => 
+      p.type === 'Combat' && 
+      !p.isFlaw &&
+      (!p.isStaged || p.level >= 5)  // Include completed conditioning (level 5)
+    );
+    const perk = combatPerks[index];
+    if (!perk) return;
 
-    // Check if this is a completed conditioning perk
-    const isConditioningPerk = perk.perkSnapshot?.tags?.includes('Conditioning') ||
-      perk.name.includes('(Completed)');
+    // Check if this is a completed conditioning perk (isStaged: true, level >= 5)
+    const isConditioningPerk = perk.isStaged || perk.perkSnapshot?.tags?.includes('Conditioning');
 
-    // Get the base perk name (without "(Completed)" suffix)
+    // Get the base perk name
     const basePerkName = perk.name.replace(' (Completed)', '');
 
     let updatedLog = [...character.progressionLog];
@@ -288,36 +293,30 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
 
     if (isConditioningPerk) {
       // For conditioning perks: remove ALL stagedPerk entries with this name
-      // and the completion combatPerk entry
       updatedLog = character.progressionLog.filter(entry => {
         if (entry.type === 'stagedPerk' && entry.name === basePerkName) {
           totalRefund += entry.cost || 0;
           return false; // Remove this entry
         }
-        if (entry.type === 'combatPerk' &&
-            (entry.name === perk.name || entry.name === `${basePerkName} (Completed)`)) {
-          return false; // Remove completion entry (cost is 0)
-        }
         return true;
       });
       shouldDecrementWounds = true;
     } else {
-      // Regular combat perk: just remove the single entry
+      // Regular combat perk: remove the single entry
       for (let i = updatedLog.length - 1; i >= 0; i--) {
-        if (updatedLog[i].type === 'combatPerk' &&
-            updatedLog[i].name === perk.name &&
-            updatedLog[i].cost === perk.cost &&
-            updatedLog[i].attribute === perk.attribute) {
+        if (updatedLog[i].type === 'perk' &&
+            updatedLog[i].xpType === 'combat' &&
+            updatedLog[i].name === perk.name) {
+          totalRefund = updatedLog[i].cost || 0;
           updatedLog.splice(i, 1);
           break;
         }
       }
-      totalRefund = perk.cost;
     }
 
     // MS5: Recalculate Martial domain level from remaining perks
     const remainingMartialXP = updatedLog
-      .filter(entry => entry.type === 'combatPerk' || entry.type === 'stagedPerk')
+      .filter(entry => (entry.type === 'perk' && entry.xpType === 'combat') || entry.type === 'stagedPerk')
       .reduce((sum, entry) => sum + (entry.cost || 0), 0);
 
     // Martial domain thresholds: 10/30/60/100/150
@@ -328,9 +327,12 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
     else if (remainingMartialXP >= 30) newLevel = 2;
     else if (remainingMartialXP >= 10) newLevel = 1;
 
+    // Remove perk from unified array
+    const updatedPerks = character.perks.filter(p => p.id !== perk.id);
+
     onUpdate({
       ...character,
-      combatPerks: updatedPerks,
+      perks: updatedPerks,
       weaponDomains: {
         ...character.weaponDomains,
         Martial: newLevel
@@ -339,6 +341,24 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
       combatXP: character.combatXP + totalRefund,
       progressionLog: updatedLog
     });
+  };
+
+  // Delete combat perk by ID (used from abilities/effects cards)
+  const handleDeleteCombatPerkById = (perkId: string) => {
+    const perk = character.perks.find(p => p.id === perkId);
+    if (!perk) return;
+
+    // Find the index in the filtered combat perks array
+    const combatPerks = character.perks.filter(p => 
+      p.type === 'Combat' && 
+      !p.isFlaw &&
+      (!p.isStaged || p.level >= 5)
+    );
+    const index = combatPerks.findIndex(p => p.id === perkId);
+    if (index === -1) return;
+
+    // Reuse the existing delete logic
+    handleDeleteCombatPerk(index);
   };
 
   // Get equipped weapons - with backward compatibility
@@ -621,9 +641,9 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
                       item={ability}
                       isAbility={true}
                       onDelete={() => {
-                        // Find the perk index by name
-                        const perkIndex = character.combatPerks.findIndex(p => p.name === ability.sourcePerk);
-                        if (perkIndex !== -1) handleDeleteCombatPerk(perkIndex);
+                        // Find the perk in unified array and delete by ID
+                        const perk = character.perks.find(p => p.name === ability.sourcePerk && p.type === 'Combat');
+                        if (perk) handleDeleteCombatPerkById(perk.id);
                       }}
                     />
                   ))}
@@ -645,9 +665,9 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
                       item={effect}
                       isAbility={false}
                       onDelete={() => {
-                        // Find the perk index by name
-                        const perkIndex = character.combatPerks.findIndex(p => p.name === effect.sourcePerk);
-                        if (perkIndex !== -1) handleDeleteCombatPerk(perkIndex);
+                        // Find the perk in unified array and delete by ID
+                        const perk = character.perks.find(p => p.name === effect.sourcePerk && p.type === 'Combat');
+                        if (perk) handleDeleteCombatPerkById(perk.id);
                       }}
                     />
                   ))}

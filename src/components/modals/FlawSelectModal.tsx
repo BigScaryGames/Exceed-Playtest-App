@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flaw } from '@/types/character';
+import { CharacterPerk } from '@/types/character';
 import { Modal } from '@/components/shared/Modal';
 import { loadFlawDatabase } from '@/data/flaws';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
@@ -7,7 +7,7 @@ import { ATTRIBUTE_MAP } from '@/utils/constants';
 interface FlawSelectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectFlaw: (flaw: Flaw) => void;
+  onSelectFlaw: (perk: CharacterPerk) => void;
   existingFlaws: string[];
 }
 
@@ -48,18 +48,20 @@ export const FlawSelectModal: React.FC<FlawSelectModalProps> = ({
   const handleSelect = () => {
     if (!selectedFlaw) return;
 
-    const flaw: Flaw = {
+    // Create unified CharacterPerk with isFlaw: true
+    const flawPerk: CharacterPerk = {
+      id: `${selectedFlaw.id}-${Date.now()}`,
+      perkId: selectedFlaw.id,
       name: selectedFlaw.name,
-      xpValue: selectedFlaw.xpValue,
-      attribute: selectedFlaw.attribute ? selectedAttribute : undefined,
-      description: selectedFlaw.description,
-      id: selectedFlaw.id,
-      source: 'database',
-      isCustom: false,
-      addedAt: Date.now(),
+      type: 'Skill', // Flaws use Skill type
+      level: 1,
+      attribute: selectedFlaw.attribute ? selectedAttribute : '',
+      isFlaw: true,
+      isStaged: false,
+      acquiredAt: Date.now()
     };
 
-    onSelectFlaw(flaw);
+    onSelectFlaw(flawPerk);
     setSelectedFlaw(null);
     setSelectedAttribute('');
   };

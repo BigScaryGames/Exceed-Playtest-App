@@ -112,10 +112,9 @@ export const getFullSpellData = (spell: KnownSpell): Spell | null => {
 export const canLearnSpell = (character: Character, tier: SpellTier): boolean => {
   const spellcraft = getSpellcraft(character);
 
-  // Tier 0 spells require Mage perk (check both perks and magicPerks arrays)
+  // Tier 0 spells require Mage perk
   if (tier === 0) {
-    const hasMagePerk = character.perks.some(p => p.name === 'Mage') ||
-                        (character.magicPerks || []).some(p => p.name === 'Mage');
+    const hasMagePerk = character.perks.some(p => p.name === 'Mage');
     return hasMagePerk && spellcraft >= tier;
   }
 
@@ -142,7 +141,7 @@ export const getSpellcraftXPRequirement = (level: number): number => {
  */
 export const calculateSpellDomainXP = (character: Character): number => {
   return character.progressionLog
-    .filter(entry => entry.type === 'spell' || entry.type === 'magicPerk')
+    .filter(entry => entry.type === 'spell' || (entry.type === 'perk' && entry.xpType === 'social'))
     .reduce((sum, entry) => sum + entry.cost, 0);
 };
 

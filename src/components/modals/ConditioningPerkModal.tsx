@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Character, CombatPerk } from '@/types/character';
+import { Character, CharacterPerk } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
 import { calculateExtraHPFromStagedPerks } from '@/utils/calculations';
@@ -35,12 +35,13 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
 
   // Get current active conditioning (only one allowed at a time)
   const activeConditioning = useMemo(() => {
-    if (!character.stagedPerks || character.stagedPerks.length === 0) return null;
-    return character.stagedPerks[0]; // Only one can be active
-  }, [character.stagedPerks]);
+    const stagedPerks = character.perks.filter(p => p.isStaged);
+    if (stagedPerks.length === 0) return null;
+    return stagedPerks[0]; // Only one can be active
+  }, [character.perks]);
 
   // Calculate current extraHP from staged perks
-  const currentExtraHP = calculateExtraHPFromStagedPerks(character.stagedPerks || []);
+  const currentExtraHP = calculateExtraHPFromStagedPerks(character.perks);
 
   // Current level is based on staged perk level
   const currentLevel = activeConditioning ? activeConditioning.level : 0;
@@ -92,33 +93,32 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
     ? getAttributeOptions(activePerkDetails || activeConditioning.perkSnapshot)
     : getAttributeOptions(selectedPerk);
 
-  // Check which conditioning perks are already completed
-  const completedConditioningIds = character.combatPerks
-    .filter(cp => cp.perkSnapshot?.tags?.includes('Conditioning'))
-    .map(cp => cp.id);
+  // Check which conditioning perks are already completed (level 5 in unified perks)
+  const completedConditioningIds = character.perks
+    .filter(p => p.isStaged && p.level >= 5)
+    .map(p => p.perkId);
 
   // Handle starting new conditioning
   const handleStartConditioning = () => {
     if (!selectedPerk || !selectedAttribute || !canAfford) return;
 
     // Create new staged perk at level 1
-    const newStagedPerk = {
-      id: selectedPerk.id,
+    const newStagedPerk: CharacterPerk = {
+      id: `${selectedPerk.id}-${Date.now()}`,
+      perkId: selectedPerk.id,
       name: selectedPerk.name,
+      type: 'Combat',
       level: 1,
       attribute: selectedAttribute,
-      levelHistory: [{
-        level: 1,
-        attribute: selectedAttribute,
-        cost
-      }],
-      perkSnapshot: selectedPerk,
-      addedAt: Date.now()
+      isFlaw: false,
+      isStaged: true,
+      acquiredAt: Date.now(),
+      perkSnapshot: selectedPerk
     };
 
     onUpdate({
       ...character,
-      stagedPerks: [newStagedPerk], // Only one at a time
+      perks: [...character.perks, newStagedPerk],
       combatXP: character.combatXP - cost,
       progressionLog: [
         ...character.progressionLog,
@@ -126,7 +126,9 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
           type: 'stagedPerk' as const,
           name: selectedPerk.name,
           cost,
-          attribute: selectedAttribute
+          attribute: selectedAttribute,
+          xpType: 'combat' as const,
+          stagedLevel: 1
         }
       ]
     });
@@ -140,29 +142,17 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
 
     if (nextLevel >= 5) {
       // LEVEL 5 COMPLETION
-      // 1. Remove from stagedPerks
-      // 2. Add to combatPerks as completed perk with capstone
-      // 3. Increment maxWounds by 1
-      // 4. Reset extraHP to 0 (the 4 HP become part of the new wound)
-      // 5. Remove "extra-hp" effect from the completed perk's snapshot
-
-      // Create modified snapshot without "extra-hp" effect (since HP is now part of maxWounds)
-      const completedPerk: CombatPerk = {
-        id: activeConditioning.id,
-        name: activeConditioning.name,
-        cost: cost,
-        attribute: selectedAttribute,
-        description: activePerkDetails?.description || '',
-        isCustom: false,
-        source: 'database',
-        perkSnapshot: activeConditioning.perkSnapshot,
-        addedAt: Date.now()
+      // Update perk to level 5 (stays in perks array, isStaged: true)
+      // Increment maxWounds by 1
+      const updatedPerk: CharacterPerk = {
+        ...activeConditioning,
+        level: 5,
+        attribute: selectedAttribute
       };
 
       onUpdate({
         ...character,
-        stagedPerks: [], // Clear - conditioning complete
-        combatPerks: [...character.combatPerks, completedPerk],
+        perks: character.perks.map(p => p.id === activeConditioning.id ? updatedPerk : p),
         maxWounds: character.maxWounds + 1,
         combatXP: character.combatXP - cost,
         progressionLog: [
@@ -171,31 +161,23 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
             type: 'stagedPerk' as const,
             name: activeConditioning.name,
             cost,
-            attribute: selectedAttribute
-          },
-          {
-            type: 'combatPerk' as const,
-            name: `${activeConditioning.name} (Completed)`,
-            cost: 0,
-            attribute: selectedAttribute
+            attribute: selectedAttribute,
+            xpType: 'combat' as const,
+            stagedLevel: 5
           }
         ]
       });
     } else {
       // LEVEL UP (2-4)
-      const updatedStagedPerk = {
+      const updatedPerk: CharacterPerk = {
         ...activeConditioning,
         level: nextLevel,
-        attribute: selectedAttribute,
-        levelHistory: [
-          ...activeConditioning.levelHistory,
-          { level: nextLevel, attribute: selectedAttribute, cost }
-        ]
+        attribute: selectedAttribute
       };
 
       onUpdate({
         ...character,
-        stagedPerks: [updatedStagedPerk],
+        perks: character.perks.map(p => p.id === activeConditioning.id ? updatedPerk : p),
         combatXP: character.combatXP - cost,
         progressionLog: [
           ...character.progressionLog,
@@ -203,7 +185,9 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
             type: 'stagedPerk' as const,
             name: activeConditioning.name,
             cost,
-            attribute: selectedAttribute
+            attribute: selectedAttribute,
+            xpType: 'combat' as const,
+            stagedLevel: nextLevel
           }
         ]
       });

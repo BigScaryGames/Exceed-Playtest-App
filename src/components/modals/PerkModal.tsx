@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
-import { Perk } from '@/types/character';
+
+// Local interface for perk form data
+interface PerkFormData {
+  name: string;
+  cost: number;
+  attribute: string;
+  description?: string;
+}
 
 interface PerkModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (perk: Omit<Perk, 'cost'> & { cost: number }) => void;
+  onSave: (perk: PerkFormData) => void;
   availableCP: number;
-  editingPerk?: Perk | null;
+  editingPerk?: PerkFormData | null;
   existingCost?: number;
 }
 
