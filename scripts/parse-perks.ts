@@ -80,17 +80,17 @@ interface GitHubFile {
 // Configuration
 const GITHUB_REPO = 'BigScaryGames/ExceedV';
 const GITHUB_BRANCH = 'main';
-const GITHUB_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/Ruleset/Perks`;
-const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/Ruleset/Perks`;
-const GITHUB_ACTIONS_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/Ruleset/Core%20Rules/Actions`;
-const GITHUB_ACTIONS_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/Ruleset/Core Rules/Actions`;
-const GITHUB_EFFECTS_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/Ruleset/Core%20Rules/References/Effects`;
-const GITHUB_EFFECTS_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/Ruleset/Core Rules/References/Effects`;
+const GITHUB_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/source/content/Perks`;
+const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/source/content/Perks`;
+const GITHUB_ACTIONS_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/source/content/Actions/Abilities`;
+const GITHUB_ACTIONS_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/source/content/Actions/Abilities`;
+const GITHUB_EFFECTS_API_BASE = `https://api.github.com/repos/${GITHUB_REPO}/contents/source/content/Rules/Effects`;
+const GITHUB_EFFECTS_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/source/content/Rules/Effects`;
 
 // Fallback to local path if available (for local development)
-const LOCAL_RULESET_PATH = '/home/r/Exceed/ExceedV/Ruleset/Perks';
-const LOCAL_ACTIONS_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/Actions';
-const LOCAL_EFFECTS_PATH = '/home/r/Exceed/ExceedV/Ruleset/Core Rules/References/Effects';
+const LOCAL_RULESET_PATH = '/home/r/Exceed/ExceedV/source/content/Perks';
+const LOCAL_ACTIONS_PATH = '/home/r/Exceed/ExceedV/source/content/Actions/Abilities';
+const LOCAL_EFFECTS_PATH = '/home/r/Exceed/ExceedV/source/content/Rules/Effects';
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'data', 'perks.json');
 
 // Check if running in CI or local

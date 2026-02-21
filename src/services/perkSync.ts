@@ -9,7 +9,7 @@ import { loadBundledPerks } from '@/data/perkLoader';
 // Configuration
 const GITHUB_REPO = 'BigScaryGames/ExceedV';
 const GITHUB_BRANCH = 'main';
-const GITHUB_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/Ruleset/Perks`;
+const GITHUB_BASE_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/source/content/Perks`;
 
 const CACHE_KEY = 'exceed-perks-cache';
 const CACHE_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days

@@ -48,7 +48,7 @@ interface SpellDatabase {
 }
 
 // Configuration
-const LOCAL_SPELLS_PATH = '/home/r/Exceed/ExceedV/Ruleset/Spells';
+const LOCAL_SPELLS_PATH = '/home/r/Exceed/ExceedV/source/content/Spells';
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'data', 'spells.json');
 
 /**

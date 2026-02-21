@@ -10,14 +10,15 @@ import {
   deleteCharacter,
 } from '@/utils/character';
 import { CharacterSheet } from '@/components/CharacterSheet';
-import { RulesTab } from '@/components/tabs/RulesTab';
 import { SideMenu } from '@/components/SideMenu';
 import { RenameCharacterModal } from '@/components/modals/RenameCharacterModal';
 import { loadPerks, clearPerkCache } from '@/services/perkSync';
 import { loadSpellDatabase } from '@/data/spells';
 import type { PerkDatabase } from '@/types/perks';
 
-type ViewState = 'landing' | 'create' | 'characterList' | 'characterSheet' | 'rules';
+type ViewState = 'landing' | 'create' | 'characterList' | 'characterSheet';
+
+const RULES_URL = 'https://bigscarygames.github.io/ExceedV/';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<ViewState>('landing');
@@ -202,11 +203,6 @@ export default function App() {
     setCharacters(prev => prev.map(c => c.name === oldName ? updatedCharacter : c));
   };
 
-  const handleViewRules = () => {
-    setCurrentView('rules');
-    setIsMenuOpen(false);
-  };
-
   const handleClearCache = async () => {
     // Clear perk cache from localStorage
     clearPerkCache();
@@ -265,7 +261,7 @@ export default function App() {
             </div>
 
             <button
-              onClick={() => setCurrentView('rules')}
+              onClick={() => window.open(RULES_URL, '_blank')}
               className="w-full flex items-center justify-center gap-3 bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold py-4 px-6 rounded-lg transition-colors border border-slate-600"
             >
               <BookOpen size={24} />
@@ -447,7 +443,6 @@ export default function App() {
           onBackToLanding={handleBackToLanding}
           onRename={() => setShowRenameModal(true)}
           onExport={handleExportCharacter}
-          onViewRules={handleViewRules}
         />
         <RenameCharacterModal
           isOpen={showRenameModal}
@@ -462,23 +457,6 @@ export default function App() {
           onMenuToggle={() => setIsMenuOpen(!isMenuOpen)}
         />
       </>
-    );
-  }
-
-  // Rules View
-  if (currentView === 'rules') {
-    return (
-      <div className="min-h-screen bg-slate-900">
-        <div className="bg-black p-4 border-b border-slate-700">
-          <button
-            onClick={handleBackToLanding}
-            className="text-slate-400 hover:text-white transition-colors"
-          >
-            ← Back
-          </button>
-        </div>
-        <RulesTab />
-      </div>
     );
   }
 

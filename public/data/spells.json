@@ -1,6 +1,6 @@
 {
-  "version": "2026-02-02T13:15:42.594Z",
-  "lastUpdated": 1770038142595,
+  "version": "2026-02-21T10:18:25.195Z",
+  "lastUpdated": 1771669105195,
   "spells": [
     {
       "id": "arcane-armor",
@@ -19,7 +19,7 @@
       "shortDescription": "Summon a light magical armor on self.",
       "basic": {
         "limitCost": 1,
-        "effect": "Set Armor bonus to Spellcraft Tier (minimum 1) if unarmored. Cannot be re-summoned if dispelled with non-full stamina HP."
+        "effect": "Add Armor bonus to Spellcraft Tier (minimum 1) if unarmored. Cannot be re-summoned if dispelled with non-full stamina HP."
       },
       "description": "Arcane Armor is rarely used in wars, and until higher tiers it is weaker defense than an actual physical armor. Despite that it is quite popular spell to learn, as Arcane Armor is weightless and requires no maintenance.  Authors note: put on a good enchanted brigantine and a nice helmet. No one needs to see your amazing hairstyle during the battle."
     },
@@ -563,7 +563,7 @@
       "shortDescription": "Grow claws and defensive arm covering",
       "basic": {
         "limitCost": 1,
-        "effect": "You get up to two 1d4 Unarmed or 1H weapons with #Light trait. You can parry with them."
+        "effect": "You get up to two 1d4 Unarmed or 1H weapons with #Light trait. You can unarmed deflect with them."
       },
       "description": "Basic transformation step on a way to become a furry beast. The utility of this spell is overrated, as a dagger is more versatile.  Authors note: I've only seen druids and furry pervs use this spell, and in Elzmeer we don't teach druidism. This spell won't count for exam qualifications.",
       "duration": "-"

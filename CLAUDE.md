@@ -8,7 +8,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Game Rules Reference
 
-The official EXCEED ruleset is available in `docs/rules/` (symlinked to `/home/rvh/Obsidian/ExceedV/Ruleset/`). Key mechanics are documented in `docs/README.md` for quick reference during development.
+- **Public Website**: https://bigscarygames.github.io/ExceedV/
+- **Local Source**: `/home/r/Exceed/ExceedV/source/content/Rules/`
+
+Key mechanics files for quick reference during development:
+- `3. Character Creation and Point buy Costs.md`
+- `3.1 Attributes.md`
+- `3.2 Perks and Wounds.md`
+- `5. Skills.md`
+- `4. Combat Conflict Resolution.md`
+- `7. Equipment.md`
+- `7.1 Encumbrance.md`
 
 ## Build and Development Commands
 
@@ -335,10 +345,10 @@ interface Perk {
 ```
 
 ### Perk Data Flow
-1. **Source**: Markdown files in `/home/r/Exceed/ExceedV/Ruleset/Perks/`
-   - CombatPerks/, MagicPerks/, SkillPerks/
-   - Core Rules/Actions (abilities)
-   - Core Rules/References/Effects (effects)
+1. **Source**: Markdown files in `/home/r/Exceed/ExceedV/source/content/`
+   - `Perks/` - CombatPerks/, MagicPerks/, SkillPerks/
+   - `Actions/Abilities/` - Ability definitions
+   - `Rules/Effects/` - Effect definitions
 2. **Parser**: `scripts/parse-perks.ts`
    - Reads markdown files
    - Generates `public/data/perks.json`

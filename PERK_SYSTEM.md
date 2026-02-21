@@ -10,7 +10,7 @@ The perk database system has been successfully implemented with a hybrid approac
 ## Components
 
 ### 1. Parser Script (`scripts/parse-perks.ts`)
-- Parses all `.md` files from `/home/rvh/Obsidian/ExceedV/Ruleset/Perks/`
+- Parses all `.md` files from `/home/r/Exceed/ExceedV/source/content/Perks/`
 - Extracts: name, requirements, attributes, cost, AP cost, tags, descriptions
 - Categorizes by folder: CombatPerks → combat, MagicPerks → magic, SkillPerks → skill
 - Generates `public/data/perks.json` (87KB, 95 perks)
@@ -106,7 +106,7 @@ Extended `Perk` and `CombatPerk` interfaces with snapshot fields:
 ```bash
 npm run build
 → prebuild hook: npm run parse-perks
-→ Parser reads /home/rvh/Obsidian/ExceedV/Ruleset/Perks/**/*.md
+→ Parser reads /home/r/Exceed/ExceedV/source/content/Perks/**/*.md
 → Generates public/data/perks.json (bundled with app)
 → TypeScript compilation
 → Vite builds app
