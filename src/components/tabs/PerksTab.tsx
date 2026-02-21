@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, BookOpen, Swords, ScrollText, Plus, Search, X } from 'lucide-react';
-import { Character } from '@/types/character';
+import { ChevronDown, ChevronRight, BookOpen, Swords, ScrollText, Plus, Search, X, AlertTriangle } from 'lucide-react';
+import { Character, Flaw } from '@/types/character';
 import type { PerkDatabase, Perk } from '@/types/perks';
 import {
   getActiveAbilitiesWithInheritedTags,
@@ -10,6 +10,7 @@ import {
 } from '@/utils/effectCalculator';
 import { AddPerkModal } from '@/components/modals/AddPerkModal';
 import { PerkBrowserModal } from '@/components/modals/PerkBrowserModal';
+import { FlawSelectModal } from '@/components/modals/FlawSelectModal';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
 
 interface PerksTabProps {
@@ -385,6 +386,7 @@ export const PerksTab: React.FC<PerksTabProps> = ({
   const [showAddCombatPerkModal, setShowAddCombatPerkModal] = useState(false);
   const [showAddSkillPerkModal, setShowAddSkillPerkModal] = useState(false);
   const [showPerkBrowser, setShowPerkBrowser] = useState(false);
+  const [showFlawModal, setShowFlawModal] = useState(false);
 
   // Get abilities and effects with inherited tags
   const abilities = getActiveAbilitiesWithInheritedTags(character, perkDatabase);
@@ -520,6 +522,55 @@ export const PerksTab: React.FC<PerksTabProps> = ({
       ...character,
       perks: updatedPerks,
       socialXP: character.socialXP + cost,
+      progressionLog: updatedLog
+    });
+  };
+
+  // Handle add flaw
+  const handleAddFlaw = (flaw: Flaw) => {
+    const updatedCharacter = {
+      ...character,
+      flaws: [...character.flaws, flaw],
+      // Grant negative XP (flaws give XP to spend)
+      combatXP: character.combatXP + Math.abs(flaw.xpValue),
+      // Log the progression
+      progressionLog: [
+        ...character.progressionLog,
+        {
+          type: 'flaw' as const,
+          name: flaw.name,
+          attribute: flaw.attribute,
+          cost: flaw.xpValue,  // Negative value
+          xpType: 'combat' as const,
+        },
+      ],
+    };
+
+    onUpdate(updatedCharacter);
+  };
+
+  // Handle delete flaw
+  const handleDeleteFlaw = (index: number) => {
+    const flaw = character.flaws[index];
+    const updatedFlaws = character.flaws.filter((_, i) => i !== index);
+    const xpValue = flaw.xpValue;  // Negative value
+
+    // Remove from progression log
+    const updatedLog = [...character.progressionLog];
+    for (let i = updatedLog.length - 1; i >= 0; i--) {
+      if (updatedLog[i].type === 'flaw' &&
+          updatedLog[i].name === flaw.name &&
+          updatedLog[i].cost === xpValue) {
+        updatedLog.splice(i, 1);
+        break;
+      }
+    }
+
+    onUpdate({
+      ...character,
+      flaws: updatedFlaws,
+      // Remove the XP that was granted
+      combatXP: character.combatXP - Math.abs(xpValue),
       progressionLog: updatedLog
     });
   };
@@ -742,6 +793,73 @@ export const PerksTab: React.FC<PerksTabProps> = ({
         )}
       </div>
 
+      {/* Flaws Section */}
+      <div className="bg-slate-800 rounded-lg overflow-hidden">
+        <div className="px-4 py-3 flex items-center justify-between bg-slate-750">
+          <div className="flex items-center gap-2">
+            <AlertTriangle size={18} className="text-red-400" />
+            <span className="text-white font-semibold">Flaws</span>
+            {character.flaws && character.flaws.length > 0 && (
+              <span className="text-slate-400 text-sm">({character.flaws.length})</span>
+            )}
+          </div>
+          <button
+            onClick={() => setShowFlawModal(true)}
+            className="flex items-center gap-1 bg-red-700 hover:bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded"
+          >
+            <Plus size={14} />
+            Add Flaw
+          </button>
+        </div>
+
+        {character.flaws && character.flaws.length > 0 ? (
+          <div className="p-4 space-y-3">
+            {/* Total Flaw XP Display */}
+            <div className="text-center text-sm">
+              <span className="text-slate-400">Total Flaw XP: </span>
+              <span className="text-red-400 font-bold">
+                {character.flaws.reduce((sum, flaw) => sum + flaw.xpValue, 0)} XP
+              </span>
+            </div>
+
+            {/* Individual Flaws */}
+            {character.flaws.map((flaw, index) => (
+              <div
+                key={flaw.name + index}
+                className="bg-slate-700 rounded-lg p-4"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-white font-semibold">{flaw.name}</h4>
+                      <span className="text-red-400 text-sm font-bold">{flaw.xpValue} XP</span>
+                    </div>
+                    {flaw.attribute && (
+                      <p className="text-slate-400 text-xs mb-2">
+                        Attribute: <span className="text-slate-300">{flaw.attribute}</span>
+                      </p>
+                    )}
+                    <p className="text-slate-300 text-sm">{flaw.description}</p>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteFlaw(index)}
+                    className="text-red-400 hover:text-red-300 p-1 rounded transition-colors"
+                    title="Remove flaw"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-8 text-center text-slate-400">
+            <p className="text-sm">No flaws yet</p>
+            <p className="text-xs mt-1">Flaws provide XP but impose limitations</p>
+          </div>
+        )}
+      </div>
+
       {/* Modals */}
       <AddPerkModal
         isOpen={showAddMagicPerkModal}
@@ -776,6 +894,13 @@ export const PerksTab: React.FC<PerksTabProps> = ({
         character={character}
         onUpdate={onUpdate}
         perkDatabase={perkDatabase}
+      />
+
+      <FlawSelectModal
+        isOpen={showFlawModal}
+        onClose={() => setShowFlawModal(false)}
+        onSelectFlaw={handleAddFlaw}
+        existingFlaws={character.flaws.map(f => f.name)}
       />
     </div>
   );

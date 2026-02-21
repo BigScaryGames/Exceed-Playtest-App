@@ -1,6 +1,6 @@
 {
-  "version": "2026-02-21T10:18:24.303Z",
-  "lastUpdated": 1771669104303,
+  "version": "2026-02-21T11:23:17.687Z",
+  "lastUpdated": 1771672997687,
   "perks": {
     "combat": [
       {
@@ -4724,6 +4724,7 @@
       }
     ]
   },
+  "flaws": [],
   "abilities": [
     {
       "id": "all-the-birds",

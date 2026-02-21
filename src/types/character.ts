@@ -58,6 +58,19 @@ export interface CombatPerk {
   addedAt?: number; // Timestamp when added to character
 }
 
+// MS5: Flaws (negative perks with negative XP cost)
+export interface Flaw {
+  name: string;
+  xpValue: number;  // Negative XP granted (e.g., -5, -10, -15)
+  attribute?: string;  // Optional attribute restriction
+  description: string;
+  id?: string;
+  isCustom?: boolean;
+  source?: 'database' | 'custom';
+  perkSnapshot?: DatabasePerk;  // Reuse perk snapshot system
+  addedAt?: number;
+}
+
 // MS5: Staged perks (conditioning perks with 5 levels)
 export interface StagedPerkLevel {
   level: number;
@@ -88,11 +101,11 @@ export interface ExtraHPEntry {
 }
 
 export interface ProgressionLogEntry {
-  type: 'skill' | 'perk' | 'combatPerk' | 'magicPerk' | 'stagedPerk' | 'extraHP' | 'extraWound' | 'spell';
+  type: 'skill' | 'perk' | 'combatPerk' | 'magicPerk' | 'stagedPerk' | 'extraHP' | 'extraWound' | 'spell' | 'flaw';
   name?: string;
   level?: number;
   attribute?: string;
-  cost: number;
+  cost: number;  // Negative for flaws
   tier?: number; // For spells
   spellType?: 'basic' | 'advanced'; // For spells
   xpType?: 'combat' | 'social'; // Track which XP pool was used
@@ -109,6 +122,7 @@ export interface Character {
   perks: Perk[];
   combatPerks: CombatPerk[];
   magicPerks: Perk[];
+  flaws: Flaw[];  // MS5: Flaws (negative perks)
   equipment: Equipment[];
   customItems: Equipment[];
   progressionLog: ProgressionLogEntry[];

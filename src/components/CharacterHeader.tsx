@@ -13,7 +13,7 @@ import {
   Gauge
 } from 'lucide-react';
 import { Character, AttributeCode } from '@/types/character';
-import { ATTRIBUTE_CP_THRESHOLDS, MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS } from '@/utils/constants';
+import { NEGATIVE_CP_THRESHOLDS, POSITIVE_CP_THRESHOLDS, MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS } from '@/utils/constants';
 import { calculateLimit, calculateUsedLimit } from '@/utils/spells';
 
 // Icon mapping for attributes
@@ -40,31 +40,53 @@ const ATTRIBUTE_NAME_TO_CODE: Record<string, AttributeCode> = {
   'Charisma': 'CH'
 };
 
-// Calculate progress to next threshold
-const calculateProgress = (currentCP: number, thresholds: number[]): number => {
-  // Find current level and next threshold
-  let currentThreshold = 0;
-  let nextThreshold = thresholds[0];
-
-  for (let i = 0; i < thresholds.length; i++) {
-    if (currentCP >= thresholds[i]) {
-      currentThreshold = thresholds[i];
-      nextThreshold = thresholds[i + 1] || thresholds[i]; // Max level
-    } else {
-      nextThreshold = thresholds[i];
-      break;
+// Calculate progress to next threshold (handles negative and positive)
+const calculateProgress = (currentCP: number, _thresholds: number[]): number => {
+  if (currentCP === 0) return 0;
+  
+  if (currentCP < 0) {
+    // Negative CP: use negative thresholds
+    let currentThreshold = 0;
+    let nextThreshold = NEGATIVE_CP_THRESHOLDS[0];  // -30
+    
+    for (let i = 0; i < NEGATIVE_CP_THRESHOLDS.length; i++) {
+      if (currentCP <= NEGATIVE_CP_THRESHOLDS[i]) {
+        currentThreshold = NEGATIVE_CP_THRESHOLDS[i];
+        nextThreshold = NEGATIVE_CP_THRESHOLDS[i + 1] || currentThreshold;
+      }
     }
+    
+    // If at max negative (-30 or less), show full bar
+    if (currentCP <= NEGATIVE_CP_THRESHOLDS[0]) {
+      return 100;
+    }
+    
+    // Calculate percentage (note: thresholds are negative, so we invert)
+    const range = Math.abs(nextThreshold - currentThreshold);
+    const progress = Math.abs(currentCP - currentThreshold);
+    return range > 0 ? (progress / range) * 100 : 0;
+  } else {
+    // Positive CP: use positive thresholds
+    let currentThreshold = 0;
+    let nextThreshold = POSITIVE_CP_THRESHOLDS[0];
+    
+    for (let i = 0; i < POSITIVE_CP_THRESHOLDS.length; i++) {
+      if (currentCP >= POSITIVE_CP_THRESHOLDS[i]) {
+        currentThreshold = POSITIVE_CP_THRESHOLDS[i];
+        nextThreshold = POSITIVE_CP_THRESHOLDS[i + 1] || POSITIVE_CP_THRESHOLDS[POSITIVE_CP_THRESHOLDS.length - 1];
+      }
+    }
+    
+    // If at max level, show full bar
+    if (currentCP >= POSITIVE_CP_THRESHOLDS[POSITIVE_CP_THRESHOLDS.length - 1]) {
+      return 100;
+    }
+    
+    // Calculate percentage progress
+    const range = nextThreshold - currentThreshold;
+    const progress = currentCP - currentThreshold;
+    return range > 0 ? (progress / range) * 100 : 0;
   }
-
-  // If at max level, show full bar
-  if (currentCP >= thresholds[thresholds.length - 1]) {
-    return 100;
-  }
-
-  // Calculate percentage progress between current and next threshold
-  const range = nextThreshold - currentThreshold;
-  const progress = currentCP - currentThreshold;
-  return range > 0 ? (progress / range) * 100 : 0;
 };
 
 interface CharacterHeaderProps {
@@ -158,7 +180,12 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onM
             };
             const IconComponent = STAT_ICONS[stat];
             const currentCP = attributeCPTotals[stat] || 0;
-            const progress = calculateProgress(currentCP, ATTRIBUTE_CP_THRESHOLDS);
+            const progress = calculateProgress(currentCP, []);  // thresholds not used anymore in function
+
+            // Color code negative values
+            const valueColor = value < 0 ? 'text-red-400' : value > 0 ? 'text-white' : 'text-slate-400';
+            // Bar color: red for negative, green for positive
+            const barColor = currentCP < 0 ? 'bg-red-500' : 'bg-green-500';
 
             return (
               <div key={stat} className="bg-slate-800 rounded px-2 py-1.5">
@@ -168,12 +195,12 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onM
                     <span className="hidden sm:inline">{fullNames[stat] || stat}</span>
                     <span className="sm:hidden">{stat}</span>
                   </span>
-                  <span className="text-base font-bold text-white">{value}</span>
+                  <span className={`text-base font-bold ${valueColor}`}>{value}</span>
                 </div>
                 {/* Progress bar */}
                 <div className="h-1 bg-slate-700 rounded-full mt-1 overflow-hidden">
                   <div
-                    className="h-full bg-green-500 transition-all duration-300"
+                    className={`h-full ${barColor} transition-all duration-300`}
                     style={{ width: `${progress}%` }}
                   />
                 </div>

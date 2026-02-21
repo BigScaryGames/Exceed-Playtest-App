@@ -66,6 +66,7 @@ interface PerkDatabase {
     magic: ParsedPerk[];
     skill: ParsedPerk[];
   };
+  flaws: ParsedPerk[];  // MS5: Flaws (negative perks)
   abilities: ParsedAbility[];  // MS5: All abilities
   effects: ParsedEffect[];     // MS5: All effects
 }
@@ -89,6 +90,7 @@ const GITHUB_EFFECTS_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_REPO
 
 // Fallback to local path if available (for local development)
 const LOCAL_RULESET_PATH = '/home/r/Exceed/ExceedV/source/content/Perks';
+const LOCAL_FLAWS_PATH = '/home/r/Exceed/ExceedV/source/content/Perks/Flaws';
 const LOCAL_ACTIONS_PATH = '/home/r/Exceed/ExceedV/source/content/Actions/Abilities';
 const LOCAL_EFFECTS_PATH = '/home/r/Exceed/ExceedV/source/content/Rules/Effects';
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'data', 'perks.json');
@@ -824,6 +826,7 @@ async function main() {
   let combatPerks: ParsedPerk[];
   let magicPerks: ParsedPerk[];
   let skillPerks: ParsedPerk[];
+  let flaws: ParsedPerk[] = [];
   let abilities: ParsedAbility[] = [];
   let effects: ParsedEffect[] = [];
 
@@ -872,10 +875,16 @@ async function main() {
       path.join(LOCAL_RULESET_PATH, 'SkillPerks'),
       'skill'
     );
+    // Parse flaws (MS5)
+    const flawsResult = parsePerksFromLocalWithContents(
+      LOCAL_FLAWS_PATH,
+      'skill'  // Flaws use same type as skill perks
+    );
 
     combatPerks = combatResult.perks;
     magicPerks = magicResult.perks;
     skillPerks = skillResult.perks;
+    flaws = flawsResult.perks;
 
     // Parse abilities and effects (MS5)
     console.log('\n--- MS5: Parsing Abilities and Effects ---');
@@ -884,9 +893,9 @@ async function main() {
 
     // Post-process: resolve plain ![[Name]] references in grants
     console.log('\n--- Resolving plain grant references ---');
-    const allPerks = [...combatPerks, ...magicPerks, ...skillPerks];
+    const allPerks = [...combatPerks, ...magicPerks, ...skillPerks, ...flaws];
     const allContents = new Map<string, string>();
-    [...combatResult.contents, ...magicResult.contents, ...skillResult.contents].forEach(([k, v]) => allContents.set(k, v));
+    [...combatResult.contents, ...magicResult.contents, ...skillResult.contents, ...flawsResult.contents].forEach(([k, v]) => allContents.set(k, v));
 
     resolvePlainGrantReferences(allPerks, abilities, effects, allContents);
     console.log('Plain grant references resolved');
@@ -901,6 +910,7 @@ async function main() {
       magic: magicPerks,
       skill: skillPerks,
     },
+    flaws,  // MS5
     abilities,  // MS5
     effects,    // MS5
   };
@@ -918,7 +928,8 @@ async function main() {
   console.log(`Combat perks: ${combatPerks.length}`);
   console.log(`Magic perks: ${magicPerks.length}`);
   console.log(`Skill perks: ${skillPerks.length}`);
-  console.log(`Total perks: ${combatPerks.length + magicPerks.length + skillPerks.length}`);
+  console.log(`Flaws: ${flaws.length}`);
+  console.log(`Total perks: ${combatPerks.length + magicPerks.length + skillPerks.length + flaws.length}`);
   console.log(`Abilities: ${abilities.length}`);
   console.log(`Effects: ${effects.length}`);
   console.log(`Output: ${OUTPUT_PATH}`);

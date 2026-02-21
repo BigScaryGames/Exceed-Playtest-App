@@ -2,7 +2,7 @@ import { Character, AttributeCode, ProgressionLogEntry, Weapon, WeaponDomains } 
 import { ARMOR_TYPES } from '@/data/armor';
 import { WEAPONS } from '@/data/weapons';
 import { SHIELDS } from '@/data/shields';
-import { ATTRIBUTE_CP_THRESHOLDS, MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS, ENCUMBRANCE_LEVELS } from './constants';
+import { NEGATIVE_CP_THRESHOLDS, POSITIVE_CP_THRESHOLDS, MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS, ENCUMBRANCE_LEVELS } from './constants';
 import {
   getEquippedWeapons,
   getEquippedArmor,
@@ -25,6 +25,7 @@ const ATTRIBUTE_NAME_TO_CODE: Record<string, AttributeCode> = {
 };
 
 // Calculate attribute values from CP totals in progression log
+// Supports negative attributes (-3 to +5) per MS5 rules
 export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) => {
   const cpTotals = {
     MG: 0, EN: 0, AG: 0, DX: 0,
@@ -41,12 +42,15 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
       // Map full attribute name to code
       const attrCode = ATTRIBUTE_NAME_TO_CODE[entry.attribute] || entry.attribute;
       if (attrCode in cpTotals) {
-        cpTotals[attrCode as AttributeCode] += entry.cost;
+        cpTotals[attrCode as AttributeCode] += entry.cost;  // Negative for flaws
       }
     }
   });
 
   // Convert CP totals to attribute values using thresholds
+  // Negative: -30/-20/-10 → -3/-2/-1
+  // Zero: 0 → 0
+  // Positive: 10/30/60/100/150 → 1/2/3/4/5
   const stats = {
     MG: 0, EN: 0, AG: 0, DX: 0,
     WT: 0, WI: 0, PR: 0, CH: 0
@@ -55,11 +59,26 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
   Object.keys(cpTotals).forEach(attr => {
     const cp = cpTotals[attr as AttributeCode];
     let value = 0;
-    for (let i = 0; i < ATTRIBUTE_CP_THRESHOLDS.length; i++) {
-      if (cp >= ATTRIBUTE_CP_THRESHOLDS[i]) {
-        value = i + 1;
+
+    if (cp < 0) {
+      // Calculate negative attribute value
+      // -30 or less → -3, -20 to -29 → -2, -10 to -19 → -1
+      for (let i = NEGATIVE_CP_THRESHOLDS.length - 1; i >= 0; i--) {
+        if (cp <= NEGATIVE_CP_THRESHOLDS[i]) {
+          value = -(i + 1);
+          break;
+        }
+      }
+    } else if (cp > 0) {
+      // Calculate positive attribute value
+      for (let i = 0; i < POSITIVE_CP_THRESHOLDS.length; i++) {
+        if (cp >= POSITIVE_CP_THRESHOLDS[i]) {
+          value = i + 1;
+        }
       }
     }
+    // cp === 0 → value = 0 (already initialized)
+
     stats[attr as AttributeCode] = value;
   });
 

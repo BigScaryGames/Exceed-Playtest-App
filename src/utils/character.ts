@@ -14,6 +14,7 @@ export const createEmptyCharacter = (): Character => ({
   perks: [],
   combatPerks: [],
   magicPerks: [],
+  flaws: [],  // MS5: Flaws
   equipment: [],
   customItems: [],
   progressionLog: [],
@@ -77,6 +78,10 @@ const migrateCharacter = (character: Character): Character => {
   // Add magicPerks if missing
   if (!character.magicPerks) {
     character.magicPerks = [];
+  }
+  // Add flaws if missing (MS5)
+  if (!character.flaws) {
+    character.flaws = [];
   }
   // Add woundsNotes if missing
   if (!character.woundsNotes) {

@@ -37,7 +37,14 @@ export const normalizeAttributeName = (attribute: string): string => {
 };
 
 // CP thresholds for attribute progression (CP → Attribute Value)
-export const ATTRIBUTE_CP_THRESHOLDS = [10, 30, 60, 100, 150];
+// Negative thresholds: -30/-20/-10 → -3/-2/-1
+// Positive thresholds: 10/30/60/100/150 → 1/2/3/4/5
+// 0 CP = 0 attribute value
+export const NEGATIVE_CP_THRESHOLDS = [-30, -20, -10];
+export const POSITIVE_CP_THRESHOLDS = [10, 30, 60, 100, 150];
+
+// Legacy alias (deprecated - use POSITIVE_CP_THRESHOLDS)
+export const ATTRIBUTE_CP_THRESHOLDS = POSITIVE_CP_THRESHOLDS;
 
 // MS5: Domain CP thresholds
 // Martial Domain: All combat perks contribute here

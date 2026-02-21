@@ -20,12 +20,12 @@ interface CharacterSheetProps {
 
 type TabType = 'list' | 'skills' | 'combat' | 'equipment' | 'magic' | 'perks';
 
+const tabs: TabType[] = ['list', 'skills', 'combat', 'equipment', 'magic', 'perks'];
+
 export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpdate, perkDatabase, onMenuToggle }) => {
   const [activeTab, setActiveTab] = useState<TabType>('list');
   const [touchStart, setTouchStart] = useState<number>(0);
   const [touchEnd, setTouchEnd] = useState<number>(0);
-
-  const tabs: TabType[] = ['list', 'skills', 'combat', 'equipment', 'magic', 'perks'];
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.touches[0].clientX);
