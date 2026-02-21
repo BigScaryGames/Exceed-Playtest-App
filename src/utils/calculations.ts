@@ -132,9 +132,28 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]): W
   };
 };
 
+// Calculate extra HP from staged perks (conditioning perks)
+// Stage 1-4: extraHP equals stage number (1, 2, 3, or 4)
+// Stage 5: no extraHP (converted to +1 Max Wounds)
+export const calculateExtraHPFromStagedPerks = (stagedPerks: import('@/types/character').StagedPerk[]): number => {
+  let extraHP = 0;
+  
+  stagedPerks.forEach(perk => {
+    if (perk.level >= 1 && perk.level <= 4) {
+      // Levels 1-4: extraHP equals level
+      extraHP += perk.level;
+    }
+    // Level 5: no extraHP (converted to wound via Extra Wound effect)
+  });
+  
+  return extraHP;
+};
+
 // Calculate HP values (stamina and health)
 export const calculateHP = (character: Character) => {
-  const maxHP = character.maxWounds * character.hpPerWound + character.extraHP;
+  // Calculate extraHP from staged perks instead of stored field
+  const extraHP = calculateExtraHPFromStagedPerks(character.stagedPerks || []);
+  const maxHP = character.maxWounds * character.hpPerWound + extraHP;
   const staminaMax = maxHP;
   const healthMax = character.maxWounds * 5;
 
@@ -170,21 +189,40 @@ export const calculateSpeed = (agility: number, endurance: number, armorPenalty:
   return Math.max(0, baseSpeed + armorPenalty);
 };
 
-// Calculate parry value (MS5: uses Martial domain)
-export const calculateParry = (character: Character): number | null => {
+// Calculate deflect value (MS5: Martial domain + weapon attribute + equipment bonus)
+// Deflect = Martial + Agility/Dexterity/Might (based on weapon type) + Equipment Defense bonus
+export const calculateDeflect = (character: Character): number => {
   const weapon1 = WEAPONS[character.equippedWeapon1];
   const weapon2 = WEAPONS[character.equippedWeapon2];
-
-  // Check if either weapon can parry (has Martial domain)
-  const canParry = (weapon1 && weapon1.domain === 'Martial') || (weapon2 && weapon2.domain === 'Martial');
-
-  if (!canParry) return null;
+  const shield = SHIELDS[character.equippedShield];
 
   // MS5: All weapons use Martial domain
   const martialLevel = character.weaponDomains.Martial || 0;
 
-  // Parry = Might + Perception + Martial domain
-  return character.stats.MG + character.stats.PR + martialLevel;
+  // Determine which attribute to use based on weapon properties
+  // Finesse weapons use Dexterity, Heavy weapons use Might, others use Agility
+  let weaponAttribute = character.stats.AG; // Default: Agility
+  
+  if (weapon1) {
+    if (weapon1.finesse && character.stats.DX > character.stats.AG) {
+      weaponAttribute = character.stats.DX;
+    } else if (weapon1.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
+      weaponAttribute = character.stats.MG;
+    }
+  } else if (weapon2) {
+    // Off-hand weapon
+    if (weapon2.finesse && character.stats.DX > character.stats.AG) {
+      weaponAttribute = character.stats.DX;
+    } else if (weapon2.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
+      weaponAttribute = character.stats.MG;
+    }
+  }
+
+  // Get equipment defense bonus from shield
+  const shieldBonus = shield?.defenseBonus || 0;
+
+  // Deflect = Martial domain + weapon attribute + shield bonus
+  return martialLevel + weaponAttribute + shieldBonus;
 };
 
 // Calculate encumbrance
@@ -259,9 +297,14 @@ export const calculateDodge = (agility: number, perception: number, armorPenalty
   return agility + perception + armorPenalty + encumbrancePenalty;
 };
 
-// Calculate endure
-export const calculateEndure = (endurance: number, will: number): number => {
-  return endurance + will;
+// Calculate endure (MS5: Endurance + Might)
+export const calculateEndure = (endurance: number, might: number): number => {
+  return endurance + might;
+};
+
+// Calculate resolve (MS5: Will + Charisma)
+export const calculateResolve = (will: number, charisma: number): number => {
+  return will + charisma;
 };
 
 // Calculate damage dice count based on domain level
@@ -305,23 +348,30 @@ export const calculateAttackAttribute = (character: Character, weapon: Weapon): 
   return attackAttr;
 };
 
-// Calculate parry for a specific weapon (MS5: uses Martial domain)
-export const calculateParryForWeapon = (character: Character, weapon: Weapon): number => {
+// Calculate deflect for a specific weapon (MS5: Martial domain + weapon attribute)
+// This is the "Parry" component of Deflect
+export const calculateDeflectForWeapon = (character: Character, weapon: Weapon): number => {
   if (!weapon.domain) return 0;
-  // Can't parry with ranged weapons
+  // Can't deflect with ranged weapons (use shield or dodge instead)
   if (weapon.traits.includes('Ranged') || weapon.traits.includes('Bow')) return 0;
 
   // MS5: All weapons use Martial domain
   const martialLevel = character.weaponDomains.Martial || 0;
-  const parryBase = weapon.finesse && character.stats.DX > character.stats.AG
-    ? character.stats.DX
-    : character.stats.AG;
 
-  return parryBase + martialLevel;
+  // Determine attribute: Finesse uses DX, Heavy uses MG, default AG
+  let deflectBase = character.stats.AG;
+  if (weapon.finesse && character.stats.DX > character.stats.AG) {
+    deflectBase = character.stats.DX;
+  } else if (weapon.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
+    deflectBase = character.stats.MG;
+  }
+
+  return deflectBase + martialLevel;
 };
 
-// Calculate best parry value from all equipped weapons
-export const calculateParryFromEquipped = (character: Character): number => {
+// Calculate Deflect = higher of (Weapon Parry) or (Shield Block)
+// Per rules: Deflect uses the best defensive option available
+export const calculateDeflectFromEquipped = (character: Character): number => {
   const equippedWeaponsFromInventory = getEquippedWeapons(character);
   let equippedWeapons: Array<Weapon> = [];
 
@@ -342,7 +392,16 @@ export const calculateParryFromEquipped = (character: Character): number => {
     }
   }
 
-  return Math.max(0, ...equippedWeapons.map(w => calculateParryForWeapon(character, w)));
+  // Calculate weapon-based deflect (Parry)
+  const weaponDeflect = equippedWeapons.length > 0
+    ? Math.max(0, ...equippedWeapons.map(w => calculateDeflectForWeapon(character, w)))
+    : 0;
+
+  // Calculate shield Block
+  const shieldBlock = calculateBlockFromEquipped(character);
+
+  // Deflect = higher of Parry or Block
+  return Math.max(weaponDeflect, shieldBlock);
 };
 
 // Calculate block value from equipped shield (MS5: uses Martial domain)
@@ -417,8 +476,11 @@ export const calculateHPValues = (character: Character) => {
     : (character.armorType ? ARMOR_TYPES[character.armorType] : ARMOR_TYPES['None']);
   const armorBonus = armorData.bonus;
 
+  // Calculate extraHP from staged perks instead of stored field
+  const extraHP = calculateExtraHPFromStagedPerks(character.stagedPerks || []);
+
   const maxStamina = (armorBonus + character.stats.EN) * effectiveMaxWounds;
-  const maxHealth = (character.hpPerWound * effectiveMaxWounds) + character.extraHP;
+  const maxHealth = (character.hpPerWound * effectiveMaxWounds) + extraHP;
   const currentStamina = character.currentStamina !== null ? character.currentStamina : maxStamina;
   const currentHealth = character.currentHealth !== null ? character.currentHealth : maxHealth;
 

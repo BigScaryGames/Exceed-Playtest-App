@@ -23,6 +23,11 @@ export interface Effect {
 export interface PerkGrants {
   abilities: string[];  // IDs of abilities granted
   effects: string[];    // IDs of effects granted
+  byStage?: {           // MS5: Stage-based grants for leveled perks
+    stage: number;
+    abilities?: string[];
+    effects?: string[];
+  }[];
 }
 
 export interface PerkRequirements {

@@ -1,6 +1,6 @@
 {
-  "version": "2026-02-21T11:23:17.687Z",
-  "lastUpdated": 1771672997687,
+  "version": "2026-02-21T14:03:41.409Z",
+  "lastUpdated": 1771682621409,
   "perks": {
     "combat": [
       {
@@ -911,13 +911,48 @@
           "Conditioning",
           "Leveled"
         ],
-        "description": "Learn from surviving grievous injuries; at mastery your scars tell a story of resilience.\n\nEvery scar has a story. Every near-death experience has taught you something about survival. Through combat, you've learned your body's limits and how to push beyond them. You know how wounds heal, which injuries are merely painful versus truly dangerous, and how to work with healers to maximize recovery. Your flesh bears testimony to battles survived, and that experience makes you more resilient. At the peak of this conditioning, your body has been broken and remade so many times that it knows instinctively how to survive and recover.",
-        "effect": "Extra HP",
+        "description": "Every scar has a story. Every near-death experience has taught you something about survival. Through combat, you have learned your body's limits and how to push beyond them. You know how wounds heal, which injuries are merely painful versus truly dangerous, and how to work with healers to maximize recovery. Your flesh bears testimony to battles survived, and that experience makes you more resilient. At the peak of this conditioning, your body has been broken and remade so many times that it knows instinctively how to survive and recover.",
+        "effect": "Extra HP 1",
         "grants": {
           "abilities": [],
-          "effects": [
-            "extra-hp",
-            "battle-scarred"
+          "effects": [],
+          "byStage": [
+            {
+              "stage": 1,
+              "abilities": [],
+              "effects": [
+                "extra-hp-1"
+              ]
+            },
+            {
+              "stage": 2,
+              "abilities": [],
+              "effects": [
+                "extra-hp-2"
+              ]
+            },
+            {
+              "stage": 3,
+              "abilities": [],
+              "effects": [
+                "extra-hp-3"
+              ]
+            },
+            {
+              "stage": 4,
+              "abilities": [],
+              "effects": [
+                "extra-hp-4"
+              ]
+            },
+            {
+              "stage": 5,
+              "abilities": [],
+              "effects": [
+                "battle-scarred",
+                "extra-wound"
+              ]
+            }
           ]
         }
       },
@@ -982,13 +1017,48 @@
           "Conditioning",
           "Leveled"
         ],
-        "description": "Adapt to extreme cold through exposure; at mastery thrive in frigid environments.\n\nWhether through necessity or deliberate training, you've spent extensive time in freezing conditions. Your body has learned to conserve heat more efficiently, your blood flows better in cold temperatures, and you've developed techniques for maintaining function when others would succumb to hypothermia. Ice baths, winter survival training, or years in arctic climates have transformed your relationship with cold. At mastery, you move through blizzards as easily as others walk through spring rain.",
-        "effect": "Extra HP",
+        "description": "Through arctic expeditions, ice swimming, winter survival training, or deliberate cold exposure, your body has adapted to function in temperatures that would incapacitate others. You have learned to conserve heat, prevent frostbite, and maintain dexterity when cold threatens to freeze your muscles. Whether from polar exploration, ice fishing, or systematic cold shower training, your tolerance for cold has been forged through experience. At mastery, you move through blinding blizzards as comfortably as others enjoy a crisp autumn day.",
+        "effect": "Extra HP 1",
         "grants": {
           "abilities": [],
-          "effects": [
-            "extra-hp",
-            "cold-conditioning"
+          "effects": [],
+          "byStage": [
+            {
+              "stage": 1,
+              "abilities": [],
+              "effects": [
+                "extra-hp-1"
+              ]
+            },
+            {
+              "stage": 2,
+              "abilities": [],
+              "effects": [
+                "extra-hp-2"
+              ]
+            },
+            {
+              "stage": 3,
+              "abilities": [],
+              "effects": [
+                "extra-hp-3"
+              ]
+            },
+            {
+              "stage": 4,
+              "abilities": [],
+              "effects": [
+                "extra-hp-4"
+              ]
+            },
+            {
+              "stage": 5,
+              "abilities": [],
+              "effects": [
+                "cold-conditioning",
+                "extra-wound"
+              ]
+            }
           ]
         }
       },
@@ -1018,13 +1088,48 @@
           "Conditioning",
           "Leveled"
         ],
-        "description": "Adapt to extreme heat through exposure; at mastery thrive in scorching environments.\n\nThrough forge work, desert survival, or deliberate heat exposure training, your body has adapted to function in temperatures that would prostrate others. You've learned to regulate your temperature, conserve moisture, and maintain clarity of thought when heat threatens to overwhelm. Whether from working beside blast furnaces, crossing sun-baked wastelands, or systematic sauna training, your tolerance for heat has been forged like steel. At mastery, you move through infernal heat as comfortably as others enjoy a warm summer day.",
-        "effect": "Extra HP",
+        "description": "Through forge work, desert survival, or deliberate heat exposure training, your body has adapted to function in temperatures that would prostrate others. You have learned to regulate your temperature, conserve moisture, and maintain clarity of thought when heat threatens to overwhelm. Whether from working beside blast furnaces, crossing sun-baked wastelands, or systematic sauna training, your tolerance for heat has been forged like steel. At mastery, you move through infernal heat as comfortably as others enjoy a warm summer day.",
+        "effect": "Extra HP 1",
         "grants": {
           "abilities": [],
-          "effects": [
-            "extra-hp",
-            "heat-conditioning"
+          "effects": [],
+          "byStage": [
+            {
+              "stage": 1,
+              "abilities": [],
+              "effects": [
+                "extra-hp-1"
+              ]
+            },
+            {
+              "stage": 2,
+              "abilities": [],
+              "effects": [
+                "extra-hp-2"
+              ]
+            },
+            {
+              "stage": 3,
+              "abilities": [],
+              "effects": [
+                "extra-hp-3"
+              ]
+            },
+            {
+              "stage": 4,
+              "abilities": [],
+              "effects": [
+                "extra-hp-4"
+              ]
+            },
+            {
+              "stage": 5,
+              "abilities": [],
+              "effects": [
+                "heat-conditioning",
+                "extra-wound"
+              ]
+            }
           ]
         }
       },
@@ -1034,54 +1139,14 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "Mage, Spellcraft 1",
-          "perks": [
-            "Mage"
-          ],
+          "text": "Spellcraft 1",
           "skills": [
             "Spellcraft 1"
           ]
         },
         "attributes": [
-          "Endurance",
-          "Will"
-        ],
-        "cost": {
-          "xp": 0,
-          "variable": true,
-          "formula": "Max_Wounds × level"
-        },
-        "apCost": null,
-        "tags": [
-          "Combat",
-          "Conditioning",
-          "Leveled",
-          "Magic"
-        ],
-        "description": "Develop resistance to transmutation through magical exposure; at mastery resist unwanted transformations.\n\nAs a mage exposed to transmutation magic and teleportation effects, your body and essence have been repeatedly subjected to magical alteration. Whether through experimental self-transformation, teleportation mishaps, or defensive training against hostile magic, you've developed a unique resistance to unwanted magical changes. Your magical nature has learned to recognize and resist foreign transmutation attempts. At mastery, your essence is so accustomed to magical forces that it instinctively rejects transmutation and forced displacement that you don't control.",
-        "effect": "Extra HP",
-        "grants": {
-          "abilities": [],
-          "effects": [
-            "extra-hp",
-            "magical-conditioning"
-          ]
-        }
-      },
-      {
-        "id": "mental-resilience",
-        "name": "Mental Resilience",
-        "type": "combat",
-        "source": "database",
-        "requirements": {
-          "text": "Will 2",
-          "skills": [
-            "Will 2"
-          ]
-        },
-        "attributes": [
-          "Endurance",
-          "Will"
+          "Will",
+          "Wit"
         ],
         "cost": {
           "xp": 0,
@@ -1094,13 +1159,119 @@
           "Conditioning",
           "Leveled"
         ],
-        "description": "Fortify your mind through mental discipline; at mastery develop formidable mental defenses.\n\nThrough meditation, facing your fears, or controlled exposure to mind-affecting magic, you build walls around your consciousness. Mental exercises strengthen your will like physical training strengthens muscle. Whether through monastic meditation techniques, exposure to minor enchantments, or simply surviving traumatic experiences, you learn to compartmentalize and protect your thoughts. At the peak of this training, your mind becomes a fortress, resistant to intrusion and manipulation.",
-        "effect": "Extra HP",
+        "description": "Through repeated spellcasting, magical meditation, or exposure to raw arcane energies, your body has adapted to channel magical forces with increasing efficiency. You have learned to regulate the flow of power through your channels, prevent magical burnout, and maintain concentration when wild energies threaten to overwhelm your control. Whether you are a wizard who has spent decades studying the arcane, a sorcerer whose bloodline grants natural affinity, or a cleric whose faith has been tested through countless miracles, your tolerance for magical exertion has been forged through practice. At mastery, you channel energies that would exhaust other casters.",
+        "effect": "Extra HP 1",
         "grants": {
           "abilities": [],
-          "effects": [
-            "extra-hp",
-            "mental-resilience"
+          "effects": [],
+          "byStage": [
+            {
+              "stage": 1,
+              "abilities": [],
+              "effects": [
+                "extra-hp-1"
+              ]
+            },
+            {
+              "stage": 2,
+              "abilities": [],
+              "effects": [
+                "extra-hp-2"
+              ]
+            },
+            {
+              "stage": 3,
+              "abilities": [],
+              "effects": [
+                "extra-hp-3"
+              ]
+            },
+            {
+              "stage": 4,
+              "abilities": [],
+              "effects": [
+                "extra-hp-4"
+              ]
+            },
+            {
+              "stage": 5,
+              "abilities": [],
+              "effects": [
+                "magical-conditioning",
+                "extra-wound"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "id": "mental-resilience",
+        "name": "Mental Resilience",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Theology 1 or History 1",
+          "perks": [
+            "Theology 1 or History 1"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": true,
+          "formula": "Max_Wounds × level"
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Conditioning",
+          "Leveled"
+        ],
+        "description": "Through meditation, prayer, philosophical study, or mental conditioning, you have built remarkable psychological resilience. Your mind is a fortress, capable of withstanding fear, doubt, and psychic intrusion. Whether you are a monk who has spent years in silent contemplation, a scholar who has plumbed the depths of forbidden knowledge, or a soldier trained to resist interrogation and torture, you have learned to maintain your sense of self against forces that would shatter weaker minds. At mastery, even direct psychic assault finds little purchase against your iron will.",
+        "effect": "Extra HP 1",
+        "grants": {
+          "abilities": [],
+          "effects": [],
+          "byStage": [
+            {
+              "stage": 1,
+              "abilities": [],
+              "effects": [
+                "extra-hp-1"
+              ]
+            },
+            {
+              "stage": 2,
+              "abilities": [],
+              "effects": [
+                "extra-hp-2"
+              ]
+            },
+            {
+              "stage": 3,
+              "abilities": [],
+              "effects": [
+                "extra-hp-3"
+              ]
+            },
+            {
+              "stage": 4,
+              "abilities": [],
+              "effects": [
+                "extra-hp-4"
+              ]
+            },
+            {
+              "stage": 5,
+              "abilities": [],
+              "effects": [
+                "mental-resilience",
+                "extra-wound"
+              ]
+            }
           ]
         }
       },
@@ -1130,13 +1301,48 @@
           "Conditioning",
           "Leveled"
         ],
-        "description": "Develop resistance to toxins through controlled exposure; at mastery gain enhanced poison resistance.\n\nThrough careful, measured exposure to various toxins under medical supervision, you train your body to resist poisons. Starting with mild irritants and building tolerance over time, you develop both physical resilience and the ability to identify toxins through sensory examination. At the peak of this conditioning, your body has adapted to neutralize most common poisons with remarkable efficiency.",
-        "effect": "Extra HP",
+        "description": "Through systematic exposure to toxins, venoms, and poisons, your body has developed remarkable resistance. Whether you are an alchemist testing your creations, a spy trained to resist interrogation drugs, or simply someone who believes in building immunity through controlled exposure, you have learned to shrug off substances that would incapacitate others. Your liver processes toxins efficiently, and your immune system neutralizes threats before they can take hold. At mastery, common poisons become mere inconveniences, and even deadly venoms require time to affect you.",
+        "effect": "Extra HP 1",
         "grants": {
           "abilities": [],
-          "effects": [
-            "extra-hp",
-            "poison-resistance"
+          "effects": [],
+          "byStage": [
+            {
+              "stage": 1,
+              "abilities": [],
+              "effects": [
+                "extra-hp-1"
+              ]
+            },
+            {
+              "stage": 2,
+              "abilities": [],
+              "effects": [
+                "extra-hp-2"
+              ]
+            },
+            {
+              "stage": 3,
+              "abilities": [],
+              "effects": [
+                "extra-hp-3"
+              ]
+            },
+            {
+              "stage": 4,
+              "abilities": [],
+              "effects": [
+                "extra-hp-4"
+              ]
+            },
+            {
+              "stage": 5,
+              "abilities": [],
+              "effects": [
+                "poison-resistance",
+                "extra-wound"
+              ]
+            }
           ]
         }
       },
@@ -1146,14 +1352,14 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "Athletics 1",
-          "skills": [
-            "Athletics 1"
+          "text": "Survival 1 or Athletics 1",
+          "perks": [
+            "Survival 1 or Athletics 1"
           ]
         },
         "attributes": [
           "Endurance",
-          "Will"
+          "Agility"
         ],
         "cost": {
           "xp": 0,
@@ -1166,13 +1372,48 @@
           "Conditioning",
           "Leveled"
         ],
-        "description": "Train under cascading water to resist displacement; at mastery become immovable like stone.\n\nStanding beneath a waterfall, feeling the relentless pressure trying to knock you down, you learn to root yourself against overwhelming force. Through countless hours of resisting the current's push and pull, your body learns to distribute force and maintain balance against displacement. At mastery, you stand as firm as the stones beneath the waterfall itself, unmoved by forces that would sweep others away.",
-        "effect": "Extra HP",
+        "description": "Through training beneath waterfalls, in raging rapids, or against powerful currents, your body has adapted to function under extreme water pressure and flow. You have learned to breathe efficiently, maintain position against crushing forces, and move with fluid grace even when water threatens to sweep you away. Whether you are a monk seeking enlightenment under mountain cascades, a river guide navigating treacherous whitewater, or a coastal warrior training in tidal zones, you have developed an aquatic resilience that few can match. At mastery, you move through water as others move through air.",
+        "effect": "Extra HP 1",
         "grants": {
           "abilities": [],
-          "effects": [
-            "extra-hp",
-            "waterfall-training"
+          "effects": [],
+          "byStage": [
+            {
+              "stage": 1,
+              "abilities": [],
+              "effects": [
+                "extra-hp-1"
+              ]
+            },
+            {
+              "stage": 2,
+              "abilities": [],
+              "effects": [
+                "extra-hp-2"
+              ]
+            },
+            {
+              "stage": 3,
+              "abilities": [],
+              "effects": [
+                "extra-hp-3"
+              ]
+            },
+            {
+              "stage": 4,
+              "abilities": [],
+              "effects": [
+                "extra-hp-4"
+              ]
+            },
+            {
+              "stage": 5,
+              "abilities": [],
+              "effects": [
+                "waterfall-training",
+                "extra-wound"
+              ]
+            }
           ]
         }
       },
@@ -5372,12 +5613,68 @@
       ]
     },
     {
+      "id": "extra-hp-1",
+      "name": "Extra HP 1",
+      "effect": "Gain additional HP based on your current Max_Wounds.\n\nThis effect is granted by leveled conditioning perks at Stage .\n\n**Effect:**\n- Gain + Extra HP",
+      "tags": [
+        "Passive",
+        "HP",
+        "Conditioning",
+        "Stage"
+      ]
+    },
+    {
+      "id": "extra-hp-2",
+      "name": "Extra HP 2",
+      "effect": "Gain additional HP based on your current Max_Wounds.\n\nThis effect is granted by leveled conditioning perks at Stage .\n\n**Effect:**\n- Gain + Extra HP",
+      "tags": [
+        "Passive",
+        "HP",
+        "Conditioning",
+        "Stage"
+      ]
+    },
+    {
+      "id": "extra-hp-3",
+      "name": "Extra HP 3",
+      "effect": "Gain additional HP based on your current Max_Wounds.\n\nThis effect is granted by leveled conditioning perks at Stage .\n\n**Effect:**\n- Gain + Extra HP",
+      "tags": [
+        "Passive",
+        "HP",
+        "Conditioning",
+        "Stage"
+      ]
+    },
+    {
+      "id": "extra-hp-4",
+      "name": "Extra HP 4",
+      "effect": "Gain additional HP based on your current Max_Wounds.\n\nThis effect is granted by leveled conditioning perks at Stage .\n\n**Effect:**\n- Gain + Extra HP",
+      "tags": [
+        "Passive",
+        "HP",
+        "Conditioning",
+        "Stage"
+      ]
+    },
+    {
       "id": "extra-hp",
       "name": "Extra HP",
       "effect": "Gain additional HP based on your current Max_Wounds.\n\nThis effect is granted by leveled conditioning perks (Poison Resistance, Waterfall Training, Mental Resilience, Cold Conditioning, Heat Conditioning, Battle Scarred, and Magical Conditioning).\n\n**Progression:**\n- **Levels 1-4:** Gain +1 HP per level\n- **Level 5:** Consolidates into +1 Max_Wounds (the new wound grants full armor and endurance bonuses)",
       "tags": [
         "Passive",
         "HP"
+      ]
+    },
+    {
+      "id": "extra-wound",
+      "name": "Extra Wound",
+      "effect": "Gain an additional wound slot.\n\nThis effect is granted by leveled conditioning perks at Stage 5 (capstone).\n\n**Effect:**\n- Gain +1 Extra Wound\n- New wound grants full armor and Endurance bonus to Stamina",
+      "tags": [
+        "Passive",
+        "HP",
+        "Wounds",
+        "Conditioning",
+        "Stage5"
       ]
     },
     {

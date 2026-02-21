@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { Character, CombatPerk } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
+import { calculateExtraHPFromStagedPerks } from '@/utils/calculations';
 
 interface ConditioningPerkModalProps {
   isOpen: boolean;
@@ -38,7 +39,10 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
     return character.stagedPerks[0]; // Only one can be active
   }, [character.stagedPerks]);
 
-  // Current level is based on extraHP count (0-4 = levels 0-4, buying adds to next level)
+  // Calculate current extraHP from staged perks
+  const currentExtraHP = calculateExtraHPFromStagedPerks(character.stagedPerks || []);
+
+  // Current level is based on staged perk level
   const currentLevel = activeConditioning ? activeConditioning.level : 0;
   const nextLevel = currentLevel + 1;
 
@@ -115,7 +119,6 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
     onUpdate({
       ...character,
       stagedPerks: [newStagedPerk], // Only one at a time
-      extraHP: character.extraHP + 1, // Level 1-4 grants +1 HP each
       combatXP: character.combatXP - cost,
       progressionLog: [
         ...character.progressionLog,
@@ -144,14 +147,6 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
       // 5. Remove "extra-hp" effect from the completed perk's snapshot
 
       // Create modified snapshot without "extra-hp" effect (since HP is now part of maxWounds)
-      const modifiedSnapshot = activeConditioning.perkSnapshot ? {
-        ...activeConditioning.perkSnapshot,
-        grants: {
-          ...activeConditioning.perkSnapshot.grants,
-          effects: (activeConditioning.perkSnapshot.grants?.effects || []).filter((e: string) => e !== 'extra-hp')
-        }
-      } : undefined;
-
       const completedPerk: CombatPerk = {
         id: activeConditioning.id,
         name: activeConditioning.name,
@@ -160,7 +155,7 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
         description: activePerkDetails?.description || '',
         isCustom: false,
         source: 'database',
-        perkSnapshot: modifiedSnapshot,
+        perkSnapshot: activeConditioning.perkSnapshot,
         addedAt: Date.now()
       };
 
@@ -169,7 +164,6 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
         stagedPerks: [], // Clear - conditioning complete
         combatPerks: [...character.combatPerks, completedPerk],
         maxWounds: character.maxWounds + 1,
-        extraHP: 0, // Reset - HP consolidated into new wound
         combatXP: character.combatXP - cost,
         progressionLog: [
           ...character.progressionLog,
@@ -202,7 +196,6 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
       onUpdate({
         ...character,
         stagedPerks: [updatedStagedPerk],
-        extraHP: character.extraHP + 1, // +1 HP per level
         combatXP: character.combatXP - cost,
         progressionLog: [
           ...character.progressionLog,
@@ -281,14 +274,14 @@ export const ConditioningPerkModal: React.FC<ConditioningPerkModalProps> = ({
 
                 {/* Extra HP indicator */}
                 <div className="mt-2 text-xs text-blue-400">
-                  Current bonus: +{character.extraHP} HP from conditioning
+                  Current bonus: +{currentExtraHP} HP from conditioning
                 </div>
 
                 {nextLevel === 5 && (
                   <div className="mt-2 p-2 bg-yellow-900/30 border border-yellow-700/50 rounded">
                     <p className="text-yellow-200 text-xs">
                       Level 5 completion grants +1 Max Wounds and the capstone effect!
-                      Your {character.extraHP} bonus HP will consolidate into the new wound.
+                      Your {currentExtraHP} bonus HP will consolidate into the new wound.
                     </p>
                   </div>
                 )}

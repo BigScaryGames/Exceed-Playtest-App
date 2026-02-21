@@ -11,11 +11,11 @@ import {
   calculateAttackAttribute,
   calculateDamageDiceCount,
   parseDamageString,
-  calculateParryFromEquipped,
-  calculateBlockFromEquipped,
+  calculateDeflectFromEquipped,
   calculateDodgeFromEquipped,
   calculateHPValues,
-  calculateEndure
+  calculateEndure,
+  calculateResolve
 } from '@/utils/calculations';
 import {
   getActiveAbilitiesWithInheritedTags,
@@ -370,10 +370,10 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
   }
 
   // Calculate defense stats using utility functions
-  const parry = calculateParryFromEquipped(character);
-  const block = calculateBlockFromEquipped(character);
+  const deflect = calculateDeflectFromEquipped(character);
   const dodge = calculateDodgeFromEquipped(character);
-  const endure = calculateEndure(character.stats.EN, character.stats.WI);
+  const endure = calculateEndure(character.stats.EN, character.stats.MG);
+  const resolve = calculateResolve(character.stats.WI, character.stats.CH);
 
   // Open dice roller modal
   const handleOpenRoller = (data: RollData) => {
@@ -561,24 +561,14 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
         <h4 className="text-lg font-bold text-white mb-3">Defense</h4>
         <div className="grid grid-cols-2 gap-3">
           <button
-            onClick={() => handleDefenseRoll('Parry', parry)}
+            onClick={() => handleDefenseRoll('Deflect', deflect)}
             className={`rounded py-3 text-white text-sm font-semibold ${
-              parry
+              deflect
                 ? 'bg-emerald-700 hover:bg-emerald-600'
                 : 'bg-slate-600 hover:bg-slate-500'
             }`}
           >
-            Parry ({parry || '0'})
-          </button>
-          <button
-            onClick={() => handleDefenseRoll('Block', block)}
-            className={`rounded py-3 text-white text-sm font-semibold ${
-              block
-                ? 'bg-amber-700 hover:bg-amber-600'
-                : 'bg-slate-600 hover:bg-slate-500'
-            }`}
-          >
-            Block ({block || '0'})
+            Deflect ({deflect || '0'})
           </button>
           <button
             onClick={() => handleDefenseRoll('Dodge', dodge)}
@@ -591,6 +581,12 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
             className="bg-purple-700 hover:bg-purple-600 rounded py-3 text-white text-sm font-semibold"
           >
             Endure ({endure})
+          </button>
+          <button
+            onClick={() => handleDefenseRoll('Resolve', resolve)}
+            className="bg-pink-700 hover:bg-pink-600 rounded py-3 text-white text-sm font-semibold"
+          >
+            Resolve ({resolve})
           </button>
         </div>
       </div>

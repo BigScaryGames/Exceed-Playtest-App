@@ -12,6 +12,7 @@ import { AddPerkModal } from '@/components/modals/AddPerkModal';
 import { PerkBrowserModal } from '@/components/modals/PerkBrowserModal';
 import { FlawSelectModal } from '@/components/modals/FlawSelectModal';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
+import { calculateExtraHPFromStagedPerks } from '@/utils/calculations';
 
 interface PerksTabProps {
   character: Character;
@@ -314,16 +315,14 @@ const ConditioningCard: React.FC<ConditioningCardProps> = ({
         </div>
       </div>
 
-      {/* HP Gain Info */}
-      {!isComplete && (
+      {/* Effect Info */}
+      {!isComplete ? (
         <div className="text-blue-400 text-xs">
-          Next level: +1 HP (Cost: {cost} XP)
+          Current: +{currentLevel} Extra HP | Next: +1 Extra HP (Cost: {cost} XP)
         </div>
-      )}
-
-      {isComplete && (
+      ) : (
         <div className="text-yellow-400 text-xs">
-          Completed! Grants +1 Max Wounds and capstone effect.
+          Completed! Grants +1 Extra Wound and capstone effect.
         </div>
       )}
 
@@ -392,6 +391,9 @@ export const PerksTab: React.FC<PerksTabProps> = ({
   const abilities = getActiveAbilitiesWithInheritedTags(character, perkDatabase);
   const effects = getActiveEffectsWithInheritedTags(character, perkDatabase);
 
+  // Calculate current extraHP from staged perks
+  const currentExtraHP = calculateExtraHPFromStagedPerks(character.stagedPerks || []);
+
   // Helper to extract XP cost from cost (number or object)
   const getPerkCost = (perk: any): number => {
     if (typeof perk.cost === 'number') return perk.cost;
@@ -447,7 +449,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
     let updatedLog = [...character.progressionLog];
     let totalRefund = 0;
     let shouldDecrementWounds = false;
-    let extraHPToRemove = 0;
 
     if (isConditioningPerk) {
       // For conditioning perks: find and remove the matching entry
@@ -460,7 +461,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
           break;
         }
       }
-      extraHPToRemove = 1;
       // Check if this was the last of a set of 5 - need to decrement maxWounds
       const basePerkName = perk.name.replace(' (Completed)', '');
       const samePerkCount = character.combatPerks.filter(p =>
@@ -489,10 +489,7 @@ export const PerksTab: React.FC<PerksTabProps> = ({
       progressionLog: updatedLog
     };
 
-    // Handle HP and wound adjustments for conditioning perks
-    if (extraHPToRemove > 0) {
-      updatedCharacter.extraHP = Math.max(0, character.extraHP - extraHPToRemove);
-    }
+    // Handle wound adjustments for conditioning perks
     if (shouldDecrementWounds && character.maxWounds > 2) {
       updatedCharacter.maxWounds = character.maxWounds - 1;
     }
@@ -592,17 +589,7 @@ export const PerksTab: React.FC<PerksTabProps> = ({
       // 1. Remove from stagedPerks
       // 2. Add to combatPerks as completed perk
       // 3. Increment maxWounds by 1
-      // 4. Reset extraHP to 0 (the 4 HP become part of the new wound)
-      // 5. Remove "extra-hp" effect from the completed perk's snapshot
-
-      // Create modified snapshot without "extra-hp" effect (since HP is now part of maxWounds)
-      const modifiedSnapshot = stagedPerk.perkSnapshot ? {
-        ...stagedPerk.perkSnapshot,
-        grants: {
-          ...stagedPerk.perkSnapshot.grants,
-          effects: (stagedPerk.perkSnapshot.grants?.effects || []).filter((e: string) => e !== 'extra-hp')
-        }
-      } : undefined;
+      // extraHP is automatically recalculated from staged perks (will be 0 after removal)
 
       const completedPerk = {
         id: stagedPerk.id,
@@ -612,7 +599,7 @@ export const PerksTab: React.FC<PerksTabProps> = ({
         description: stagedPerk.perkSnapshot?.description || '',
         isCustom: false,
         source: 'database' as const,
-        perkSnapshot: modifiedSnapshot,
+        perkSnapshot: stagedPerk.perkSnapshot,
         addedAt: Date.now()
       };
 
@@ -624,7 +611,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
         stagedPerks: updatedStagedPerks,
         combatPerks: [...character.combatPerks, completedPerk],
         maxWounds: character.maxWounds + 1,
-        extraHP: 0, // Reset - HP consolidated into new wound
         combatXP: character.combatXP - cost,
         progressionLog: [
           ...character.progressionLog,
@@ -660,7 +646,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
       onUpdate({
         ...character,
         stagedPerks: updatedStagedPerks,
-        extraHP: character.extraHP + 1,
         combatXP: character.combatXP - cost,
         progressionLog: [
           ...character.progressionLog,
@@ -696,12 +681,11 @@ export const PerksTab: React.FC<PerksTabProps> = ({
       newMaxWounds = character.maxWounds - 1;
     }
 
-    const newExtraHP = Math.max(0, character.extraHP - perkLevel);
+    // extraHP is automatically recalculated from staged perks
 
     onUpdate({
       ...character,
       stagedPerks: updatedStagedPerks,
-      extraHP: newExtraHP,
       maxWounds: newMaxWounds,
       combatXP: character.combatXP + totalRefund
     });
@@ -757,9 +741,9 @@ export const PerksTab: React.FC<PerksTabProps> = ({
           <div className="flex items-center gap-2">
             <ScrollText size={18} />
             <span className="text-white font-semibold">Conditioning</span>
-            {character.stagedPerks && character.stagedPerks.length > 0 && (
-              <span className="text-slate-400 text-sm">({character.stagedPerks.length})</span>
-            )}
+            <span className="text-slate-400 text-sm">
+              ({(character.stagedPerks?.length || 0) + character.combatPerks.filter(cp => cp.perkSnapshot?.tags?.includes('Conditioning')).length})
+            </span>
           </div>
           <button
             onClick={() => setShowPerkBrowser(true)}
@@ -770,12 +754,13 @@ export const PerksTab: React.FC<PerksTabProps> = ({
           </button>
         </div>
 
+        {/* In-Progress Conditioning Perks */}
         {character.stagedPerks && character.stagedPerks.length > 0 && (
           <div className="p-4 space-y-3">
-            {/* Total Extra HP Display */}
+            {/* Total Extra HP/Wound Display */}
             <div className="text-center text-sm">
-              <span className="text-slate-400">Total Bonus HP: </span>
-              <span className="text-blue-400 font-bold">+{character.extraHP}</span>
+              <span className="text-slate-400">Total Bonus: </span>
+              <span className="text-blue-400 font-bold">+{currentExtraHP} Extra HP</span>
             </div>
 
             {/* Individual Conditioning Perks */}
@@ -789,6 +774,48 @@ export const PerksTab: React.FC<PerksTabProps> = ({
                 onAbandon={() => handleAbandonConditioning(index)}
               />
             ))}
+          </div>
+        )}
+
+        {/* Completed Conditioning Perks */}
+        {character.combatPerks.filter(cp => cp.perkSnapshot?.tags?.includes('Conditioning')).length > 0 && (
+          <div className="p-4 space-y-3 border-t border-slate-700">
+            <h4 className="text-sm font-semibold text-slate-400 mb-2">Completed Conditioning</h4>
+            {character.combatPerks
+              .filter(cp => cp.perkSnapshot?.tags?.includes('Conditioning'))
+              .map((perk, index) => (
+                <div
+                  key={perk.id || index}
+                  className="bg-slate-700 rounded-lg p-4"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="text-white font-semibold">{perk.name}</h4>
+                        <span className="text-yellow-400 text-xs font-semibold">COMPLETED</span>
+                      </div>
+                      <p className="text-slate-300 text-sm">{perk.description}</p>
+                      <p className="text-slate-400 text-xs mt-2">
+                        Grants: +1 Extra Wound + Capstone Effect
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteCombatPerk(character.combatPerks.indexOf(perk))}
+                      className="text-red-400 hover:text-red-300 p-1 rounded transition-colors"
+                      title="Remove perk"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {!character.stagedPerks?.length && !character.combatPerks.filter(cp => cp.perkSnapshot?.tags?.includes('Conditioning')).length && (
+          <div className="p-8 text-center text-slate-400">
+            <p className="text-sm">No conditioning perks yet</p>
+            <p className="text-xs mt-1">Conditioning provides extra HP that converts to wounds</p>
           </div>
         )}
       </div>

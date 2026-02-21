@@ -254,7 +254,6 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
       onUpdate({
         ...character,
         stagedPerks: [...(character.stagedPerks || []), newStagedPerk],
-        extraHP: character.extraHP + 1,
         combatXP: character.combatXP - cost,
         progressionLog: [
           ...character.progressionLog,

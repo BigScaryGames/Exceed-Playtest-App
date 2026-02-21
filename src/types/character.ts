@@ -95,13 +95,8 @@ export interface Equipment {
   quantity: number;
 }
 
-export interface ExtraHPEntry {
-  attribute: string;
-  cost: number;
-}
-
 export interface ProgressionLogEntry {
-  type: 'skill' | 'perk' | 'combatPerk' | 'magicPerk' | 'stagedPerk' | 'extraHP' | 'extraWound' | 'spell' | 'flaw';
+  type: 'skill' | 'perk' | 'combatPerk' | 'magicPerk' | 'stagedPerk' | 'extraWound' | 'spell' | 'flaw';
   name?: string;
   level?: number;
   attribute?: string;
@@ -129,7 +124,6 @@ export interface Character {
   weaponDomains: WeaponDomains;
   maxWounds: number;
   hpPerWound: number;
-  extraHP: number;
   armorType: string;
   equippedWeapon1: string;
   equippedWeapon2: string;
@@ -138,8 +132,6 @@ export interface Character {
   currentHealth: number | null;
   markedWounds: number;
   woundsNotes?: string;
-  extraHPCount: number;
-  extraHPHistory: ExtraHPEntry[];
   extraWoundCount: number;
   // Unified Inventory System (new)
   inventory?: InventoryItem[]; // Optional for backward compatibility

@@ -31,6 +31,11 @@ interface ParsedEffect {
 interface PerkGrants {
   abilities: string[];  // Ability IDs
   effects: string[];    // Effect IDs
+  byStage?: {           // MS5: Stage-based grants for leveled perks
+    stage: number;
+    abilities?: string[];
+    effects?: string[];
+  }[];
 }
 
 interface ParsedPerk {
@@ -352,11 +357,52 @@ function nameToId(name: string): string {
 /**
  * Parse grants section to extract ability and effect references
  * Looks for ![[Ability - Name]] and ![[Effect - Name]] patterns
+ * Also handles "## Grants by Stage" format for leveled perks
  */
 function parseGrants(content: string): PerkGrants {
   const grants: PerkGrants = { abilities: [], effects: [] };
 
-  // Find the Grants section
+  // First check for "## Grants by Stage" format
+  const byStageMatch = content.match(/##\s+Grants by Stage\s*\n([\s\S]*?)(?=\n##|$)/i);
+  if (byStageMatch) {
+    const byStageText = byStageMatch[1];
+    grants.byStage = [];
+
+    // Parse each stage line: "- **Stage 1:** ![[Effect - Name]] + ![[Effect - Name2]]"
+    const stageLines = byStageText.split('\n').filter(line => line.trim().startsWith('-'));
+    
+    for (const line of stageLines) {
+      const stageNumMatch = line.match(/\*\*Stage\s*(\d+):\*\*/i);
+      if (!stageNumMatch) continue;
+
+      const stageNum = parseInt(stageNumMatch[1], 10);
+      const stageData: { stage: number; abilities: string[]; effects: string[] } = {
+        stage: stageNum,
+        abilities: [],
+        effects: []
+      };
+
+      // Find all ![[Ability - Name]] references in this stage
+      const abilityMatches = line.matchAll(/!\[\[Ability\s*-\s*([^\]]+)\]\]/gi);
+      for (const match of abilityMatches) {
+        const name = match[1].trim();
+        stageData.abilities.push(nameToId(name));
+      }
+
+      // Find all ![[Effect - Name]] references in this stage
+      const effectMatches = line.matchAll(/!\[\[Effect\s*-\s*([^\]]+)\]\]/gi);
+      for (const match of effectMatches) {
+        const name = match[1].trim();
+        stageData.effects.push(nameToId(name));
+      }
+
+      grants.byStage.push(stageData);
+    }
+
+    return grants;
+  }
+
+  // Fallback to old format: "## Grants" without stages
   const grantsMatch = content.match(/##\s+Grants\s*\n([\s\S]*?)(?=\n##|$)/i);
   if (!grantsMatch) return grants;
 

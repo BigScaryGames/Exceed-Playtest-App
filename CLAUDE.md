@@ -100,11 +100,17 @@ src/
 
 ### Combat System
 - **HP System**: Stamina + Health with draggable UI
-- **Wounds**: Base wounds + extra wounds (from 5 Extra HP purchases)
-- **Weapon Domains**: 1H, 2H, SaS (Staves/Spears), Sh (Shield), Ar (Archery)
-- **Domain Levels**: 0-5 based on Combat Perk CP (5/15/30/50/75)
-- **Combat Perks**: Tied to weapon domains, affects parry and attack
-- **Defense Stats**: Parry, Dodge, Block, Endure (auto-calculated)
+- **Wounds**: Base wounds + extra wounds (from conditioning perks)
+- **Weapon Domains**: Martial, Spellcraft
+- **Domain Levels**: 0-5 based on CP thresholds (10/30/60/100/150)
+- **Combat Perks**: Tied to Martial domain, affects deflect and attack
+- **Defense Stats** (auto-calculated per `Rules/Mechanics/Defense Types.md`):
+  - **Deflect** = higher of (Weapon Parry) or (Shield Block)
+    - Parry = Martial + AG/DX/MG (weapon-based)
+    - Block = Martial + shield attribute (AG for light, EN for medium, MG for heavy) + shield bonus
+  - **Dodge** = Agility + Perception - armor penalty - encumbrance penalty
+  - **Endure** = Endurance + Might
+  - **Resolve** = Will + Charisma
 - **Armor**: 9 types with Might requirements and penalties
 
 ### Equipment System
@@ -116,11 +122,17 @@ src/
 ## Key Utilities
 
 ### `calculations.ts`
-- `calculateAttributeValues()`: Converts progression log to attribute stats
-- `calculateWeaponDomains()`: Calculates domain levels from combat perks
-- `calculateHP()`: HP, stamina, health calculations
+- `calculateAttributeValues()`: Converts progression log to attribute stats (supports -3 to +5 range)
+- `calculateWeaponDomains()`: Calculates Martial/Spellcraft domain levels
+- `calculateHP()`, `calculateHPValues()`: HP, stamina, health calculations with bar percentages
+- `calculateExtraHPFromStagedPerks()`: Calculates bonus HP from conditioning perks (stages 1-4)
 - `calculateArmorPenalty()`: Armor penalty based on Might requirement
-- `calculateSpeed()`, `calculateParry()`, `calculateDodge()`, `calculateEndure()`: Combat stat calculations
+- `calculateSpeed()`: Speed with armor and encumbrance penalties
+- `calculateDeflect()`, `calculateDeflectFromEquipped()`: Deflect defense (Martial + weapon attribute + shield)
+- `calculateDodge()`, `calculateDodgeFromEquipped()`: Dodge defense (AG + PR - penalties)
+- `calculateEndure()`: Endure defense (EN + MG)
+- `calculateResolve()`: Resolve defense (WI + CH) - NEW
+- `calculateBlockFromEquipped()`: Block from shield
 - `calculateEncumbrance()`: Weight, capacity, and encumbrance level
 
 ### `character.ts`
@@ -311,20 +323,23 @@ When adding tests, focus on:
 
 ## Perk System
 
-### Conditioning Perks
+### Conditioning Perks (Staged Perks)
 - **Cost per level**: `maxWounds` XP (flat, not scaling by level)
   - Base (2 maxWounds): 2/2/2/2/2 XP per level (10 total)
   - After 1 complete (3 maxWounds): 3/3/3/3/3 XP per level (15 total)
   - After 2 complete (4 maxWounds): 4/4/4/4/4 XP per level (20 total)
-- **Levels 1-4**: Each grants +1 extraHP
-- **Level 5 (Completion)**:
-  - Perk moves from `stagedPerks` to `combatPerks`
-  - `extraHP` resets to 0 (4 HP consolidated into new wound)
-  - `maxWounds` increases by 1
-  - `extra-hp` effect is removed from the perk's `grants.effects`
+- **Stage-based effects** (per `Grants by Stage` in perk markdown):
+  - **Stage 1**: `![[Effect - Extra HP 1]]` → +1 Extra HP
+  - **Stage 2**: `![[Effect - Extra HP 2]]` → +2 Extra HP
+  - **Stage 3**: `![[Effect - Extra HP 3]]` → +3 Extra HP
+  - **Stage 4**: `![[Effect - Extra HP 4]]` → +4 Extra HP
+  - **Stage 5 (Capstone)**: `![[Effect - Extra Wound]]` + `![[Effect - <Type> Conditioning]]`
+    - +1 Max Wounds
+    - Capstone effect (e.g., Heat Conditioning, Cold Conditioning)
+- **Effect calculation**: `effectCalculator.ts` reads `grants.byStage` based on current level
 - **Stored in two places**:
   - `stagedPerks`: While in progress (levels 1-4)
-  - `combatPerks`: After completion (level 5)
+  - `combatPerks`: After completion (level 5) - effects read from `byStage[5]`
 
 ### Perk Data Structure
 ```typescript
@@ -364,6 +379,4 @@ interface Perk {
 - `stagedPerk` entries also count (except when used for conditioning)
 
 ### Known Issues
-- **Parser effect field**: Currently stores effect NAME instead of effect CONTENT
-  - Line 532-533 in `parse-perks.ts` extracts name from `![[Effect - Name]]`
-  - Should fetch actual effect text from parsed effects array
+- None currently - system is up to date with MS5 rules
