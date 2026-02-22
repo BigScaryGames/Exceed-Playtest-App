@@ -86,11 +86,35 @@ src/
 
 ## Game Mechanics Implementation
 
-### Attributes & Progression
+### Attributes & Progression (MS6)
 - **8 Attributes**: Might (MG), Endurance (EN), Agility (AG), Dexterity (DX), Wit (WT), Will (WI), Perception (PR), Charisma (CH)
-- **CP Thresholds**: 10/30/60/100/150 → Attribute values 1-5
+- **Range**: -3 to +5 via CP thresholds
+- **CP Thresholds**: -30/-20/-10/0/10/30/60/100/150 → -3/-2/-1/0/1/2/3/4/5
 - **Dual XP Pools**: Combat XP and Social XP
 - **Progression Log**: Complete audit trail of all XP expenditures
+- **Flaws**: Perks with `isFlaw: true` that grant XP (negative cost) instead of costing XP
+
+### Unified Perk System (MS6)
+- **Single Array**: All perks stored in `character.perks[]` (no more combatPerks/magicPerks/stagedPerks separation)
+- **CharacterPerk Interface**:
+  ```typescript
+  {
+    id: string;
+    perkId: string;        // Reference to database perk
+    name: string;
+    type: 'Combat' | 'Magic' | 'Skill';
+    level: number;         // 1-5 for staged perks
+    attribute: string;
+    isFlaw: boolean;       // true = grants XP
+    isStaged: boolean;     // true = conditioning perk
+    perkSnapshot?: DatabasePerk;
+  }
+  ```
+- **Staged Perks** (Conditioning): Use `grants.byStage` array - each level grants different effects
+  - Stage 1-4: Extra HP 1/2/3/4
+  - Stage 5: Extra Wound + Capstone effect
+- **Custom Perks**: Can be created via "Browse Perks and Flaws" → "Create Custom" tab
+- **Free Perks**: Checkbox for 0 XP cost (in-game rewards)
 
 ### Skills System
 - 33 learnable skills across 7 categories
@@ -337,9 +361,14 @@ When adding tests, focus on:
     - +1 Max Wounds
     - Capstone effect (e.g., Heat Conditioning, Cold Conditioning)
 - **Effect calculation**: `effectCalculator.ts` reads `grants.byStage` based on current level
-- **Stored in two places**:
-  - `stagedPerks`: While in progress (levels 1-4)
-  - `combatPerks`: After completion (level 5) - effects read from `byStage[5]`
+- **Stored in**: `character.perks[]` with `isStaged: true` (unified array)
+
+### Flaws
+- **Same system as perks** - just with `isFlaw: true`
+- **Negative XP**: Grant XP instead of costing XP (e.g., -10 XP means character gains 10 XP to spend)
+- **Custom flaws**: Can be created via "Browse Perks and Flaws" → "Create Custom" → check "This is a Flaw"
+- **In-game flaws**: Can be granted for free (0 XP cost) via "Free" checkbox
+- **Stored in**: `character.perks[]` with `isFlaw: true` (unified array)
 
 ### Perk Data Structure
 ```typescript

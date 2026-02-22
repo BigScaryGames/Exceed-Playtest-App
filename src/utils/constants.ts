@@ -37,14 +37,10 @@ export const normalizeAttributeName = (attribute: string): string => {
 };
 
 // CP thresholds for attribute progression (CP → Attribute Value)
-// Negative thresholds: -30/-20/-10 → -3/-2/-1
-// Positive thresholds: 10/30/60/100/150 → 1/2/3/4/5
+//  thresholds: -30/-20/-10/0 → -3/-2/-1/0,  10/30/60/100/150 → 1/2/3/4/5
 // 0 CP = 0 attribute value
-export const NEGATIVE_CP_THRESHOLDS = [-30, -20, -10];
-export const POSITIVE_CP_THRESHOLDS = [10, 30, 60, 100, 150];
+export const CP_THRESHOLDS = [-30, -20, -10, 0, 10, 30, 60, 100, 150];
 
-// Legacy alias (deprecated - use POSITIVE_CP_THRESHOLDS)
-export const ATTRIBUTE_CP_THRESHOLDS = POSITIVE_CP_THRESHOLDS;
 
 // MS5: Domain CP thresholds
 // Martial Domain: All combat perks contribute here
@@ -61,6 +57,7 @@ export const getSkillCost = (level: number): number => level * 2;
 // Extra HP cost (equal to current max wounds)
 export const getExtraHPCost = (maxWounds: number): number => maxWounds;
 
+
 // MS5: Staged/Conditioning perk cost (maxWounds × level)
 export const getStagedPerkCost = (maxWounds: number, level: number): number => maxWounds * level;
 
@@ -72,3 +69,4 @@ export const ENCUMBRANCE_LEVELS = {
   HEAVY: { name: 'Heavy Encumbered', speedPenalty: -3, dodgePenalty: -3 },
   OVER: { name: 'Over-Encumbered', speedPenalty: -4, dodgePenalty: -4 }
 };
+

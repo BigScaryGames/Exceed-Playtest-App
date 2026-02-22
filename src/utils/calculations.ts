@@ -2,7 +2,9 @@ import { Character, AttributeCode, ProgressionLogEntry, Weapon, WeaponDomains } 
 import { ARMOR_TYPES } from '@/data/armor';
 import { WEAPONS } from '@/data/weapons';
 import { SHIELDS } from '@/data/shields';
-import { NEGATIVE_CP_THRESHOLDS, POSITIVE_CP_THRESHOLDS, MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS, ENCUMBRANCE_LEVELS } from './constants';
+import { MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS, ENCUMBRANCE_LEVELS,
+  CP_THRESHOLDS
+} from './constants';
 import {
   getEquippedWeapons,
   getEquippedArmor,
@@ -34,15 +36,17 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
 
   // Sum up all CP spent on each attribute
   // Conditioning perks (stagedPerk) contribute to BOTH Martial domain AND the chosen attribute
-  progressionLog.forEach(entry => {
-    if (entry.attribute) {
-      // Map full attribute name to code
+  progressionLog.forEach
+  (entry => {
+    if (entry.attribute)
+    {// Map full attribute name to code
       const attrCode = ATTRIBUTE_NAME_TO_CODE[entry.attribute] || entry.attribute;
       if (attrCode in cpTotals) {
         cpTotals[attrCode as AttributeCode] += entry.cost;  // Negative for flaws
       }
     }
-  });
+  }
+  );
 
   // Convert CP totals to attribute values using thresholds
   // Negative: -30/-20/-10 → -3/-2/-1
@@ -57,23 +61,13 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
     const cp = cpTotals[attr as AttributeCode];
     let value = 0;
 
-    if (cp < 0) {
-      // Calculate negative attribute value
-      // -30 or less → -3, -20 to -29 → -2, -10 to -19 → -1
-      for (let i = NEGATIVE_CP_THRESHOLDS.length - 1; i >= 0; i--) {
-        if (cp <= NEGATIVE_CP_THRESHOLDS[i]) {
-          value = -(i + 1);
-          break;
+      // Calculate  attribute value     //-31 and lower =-4, -30 to -21 = -3, -20 to -11 = -2, -10 to -1 = -1.  0-9 = 0, 10-29 = 1, 30-59 = 2, 60-99 = 3, 100-149 = 4, 150+ = 5
+      for (let i = 0; i < CP_THRESHOLDS.length; i++) {
+        if (cp >= CP_THRESHOLDS[i]) {
+          value = i - 3;
         }
       }
-    } else if (cp > 0) {
-      // Calculate positive attribute value
-      for (let i = 0; i < POSITIVE_CP_THRESHOLDS.length; i++) {
-        if (cp >= POSITIVE_CP_THRESHOLDS[i]) {
-          value = i + 1;
-        }
-      }
-    }
+
     // cp === 0 → value = 0 (already initialized)
 
     stats[attr as AttributeCode] = value;
@@ -536,4 +530,60 @@ export const calculateSpeedFromEquipped = (character: Character): { withArmor: n
     withArmor: speedWithArmor,
     withoutArmor: speedWithoutArmor
   };
+};
+
+// Calculate progress bar percentage for attribute CP thresholds
+// Uses CP_THRESHOLDS array: [-30, -20, -10, 0, 10, 30, 60, 100, 150]
+export const calculateAttributeProgress = (currentCP: number): number => {
+  if (currentCP === 0) return 0;
+  
+  const thresholds = CP_THRESHOLDS;
+  
+  // Find which threshold range we're in
+  for (let i = 0; i < thresholds.length - 1; i++) {
+    const prevThreshold = thresholds[i];
+    const nextThreshold = thresholds[i + 1];
+    
+    // Check if currentCP is in this range (handles both negative and positive)
+    if (currentCP >= prevThreshold && currentCP < nextThreshold) {
+      const range = nextThreshold - prevThreshold;
+      const progress = currentCP - prevThreshold;
+      return (progress / range) * 100;
+    }
+  }
+  
+  // At or above max threshold (150+)
+  if (currentCP >= thresholds[thresholds.length - 1]) {
+    return 100;
+  }
+  
+  // Below min threshold (-30 or less)
+  if (currentCP < thresholds[0]) {
+    return 0;
+  }
+  
+  return 0;
+};
+
+// Calculate progress bar percentage for domain CP thresholds (Martial/Spellcraft)
+export const calculateDomainProgress = (currentCP: number): number => {
+  const thresholds = MARTIAL_CP_THRESHOLDS; // [10, 30, 60, 100, 150]
+  
+  if (currentCP <= 0) return 0;
+  if (currentCP >= thresholds[thresholds.length - 1]) return 100;
+  
+  // Find which threshold range we're in
+  for (let i = 0; i < thresholds.length - 1; i++) {
+    const prevThreshold = thresholds[i];
+    const nextThreshold = thresholds[i + 1];
+    
+    if (currentCP >= prevThreshold && currentCP < nextThreshold) {
+      const range = nextThreshold - prevThreshold;
+      const progress = currentCP - prevThreshold;
+      return (progress / range) * 100;
+    }
+  }
+  
+  // Below first threshold
+  return (currentCP / thresholds[0]) * 100;
 };

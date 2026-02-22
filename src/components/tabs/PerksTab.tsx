@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, BookOpen, Swords, ScrollText, Plus, Search, X, AlertTriangle } from 'lucide-react';
+import { ChevronDown, ChevronRight, BookOpen, Swords, ScrollText, Search, X, AlertTriangle } from 'lucide-react';
 import { Character, CharacterPerk } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
 import {
@@ -8,9 +8,7 @@ import {
   ActiveAbility,
   ActiveEffect
 } from '@/utils/effectCalculator';
-import { AddPerkModal } from '@/components/modals/AddPerkModal';
 import { PerkBrowserModal } from '@/components/modals/PerkBrowserModal';
-import { FlawSelectModal } from '@/components/modals/FlawSelectModal';
 import { ATTRIBUTE_MAP } from '@/utils/constants';
 import { calculateExtraHPFromStagedPerks } from '@/utils/calculations';
 
@@ -137,7 +135,6 @@ interface PerkSectionProps {
   perks: CharacterPerk[];
   abilities: ActiveAbility[];
   effects: ActiveEffect[];
-  onAddPerk: () => void;
   onPerkDelete?: (index: number) => void;
 }
 const PerkSection: React.FC<PerkSectionProps> = ({
@@ -146,7 +143,6 @@ const PerkSection: React.FC<PerkSectionProps> = ({
   perks,
   abilities,
   effects,
-  onAddPerk,
   onPerkDelete
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -167,13 +163,6 @@ const PerkSection: React.FC<PerkSectionProps> = ({
             <span className="text-white font-semibold">{title}</span>
             <span className="text-slate-400 text-sm">({perks.length})</span>
           </div>
-        </button>
-        <button
-          onClick={onAddPerk}
-          className="flex items-center gap-1 bg-blue-700 hover:bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded"
-        >
-          <Plus size={14} />
-          Add Perk
         </button>
       </div>
 
@@ -380,11 +369,7 @@ export const PerksTab: React.FC<PerksTabProps> = ({
   perkDatabase
 }) => {
   // Modal states
-  const [showAddMagicPerkModal, setShowAddMagicPerkModal] = useState(false);
-  const [showAddCombatPerkModal, setShowAddCombatPerkModal] = useState(false);
-  const [showAddSkillPerkModal, setShowAddSkillPerkModal] = useState(false);
   const [showPerkBrowser, setShowPerkBrowser] = useState(false);
-  const [showFlawModal, setShowFlawModal] = useState(false);
 
   // Get abilities and effects with inherited tags
   const abilities = getActiveAbilitiesWithInheritedTags(character, perkDatabase);
@@ -523,29 +508,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
     });
   };
 
-  // Handle add flaw
-  const handleAddFlaw = (perk: CharacterPerk) => {
-    const updatedCharacter = {
-      ...character,
-      perks: [...character.perks, perk],
-      // Grant negative XP (flaws give XP to spend)
-      combatXP: character.combatXP + Math.abs(perk.level), // Using level as XP value placeholder
-      // Log the progression
-      progressionLog: [
-        ...character.progressionLog,
-        {
-          type: 'perk' as const,
-          name: perk.name,
-          attribute: perk.attribute,
-          cost: -5, // Placeholder - actual flaw XP value
-          xpType: 'combat' as const,
-        },
-      ],
-    };
-
-    onUpdate(updatedCharacter);
-  };
-
   // Handle delete flaw
   const handleDeleteFlaw = (index: number) => {
     const flawPerks = character.perks.filter(p => p.isFlaw);
@@ -678,13 +640,13 @@ export const PerksTab: React.FC<PerksTabProps> = ({
 
   return (
     <div className="p-4 space-y-4">
-      {/* Browse Perks Button */}
+      {/* Browse Perks and Flaws Button */}
       <button
         onClick={() => setShowPerkBrowser(true)}
         className="w-full flex items-center justify-center gap-2 bg-blue-700 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
       >
         <Search size={20} />
-        Browse Perks
+        Browse Perks and Flaws
       </button>
 
       {/* Martial Section */}
@@ -694,7 +656,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
         perks={character.perks.filter(p => p.type === 'Combat' && !p.isStaged && !p.isFlaw)}
         abilities={martialAbilities}
         effects={martialEffects}
-        onAddPerk={() => setShowAddCombatPerkModal(true)}
         onPerkDelete={handleDeleteCombatPerk}
       />
 
@@ -705,7 +666,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
         perks={character.perks.filter(p => p.type === 'Magic' && !p.isStaged && !p.isFlaw)}
         abilities={spellcraftAbilities}
         effects={spellcraftEffects}
-        onAddPerk={() => setShowAddMagicPerkModal(true)}
         onPerkDelete={handleDeleteMagicPerk}
       />
 
@@ -716,7 +676,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
         perks={character.perks.filter(p => p.type === 'Skill' && !p.isStaged && !p.isFlaw)}
         abilities={skillAbilities}
         effects={skillEffects}
-        onAddPerk={() => setShowAddSkillPerkModal(true)}
         onPerkDelete={handleDeleteSkillPerk}
       />
 
@@ -730,13 +689,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
               ({character.perks.filter(p => p.isStaged).length})
             </span>
           </div>
-          <button
-            onClick={() => setShowPerkBrowser(true)}
-            className="flex items-center gap-1 bg-green-700 hover:bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded"
-          >
-            <Plus size={14} />
-            Add Conditioning
-          </button>
         </div>
 
         {/* In-Progress Conditioning Perks */}
@@ -817,13 +769,6 @@ export const PerksTab: React.FC<PerksTabProps> = ({
               ({character.perks.filter(p => p.isFlaw).length})
             </span>
           </div>
-          <button
-            onClick={() => setShowFlawModal(true)}
-            className="flex items-center gap-1 bg-red-700 hover:bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded"
-          >
-            <Plus size={14} />
-            Add Flaw
-          </button>
         </div>
 
         {character.perks.filter(p => p.isFlaw).length > 0 ? (
@@ -877,46 +822,12 @@ export const PerksTab: React.FC<PerksTabProps> = ({
       </div>
 
       {/* Modals */}
-      <AddPerkModal
-        isOpen={showAddMagicPerkModal}
-        onClose={() => setShowAddMagicPerkModal(false)}
-        character={character}
-        onUpdate={onUpdate}
-        category="magic"
-        perkDatabase={perkDatabase}
-      />
-
-      <AddPerkModal
-        isOpen={showAddCombatPerkModal}
-        onClose={() => setShowAddCombatPerkModal(false)}
-        character={character}
-        onUpdate={onUpdate}
-        category="combat"
-        perkDatabase={perkDatabase}
-      />
-
-      <AddPerkModal
-        isOpen={showAddSkillPerkModal}
-        onClose={() => setShowAddSkillPerkModal(false)}
-        character={character}
-        onUpdate={onUpdate}
-        category="skill"
-        perkDatabase={perkDatabase}
-      />
-
       <PerkBrowserModal
         isOpen={showPerkBrowser}
         onClose={() => setShowPerkBrowser(false)}
         character={character}
         onUpdate={onUpdate}
         perkDatabase={perkDatabase}
-      />
-
-      <FlawSelectModal
-        isOpen={showFlawModal}
-        onClose={() => setShowFlawModal(false)}
-        onSelectFlaw={handleAddFlaw}
-        existingFlaws={character.perks.filter(p => p.isFlaw).map(f => f.name)}
       />
     </div>
   );
