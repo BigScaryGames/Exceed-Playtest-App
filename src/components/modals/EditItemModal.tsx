@@ -4,7 +4,7 @@ import {
   Character,
   InventoryItem
 } from '@/types/character';
-import { updateItemInInventory, getWeaponData, getArmorData, getShieldData } from '@/utils/inventory';
+import { updateItemInInventory, getWeaponData, getArmorData } from '@/utils/inventory';
 
 interface EditItemModalProps {
   isOpen: boolean;
@@ -39,12 +39,11 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
   const [penalty, setPenalty] = useState('0');
   const [penaltyMet, setPenaltyMet] = useState('0');
 
-  // Shield fields
+  // Shield fields (for weapons with Shield trait)
   const [defenseBonus, setDefenseBonus] = useState('0');
   const [negation, setNegation] = useState('0');
   const [armorPenalty, setArmorPenalty] = useState('0');
-  const [shieldMightReq, setShieldMightReq] = useState('0');
-  const [shieldType, setShieldType] = useState<'Light' | 'Medium' | 'Heavy'>('Light');
+  const [isShield, setIsShield] = useState(false);
 
   // Pre-populate form when item changes
   useEffect(() => {
@@ -62,6 +61,10 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
         setAp(weaponData.ap.toString());
         setMightReq((weaponData.mightReq || 0).toString());
         setTraits(weaponData.traits.join(', '));
+        setDefenseBonus(weaponData.defenseBonus?.toString() || '0');
+        setNegation(weaponData.negation?.toString() || '0');
+        setArmorPenalty(weaponData.armorPenalty?.toString() || '0');
+        setIsShield(weaponData.traits.includes('Shield'));
       }
     } else if (item.type === 'armor') {
       const armorData = getArmorData(item);
@@ -70,15 +73,6 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
         setArmorMightReq(armorData.mightReq.toString());
         setPenalty(armorData.penalty.toString());
         setPenaltyMet(armorData.penaltyMet.toString());
-      }
-    } else if (item.type === 'shield') {
-      const shieldData = getShieldData(item);
-      if (shieldData) {
-        setDefenseBonus(shieldData.defenseBonus.toString());
-        setNegation(shieldData.negation.toString());
-        setArmorPenalty(shieldData.armorPenalty.toString());
-        setShieldMightReq(shieldData.mightReq.toString());
-        setShieldType(shieldData.type);
       }
     }
   }, [item]);
@@ -102,7 +96,10 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
         damage,
         ap: parseInt(ap) || 0,
         mightReq: parseInt(mightReq) || 0,
-        traits: traits.split(',').map(t => t.trim()).filter(t => t)
+        traits: isShield ? [...traits.split(',').map(t => t.trim()).filter(t => t), 'Shield'] : traits.split(',').map(t => t.trim()).filter(t => t),
+        defenseBonus: isShield ? parseInt(defenseBonus) || 0 : undefined,
+        negation: isShield ? parseInt(negation) || 0 : undefined,
+        armorPenalty: isShield ? parseInt(armorPenalty) || 0 : undefined
       };
     } else if (item.type === 'armor') {
       updates.customArmorData = {
@@ -110,14 +107,6 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
         mightReq: parseInt(armorMightReq) || 0,
         penalty: parseInt(penalty) || 0,
         penaltyMet: parseInt(penaltyMet) || 0
-      };
-    } else if (item.type === 'shield') {
-      updates.customShieldData = {
-        defenseBonus: parseInt(defenseBonus) || 0,
-        negation: parseInt(negation) || 0,
-        armorPenalty: parseInt(armorPenalty) || 0,
-        mightReq: parseInt(shieldMightReq) || 0,
-        type: shieldType
       };
     }
 
@@ -268,6 +257,51 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
                   className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
                 />
               </div>
+
+              {/* Shield checkbox and fields */}
+              <div className="border-t border-slate-600 pt-3 mt-3">
+                <label className="flex items-center text-sm text-slate-300 mb-3">
+                  <input
+                    type="checkbox"
+                    checked={isShield}
+                    onChange={(e) => setIsShield(e.target.checked)}
+                    className="mr-2"
+                  />
+                  This is a Shield
+                </label>
+
+                {isShield && (
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-xs text-slate-400 mb-1">Defense Bonus</label>
+                      <input
+                        type="number"
+                        value={defenseBonus}
+                        onChange={(e) => setDefenseBonus(e.target.value)}
+                        className="w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-400 mb-1">Negation</label>
+                      <input
+                        type="number"
+                        value={negation}
+                        onChange={(e) => setNegation(e.target.value)}
+                        className="w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-400 mb-1">Armor Penalty</label>
+                      <input
+                        type="number"
+                        value={armorPenalty}
+                        onChange={(e) => setArmorPenalty(e.target.value)}
+                        className="w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -316,68 +350,6 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
                     className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
                   />
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* Shield-specific fields */}
-          {item.type === 'shield' && (
-            <div className="space-y-3 border-t border-slate-700 pt-3">
-              <h4 className="text-sm font-semibold text-slate-300">Shield Properties</h4>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Defense Bonus</label>
-                  <input
-                    type="number"
-                    value={defenseBonus}
-                    onChange={(e) => setDefenseBonus(e.target.value)}
-                    className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Negation</label>
-                  <input
-                    type="number"
-                    value={negation}
-                    onChange={(e) => setNegation(e.target.value)}
-                    className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Armor Penalty</label>
-                  <input
-                    type="number"
-                    value={armorPenalty}
-                    onChange={(e) => setArmorPenalty(e.target.value)}
-                    className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Might Req</label>
-                  <input
-                    type="number"
-                    value={shieldMightReq}
-                    onChange={(e) => setShieldMightReq(e.target.value)}
-                    className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">Shield Type</label>
-                <select
-                  value={shieldType}
-                  onChange={(e) => setShieldType(e.target.value as 'Light' | 'Medium' | 'Heavy')}
-                  className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                >
-                  <option value="Light">Light</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Heavy">Heavy</option>
-                </select>
               </div>
             </div>
           )}

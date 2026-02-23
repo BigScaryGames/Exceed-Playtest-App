@@ -6,12 +6,10 @@ import {
   ItemType,
   ItemState,
   CustomWeaponData,
-  CustomArmorData,
-  CustomShieldData
+  CustomArmorData
 } from '@/types/character';
 import { WEAPONS } from '@/data/weapons';
 import { ARMOR_TYPES } from '@/data/armor';
-import { SHIELDS } from '@/data/shields';
 import { generateItemId, addItemToInventory } from '@/utils/inventory';
 
 interface AddItemModalProps {
@@ -49,12 +47,11 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
   const [penalty, setPenalty] = useState('0');
   const [penaltyMet, setPenaltyMet] = useState('0');
 
-  // Custom shield fields
+  // Shield fields (for custom weapons with Shield trait)
   const [defenseBonus, setDefenseBonus] = useState('0');
   const [negation, setNegation] = useState('0');
   const [armorPenalty, setArmorPenalty] = useState('0');
-  const [shieldMightReq, setShieldMightReq] = useState('0');
-  const [shieldType, setShieldType] = useState<'Light' | 'Medium' | 'Heavy'>('Light');
+  const [isShield, setIsShield] = useState(false);
 
   const resetForm = () => {
     setName('');
@@ -63,6 +60,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
     setSelectedDataRef('');
     setIsCustom(false);
     setItemState('stowed');
+    setIsShield(false);
     // Reset custom fields - MS5
     setWeaponDomain('Martial');
     setDamage('d6');
@@ -75,8 +73,6 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
     setDefenseBonus('0');
     setNegation('0');
     setArmorPenalty('0');
-    setShieldMightReq('0');
-    setShieldType('Light');
   };
 
   const handleAdd = () => {
@@ -90,7 +86,10 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
           damage,
           ap: parseInt(ap) || 0,
           mightReq: parseInt(mightReq) || 0,
-          traits: traits.split(',').map(t => t.trim()).filter(t => t)
+          traits: isShield ? [...traits.split(',').map(t => t.trim()).filter(t => t), 'Shield'] : traits.split(',').map(t => t.trim()).filter(t => t),
+          defenseBonus: isShield ? parseInt(defenseBonus) || 0 : undefined,
+          negation: isShield ? parseInt(negation) || 0 : undefined,
+          armorPenalty: isShield ? parseInt(armorPenalty) || 0 : undefined
         };
 
         newItem = {
@@ -121,25 +120,6 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
           isCustom: true,
           customArmorData
         };
-      } else if (itemType === 'shield') {
-        const customShieldData: CustomShieldData = {
-          defenseBonus: parseInt(defenseBonus) || 0,
-          negation: parseInt(negation) || 0,
-          armorPenalty: parseInt(armorPenalty) || 0,
-          mightReq: parseInt(shieldMightReq) || 0,
-          type: shieldType
-        };
-
-        newItem = {
-          id: generateItemId(),
-          name,
-          type: 'shield',
-          state: itemState,
-          weight: parseFloat(weight) || 0,
-          quantity: parseInt(quantity) || 1,
-          isCustom: true,
-          customShieldData
-        };
       } else {
         // Generic item
         newItem = {
@@ -161,8 +141,6 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
         itemWeight = WEAPONS[selectedDataRef].weight;
       } else if (itemType === 'armor' && ARMOR_TYPES[selectedDataRef]) {
         itemWeight = ARMOR_TYPES[selectedDataRef].weight;
-      } else if (itemType === 'shield' && SHIELDS[selectedDataRef]) {
-        itemWeight = SHIELDS[selectedDataRef].weight;
       }
 
       newItem = {
@@ -215,8 +193,8 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
             <label className="block text-sm font-semibold text-slate-300 mb-2">
               Item Type
             </label>
-            <div className="grid grid-cols-4 gap-2">
-              {(['weapon', 'armor', 'shield', 'item'] as ItemType[]).map(type => (
+            <div className="grid grid-cols-3 gap-2">
+              {(['weapon', 'armor', 'item'] as ItemType[]).map(type => (
                 <button
                   key={type}
                   onClick={() => {
@@ -315,12 +293,6 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
                   Object.keys(ARMOR_TYPES).map(key => (
                     <option key={key} value={key}>
                       {key} - Bonus +{ARMOR_TYPES[key].bonus}
-                    </option>
-                  ))}
-                {itemType === 'shield' &&
-                  Object.keys(SHIELDS).map(key => (
-                    <option key={key} value={key}>
-                      {key} - Def +{SHIELDS[key].defenseBonus}
                     </option>
                   ))}
               </select>
@@ -431,6 +403,51 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
                       className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
                     />
                   </div>
+
+                  {/* Shield checkbox and fields */}
+                  <div className="border-t border-slate-600 pt-3 mt-3">
+                    <label className="flex items-center text-sm text-slate-300 mb-3">
+                      <input
+                        type="checkbox"
+                        checked={isShield}
+                        onChange={(e) => setIsShield(e.target.checked)}
+                        className="mr-2"
+                      />
+                      This is a Shield
+                    </label>
+
+                    {isShield && (
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs text-slate-400 mb-1">Defense Bonus</label>
+                          <input
+                            type="number"
+                            value={defenseBonus}
+                            onChange={(e) => setDefenseBonus(e.target.value)}
+                            className="w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-slate-400 mb-1">Negation</label>
+                          <input
+                            type="number"
+                            value={negation}
+                            onChange={(e) => setNegation(e.target.value)}
+                            className="w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-slate-400 mb-1">Armor Penalty</label>
+                          <input
+                            type="number"
+                            value={armorPenalty}
+                            onChange={(e) => setArmorPenalty(e.target.value)}
+                            className="w-full bg-slate-700 border border-slate-600 rounded px-2 py-1 text-white text-sm"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -479,68 +496,6 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({
                         className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
                       />
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Custom Shield Fields */}
-              {itemType === 'shield' && (
-                <div className="space-y-3 border-t border-slate-700 pt-3">
-                  <h4 className="text-sm font-semibold text-slate-300">Shield Properties</h4>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Defense Bonus</label>
-                      <input
-                        type="number"
-                        value={defenseBonus}
-                        onChange={(e) => setDefenseBonus(e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Negation</label>
-                      <input
-                        type="number"
-                        value={negation}
-                        onChange={(e) => setNegation(e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Armor Penalty</label>
-                      <input
-                        type="number"
-                        value={armorPenalty}
-                        onChange={(e) => setArmorPenalty(e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs text-slate-400 mb-1">Might Req</label>
-                      <input
-                        type="number"
-                        value={shieldMightReq}
-                        onChange={(e) => setShieldMightReq(e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs text-slate-400 mb-1">Shield Type</label>
-                    <select
-                      value={shieldType}
-                      onChange={(e) => setShieldType(e.target.value as 'Light' | 'Medium' | 'Heavy')}
-                      className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                    >
-                      <option value="Light">Light</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Heavy">Heavy</option>
-                    </select>
                   </div>
                 </div>
               )}

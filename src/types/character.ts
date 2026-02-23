@@ -112,6 +112,10 @@ export interface Weapon {
   mightReq?: number;
   traits: string[];
   weight: number;
+  // Shield-specific fields (optional - only for shields)
+  defenseBonus?: number;  // Defense bonus (shields and some weapons)
+  negation?: number;      // Damage negation (shields only)
+  armorPenalty?: number;  // Speed/dodge penalty if might req not met (shields only)
 }
 
 export interface SkillDefinition {
@@ -125,7 +129,7 @@ export interface SkillCategory {
 }
 
 // Unified Inventory System Types
-export type ItemType = 'weapon' | 'armor' | 'shield' | 'item';
+export type ItemType = 'weapon' | 'armor' | 'item';
 export type ItemState = 'equipped' | 'stowed' | 'packed';
 
 export interface CustomWeaponData {
@@ -134,6 +138,9 @@ export interface CustomWeaponData {
   ap: number;
   mightReq: number;
   traits: string[];
+  defenseBonus?: number;  // For shields
+  negation?: number;      // For shields
+  armorPenalty?: number;  // For shields (speed/dodge penalty)
 }
 
 export interface CustomArmorData {
@@ -141,14 +148,6 @@ export interface CustomArmorData {
   mightReq: number;
   penalty: number;
   penaltyMet: number;
-}
-
-export interface CustomShieldData {
-  defenseBonus: number;
-  negation: number;
-  armorPenalty: number;
-  mightReq: number;
-  type: 'Light' | 'Medium' | 'Heavy';
 }
 
 export interface InventoryItem {
@@ -159,10 +158,9 @@ export interface InventoryItem {
   weight: number;
   quantity: number;
   isCustom: boolean;
-  dataRef?: string; // Reference to item in WEAPONS, ARMOR_TYPES, or SHIELDS
+  dataRef?: string; // Reference to item in WEAPONS or ARMOR_TYPES
   customWeaponData?: CustomWeaponData;
   customArmorData?: CustomArmorData;
-  customShieldData?: CustomShieldData;
   // Weapon attribute overrides (for perks like Zen Archer, or manual selection)
   attackAttribute?: AttributeCode;
   deflectAttribute?: AttributeCode;

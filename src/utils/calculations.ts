@@ -1,6 +1,5 @@
 import { Character, AttributeCode, ProgressionLogEntry, Weapon, WeaponDomains, InventoryItem } from '@/types/character';
 import { ARMOR_TYPES } from '@/data/armor';
-import { SHIELDS } from '@/data/shields';
 import { MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS, ENCUMBRANCE_LEVELS,
   CP_THRESHOLDS
 } from './constants';
@@ -9,8 +8,7 @@ import {
   getEquippedArmor,
   getEquippedShield,
   getWeaponData,
-  getArmorData,
-  getShieldData
+  getArmorData
 } from './inventory';
 
 // Reverse mapping from full name to abbreviation
@@ -301,6 +299,7 @@ export const calculateDeflectForWeapon = (character: Character, item: InventoryI
 
 // Calculate Deflect = higher of (Weapon Parry) or (Shield Block)
 // Per rules: Deflect uses the best defensive option available
+// Shield defenseBonus applies to Deflect when using a shield
 export const calculateDeflectFromEquipped = (character: Character): number => {
   const equippedWeaponsFromInventory = getEquippedWeapons(character);
 
@@ -308,40 +307,47 @@ export const calculateDeflectFromEquipped = (character: Character): number => {
   const weaponDeflect = equippedWeaponsFromInventory.length > 0
     ? Math.max(0, ...equippedWeaponsFromInventory.map(item => {
         const weapon = getWeaponData(item);
-        return weapon ? calculateDeflectForWeapon(character, item, weapon) : 0;
+        if (!weapon) return 0;
+        
+        // Get base deflect from weapon
+        let deflect = calculateDeflectForWeapon(character, item, weapon);
+        
+        // Add shield defenseBonus if this weapon is a shield
+        if (weapon.traits.includes('Shield') && weapon.defenseBonus) {
+          deflect += weapon.defenseBonus;
+        }
+        
+        return deflect;
       }))
     : 0;
 
-  // Calculate shield Block
+  // Calculate shield Block (for comparison - uses full block formula)
   const shieldBlock = calculateBlockFromEquipped(character);
 
-  // Deflect = higher of Parry or Block
+  // Deflect = higher of Parry (with shield bonus) or Block
   return Math.max(weaponDeflect, shieldBlock);
 };
 
 // Calculate block value from equipped shield (MS5: uses Martial domain)
+// Shields are now weapons with defenseBonus and negation fields
+// Light shields use AG, Heavy use MG, others (no trait) default to AG
 export const calculateBlockFromEquipped = (character: Character): number => {
   const equippedShieldItem = getEquippedShield(character);
-  const shieldData = equippedShieldItem
-    ? (getShieldData(equippedShieldItem) || SHIELDS['None'])
-    : SHIELDS['None'];
+  if (!equippedShieldItem) return 0;
+  
+  const shieldWeapon = getWeaponData(equippedShieldItem);
+  if (!shieldWeapon || !shieldWeapon.defenseBonus) return 0;
 
   // MS5: Shields use Martial domain
   const martialLevel = character.weaponDomains.Martial || 0;
-  let block = 0;
-
-  if (shieldData.defenseBonus > 0) {
-    // Light shields use Agility, Medium use Endurance, Heavy use Might
-    let blockBase = character.stats.AG; // Light default
-    if (shieldData.type === 'Medium') {
-      blockBase = character.stats.EN;
-    } else if (shieldData.type === 'Heavy') {
-      blockBase = character.stats.MG;
-    }
-    block = blockBase + martialLevel + shieldData.defenseBonus;
+  
+  // Determine attribute based on shield traits
+  let blockBase = character.stats.AG; // Default (no trait or Light)
+  if (shieldWeapon.traits.includes('Heavy')) {
+    blockBase = character.stats.MG;
   }
-
-  return block;
+  
+  return blockBase + martialLevel + shieldWeapon.defenseBonus;
 };
 
 // Calculate dodge including armor and encumbrance penalties

@@ -1,6 +1,7 @@
 import { Weapon } from '@/types/character';
 
 // MS5: All weapons use 'Martial' domain (consolidated from 1H, 2H, SaS, Ar)
+// Shields are now also weapons - they have defenseBonus and negation fields
 export const WEAPONS: Record<string, Weapon> = {
   'None': { domain: null, damage: 'd0', ap: 0, traits: [], weight: 0 },
   // Melee Weapons - One Handed
@@ -23,5 +24,10 @@ export const WEAPONS: Record<string, Weapon> = {
   'SwordStaff': { domain: 'Martial', damage: 'd8', ap: 3, mightReq: 1, traits: ['Polearm', 'Reach', 'Nonlethal', 'Double'], weight: 2.5 },
   // Ranged Weapons
   'Shortbow': { domain: 'Martial', damage: 'd8', ap: 3, mightReq: -1, traits: ['Aim 10', 'Range 5', 'Ranged', 'Bow'], weight: 1 },
-  'Longbow': { domain: 'Martial', damage: 'd10', ap: 3, mightReq: 0, traits: ['Aim 20', 'Large', 'Range 2', 'Ranged', 'Bow'], weight: 1.5 }
+  'Longbow': { domain: 'Martial', damage: 'd10', ap: 3, mightReq: 0, traits: ['Aim 20', 'Large', 'Range 2', 'Ranged', 'Bow'], weight: 1.5 },
+  // Shields - now treated as weapons with defenseBonus and negation
+  'Buckler': { domain: 'Martial', damage: 'd4', ap: 2, mightReq: 0, traits: ['Light', 'Shield'], defenseBonus: 1, negation: 2, armorPenalty: 0, weight: 0.5 },
+  'Kite Shield': { domain: 'Martial', damage: 'd6', ap: 3, mightReq: 1, traits: ['Shield'], defenseBonus: 2, negation: 4, armorPenalty: 1, weight: 3 },
+  'Tower Shield': { domain: 'Martial', damage: 'd8', ap: 4, mightReq: 2, traits: ['Heavy', 'Shield'], defenseBonus: 3, negation: 5, armorPenalty: 2, weight: 6 },
+  'Fortress Shield': { domain: 'Martial', damage: 'd10', ap: 4, mightReq: 3, traits: ['Heavy', 'Shield'], defenseBonus: 4, negation: 6, armorPenalty: 3, weight: 8 }
 };

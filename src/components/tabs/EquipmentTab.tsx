@@ -5,7 +5,6 @@ import { calculateEncumbrance, calculateSpeedFromEquipped } from '@/utils/calcul
 import {
   getWeaponData,
   getArmorData,
-  getShieldData,
   updateItemState,
   removeItemFromInventory,
   canEquipItem
@@ -91,17 +90,13 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
     if (item.type === 'weapon') {
       const weaponData = getWeaponData(item);
       if (weaponData) {
-        return `${weaponData.domain || '?'} | ${weaponData.damage} | AP ${weaponData.ap}`;
+        const shieldInfo = weaponData.defenseBonus ? ` | +${weaponData.defenseBonus} Deflect | Neg ${weaponData.negation || 0}` : '';
+        return `${weaponData.domain || '?'} | ${weaponData.damage} | AP ${weaponData.ap}${shieldInfo}`;
       }
     } else if (item.type === 'armor') {
       const armorData = getArmorData(item);
       if (armorData) {
         return `+${armorData.bonus} Armor | Might ${armorData.mightReq}`;
-      }
-    } else if (item.type === 'shield') {
-      const shieldData = getShieldData(item);
-      if (shieldData) {
-        return `+${shieldData.defenseBonus} Def | Neg ${shieldData.negation}`;
       }
     }
     return '';

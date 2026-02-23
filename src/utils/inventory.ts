@@ -3,12 +3,10 @@ import {
   InventoryItem,
   ItemState,
   Weapon,
-  ArmorType,
-  Shield
+  ArmorType
 } from '@/types/character';
 import { WEAPONS } from '@/data/weapons';
 import { ARMOR_TYPES } from '@/data/armor';
-import { SHIELDS } from '@/data/shields';
 
 /**
  * Get all equipped weapons from inventory
@@ -32,12 +30,12 @@ export const getEquippedArmor = (character: Character): InventoryItem | null => 
 };
 
 /**
- * Get equipped shield from inventory
+ * Get equipped shield from inventory (shields are weapons with Shield trait)
  */
 export const getEquippedShield = (character: Character): InventoryItem | null => {
   if (!character.inventory) return null;
   const shield = character.inventory.find(
-    item => item.type === 'shield' && item.state === 'equipped'
+    item => item.type === 'weapon' && item.state === 'equipped' && item.customWeaponData?.traits?.includes('Shield')
   );
   return shield || null;
 };
@@ -84,30 +82,6 @@ export const getArmorData = (item: InventoryItem): ArmorType | null => {
 
   if (item.dataRef && ARMOR_TYPES[item.dataRef]) {
     return ARMOR_TYPES[item.dataRef];
-  }
-
-  return null;
-};
-
-/**
- * Resolve shield data from inventory item
- */
-export const getShieldData = (item: InventoryItem): Shield | null => {
-  if (item.type !== 'shield') return null;
-
-  if (item.isCustom && item.customShieldData) {
-    return {
-      defenseBonus: item.customShieldData.defenseBonus,
-      negation: item.customShieldData.negation,
-      armorPenalty: item.customShieldData.armorPenalty,
-      mightReq: item.customShieldData.mightReq,
-      type: item.customShieldData.type,
-      weight: item.weight
-    };
-  }
-
-  if (item.dataRef && SHIELDS[item.dataRef]) {
-    return SHIELDS[item.dataRef];
   }
 
   return null;
@@ -260,8 +234,8 @@ export const canEquipItem = (
     }
   }
 
-  // Check shield - only one can be equipped
-  if (item.type === 'shield') {
+  // Check shield - only one can be equipped (shields are weapons with Shield trait)
+  if (item.type === 'weapon' && item.customWeaponData?.traits?.includes('Shield')) {
     const equippedShield = getEquippedShield(character);
     if (equippedShield && equippedShield.id !== item.id) {
       return {
@@ -314,7 +288,10 @@ export const convertToCustomItem = (item: InventoryItem): InventoryItem => {
       damage: weaponData.damage,
       ap: weaponData.ap,
       mightReq: weaponData.mightReq || 0,
-      traits: [...weaponData.traits]
+      traits: [...weaponData.traits],
+      defenseBonus: weaponData.defenseBonus,
+      negation: weaponData.negation,
+      armorPenalty: weaponData.armorPenalty
     };
   } else if (item.type === 'armor' && ARMOR_TYPES[item.dataRef]) {
     const armorData = ARMOR_TYPES[item.dataRef];
@@ -323,15 +300,6 @@ export const convertToCustomItem = (item: InventoryItem): InventoryItem => {
       mightReq: armorData.mightReq,
       penalty: armorData.penalty,
       penaltyMet: armorData.penaltyMet
-    };
-  } else if (item.type === 'shield' && SHIELDS[item.dataRef]) {
-    const shieldData = SHIELDS[item.dataRef];
-    converted.customShieldData = {
-      defenseBonus: shieldData.defenseBonus,
-      negation: shieldData.negation,
-      armorPenalty: shieldData.armorPenalty,
-      mightReq: shieldData.mightReq,
-      type: shieldData.type
     };
   }
 
