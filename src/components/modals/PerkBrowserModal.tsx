@@ -43,7 +43,8 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
   const [customPerkFree, setCustomPerkFree] = useState(false);
   const [customPerkIsFlaw, setCustomPerkIsFlaw] = useState(false);
   const [customPerkAttribute, setCustomPerkAttribute] = useState('');
-  const [customPerkEffects, setCustomPerkEffects] = useState('');
+  const [customPerkGrantType, setCustomPerkGrantType] = useState<'none' | 'ability' | 'effect'>('none');
+  const [customPerkGrantText, setCustomPerkGrantText] = useState('');
   const [customPerkDescription, setCustomPerkDescription] = useState('');
 
   // Reset category when modal opens with initialCategory
@@ -59,7 +60,8 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
       setCustomPerkCost('0');
       setCustomPerkFree(false);
       setCustomPerkAttribute('');
-      setCustomPerkEffects('');
+      setCustomPerkGrantType('none');
+      setCustomPerkGrantText('');
       setCustomPerkDescription('');
     }
   }, [isOpen, initialCategory]);
@@ -84,7 +86,7 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
       return;
     }
 
-    // Create custom perk
+    // Create custom perk with custom ability/effect text
     const newPerk: import('@/types/character').CharacterPerk = {
       id: `custom-${Date.now()}`,
       perkId: '',
@@ -94,7 +96,27 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
       attribute: customPerkAttribute,
       isFlaw: isFlaw,
       isStaged: false,
-      acquiredAt: Date.now()
+      acquiredAt: Date.now(),
+      // Store custom grant text in perkSnapshot for effect calculator
+      perkSnapshot: {
+        id: '',
+        name: customPerkName.trim(),
+        type: customPerkType.toLowerCase() as 'combat' | 'magic' | 'skill',
+        source: 'custom',
+        requirements: { text: '' },
+        attributes: [customPerkAttribute],
+        cost: { xp: cost, variable: false },
+        apCost: null,
+        tags: [],
+        description: customPerkDescription,
+        effect: customPerkGrantText, // Custom effect/ability text goes here
+        grants: customPerkGrantType !== 'none' && customPerkGrantText 
+          ? { 
+              abilities: customPerkGrantType === 'ability' ? ['custom'] : [],
+              effects: customPerkGrantType === 'effect' ? ['custom'] : []
+            }
+          : { abilities: [], effects: [] }
+      }
     };
 
     const updatedCharacter = {
@@ -122,7 +144,8 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
     setCustomPerkFree(false);
     setCustomPerkIsFlaw(false);
     setCustomPerkAttribute('');
-    setCustomPerkEffects('');
+    setCustomPerkGrantType('none');
+    setCustomPerkGrantText('');
     setCustomPerkDescription('');
     onClose();
   };
@@ -599,15 +622,57 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm text-slate-300 mb-1">Custom Effects (optional)</label>
-                  <textarea
-                    value={customPerkEffects}
-                    onChange={(e) => setCustomPerkEffects(e.target.value)}
-                    placeholder="Describe what this perk does mechanically..."
-                    rows={3}
-                    className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
-                  />
-                  <p className="text-xs text-slate-400 mt-1">This text will be shown when the perk is expanded</p>
+                  <label className="block text-sm text-slate-300 mb-1">Grant (optional)</label>
+                  <div className="grid grid-cols-3 gap-2 mb-2">
+                    <button
+                      type="button"
+                      onClick={() => setCustomPerkGrantType('none')}
+                      className={`py-2 px-3 rounded text-sm font-semibold ${
+                        customPerkGrantType === 'none'
+                          ? 'bg-blue-700 text-white'
+                          : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      }`}
+                    >
+                      None
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCustomPerkGrantType('ability')}
+                      className={`py-2 px-3 rounded text-sm font-semibold ${
+                        customPerkGrantType === 'ability'
+                          ? 'bg-blue-700 text-white'
+                          : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      }`}
+                    >
+                      Ability
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCustomPerkGrantType('effect')}
+                      className={`py-2 px-3 rounded text-sm font-semibold ${
+                        customPerkGrantType === 'effect'
+                          ? 'bg-blue-700 text-white'
+                          : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      }`}
+                    >
+                      Effect
+                    </button>
+                  </div>
+
+                  {customPerkGrantType !== 'none' && (
+                    <div>
+                      <textarea
+                        value={customPerkGrantText}
+                        onChange={(e) => setCustomPerkGrantText(e.target.value)}
+                        placeholder={`Describe the ${customPerkGrantType === 'ability' ? 'ability' : 'effect'} this perk grants...`}
+                        rows={3}
+                        className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+                      />
+                      <p className="text-xs text-slate-400 mt-1">
+                        This {customPerkGrantType === 'ability' ? 'ability' : 'effect'} will appear in the {customPerkType} tab
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div>

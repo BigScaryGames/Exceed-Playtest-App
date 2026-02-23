@@ -157,7 +157,27 @@ export function getActiveAbilities(
       }
     } else if (perk.perkSnapshot) {
       // Regular perk - use flat grants
-      extractFromPerk(perk.perkSnapshot, perk.name, perk);
+      // First check if it has grant IDs (database abilities)
+      if (perk.perkSnapshot.grants?.abilities && perk.perkSnapshot.grants.abilities.length > 0) {
+        extractFromPerk(perk.perkSnapshot, perk.name, perk);
+      }
+      // Otherwise use effect field as custom ability text (for custom perks)
+      else if (perk.perkSnapshot.effect) {
+        const inherited = inheritTags ? getInheritedTags(perk.perkSnapshot) : [];
+        // Add appropriate tag based on perk type
+        const typeTag = perk.type === 'Combat' ? 'Combat' : perk.type === 'Magic' ? 'Spellcraft' : 'Skill';
+        const customAbility: ActiveAbility = {
+          id: `custom-${perk.id}`,
+          name: perk.name,
+          effect: perk.perkSnapshot.effect,
+          tags: inheritTags ? mergeTags([typeTag], inherited) : [typeTag],
+          sourcePerk: perk.name,
+          sourcePerkId: perk.perkSnapshot?.id
+        };
+        if (!abilities.find(a => a.id === customAbility.id)) {
+          abilities.push(customAbility);
+        }
+      }
     }
   }
 
@@ -291,7 +311,27 @@ export function getActiveEffects(
       }
     } else if (perk.perkSnapshot) {
       // Regular perk - use flat grants
-      extractFromPerk(perk.perkSnapshot, perk.name, perk);
+      // First check if it has grant IDs (database effects)
+      if (perk.perkSnapshot.grants?.effects && perk.perkSnapshot.grants.effects.length > 0) {
+        extractFromPerk(perk.perkSnapshot, perk.name, perk);
+      } 
+      // Otherwise use effect field as custom effect text (for custom perks)
+      else if (perk.perkSnapshot.effect) {
+        const inherited = inheritTags ? getInheritedTags(perk.perkSnapshot) : [];
+        // Add appropriate tag based on perk type
+        const typeTag = perk.type === 'Combat' ? 'Combat' : perk.type === 'Magic' ? 'Spellcraft' : 'Skill';
+        const customEffect: ActiveEffect = {
+          id: `custom-${perk.id}`,
+          name: perk.name,
+          effect: perk.perkSnapshot.effect,
+          tags: inheritTags ? mergeTags([typeTag], inherited) : [typeTag],
+          sourcePerk: perk.name,
+          sourcePerkId: perk.perkSnapshot?.id
+        };
+        if (!effects.find(e => e.id === customEffect.id)) {
+          effects.push(customEffect);
+        }
+      }
     }
   }
 

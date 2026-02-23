@@ -242,7 +242,8 @@ const ConditioningCard: React.FC<ConditioningCardProps> = ({
   const canAfford = character.combatXP >= cost;
 
   // Get perk details from database or stored snapshot
-  const perkDetails = perkDatabase?.perks.combat.find(p => p.id === stagedPerk.id) || stagedPerk.perkSnapshot;
+  // Use perkId (database ID) not id (instance ID)
+  const perkDetails = perkDatabase?.perks.combat.find(p => p.id === stagedPerk.perkId) || stagedPerk.perkSnapshot;
 
   // Get valid attributes from the perk (from snapshot or database)
   const validAttributes = perkDetails?.attributes || [];
@@ -540,10 +541,9 @@ export const PerksTab: React.FC<PerksTabProps> = ({
   };
 
   // Handle conditioning level up
-  const handleConditioningLevelUp = (stagedPerkIndex: number, attribute: string) => {
-    // Find staged perks
-    const stagedPerks = character.perks.filter(p => p.isStaged);
-    const stagedPerk = stagedPerks[stagedPerkIndex];
+  const handleConditioningLevelUp = (stagedPerkId: string, attribute: string) => {
+    // Find the specific staged perk by ID
+    const stagedPerk = character.perks.find(p => p.isStaged && p.id === stagedPerkId);
     if (!stagedPerk) return;
 
     const currentLevel = stagedPerk.level || 1;
@@ -607,10 +607,9 @@ export const PerksTab: React.FC<PerksTabProps> = ({
   };
 
   // Handle abandon conditioning
-  const handleAbandonConditioning = (stagedPerkIndex: number) => {
-    // Find staged perks
-    const stagedPerks = character.perks.filter(p => p.isStaged);
-    const stagedPerk = stagedPerks[stagedPerkIndex];
+  const handleAbandonConditioning = (stagedPerkId: string) => {
+    // Find the specific staged perk by ID
+    const stagedPerk = character.perks.find(p => p.isStaged && p.id === stagedPerkId);
     if (!stagedPerk) return;
 
     // Calculate total refund from progression log
@@ -703,14 +702,14 @@ export const PerksTab: React.FC<PerksTabProps> = ({
             {/* Individual Conditioning Perks */}
             {character.perks
               .filter(p => p.isStaged && p.level < 5)
-              .map((stagedPerk, index) => (
+              .map((stagedPerk) => (
                 <ConditioningCard
-                  key={stagedPerk.id || index}
+                  key={stagedPerk.id || stagedPerk.name}
                   stagedPerk={stagedPerk}
                   character={character}
                   perkDatabase={perkDatabase}
-                  onLevelUp={(attr) => handleConditioningLevelUp(index, attr)}
-                  onAbandon={() => handleAbandonConditioning(index)}
+                  onLevelUp={(attr) => handleConditioningLevelUp(stagedPerk.id, attr)}
+                  onAbandon={() => handleAbandonConditioning(stagedPerk.id)}
                 />
               ))}
           </div>
