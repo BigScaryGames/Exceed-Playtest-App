@@ -48,9 +48,6 @@ export const MARTIAL_CP_THRESHOLDS = [10, 30, 60, 100, 150];
 // Spellcraft Domain: Spells and magic perks contribute here
 export const SPELLCRAFT_CP_THRESHOLDS = [10, 30, 60, 100, 150];
 
-// Legacy alias (deprecated - use MARTIAL_CP_THRESHOLDS)
-export const DOMAIN_CP_THRESHOLDS = MARTIAL_CP_THRESHOLDS;
-
 // Skill progression costs (level * 2 CP)
 export const getSkillCost = (level: number): number => level * 2;
 

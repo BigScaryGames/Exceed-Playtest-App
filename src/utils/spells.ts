@@ -2,11 +2,26 @@ import {
   Character,
   KnownSpell,
   Spell,
-  LegacySpell,
   SpellTier,
-  SpellType
+  SpellType,
+  CustomSpellData
 } from '@/types/character';
-import { SPELLS, SPELL_XP_COSTS, SPELLCRAFT_XP_REQUIREMENTS, getSpellByName } from '@/data/spells';
+import { SPELL_XP_COSTS, SPELLCRAFT_XP_REQUIREMENTS, getSpellByName } from '@/data/spells';
+
+/**
+ * Get the limit cost from spell data (handles both Spell and CustomSpellData formats)
+ */
+export const getLimitCost = (spellData: Spell | CustomSpellData): number => {
+  if ('basic' in spellData) {
+    // It's a Spell object - use basic version limit cost
+    const basic = spellData.type === 'advanced' && spellData.advanced 
+      ? spellData.advanced 
+      : spellData.basic;
+    return typeof basic.limitCost === 'number' ? basic.limitCost : 0;
+  }
+  // It's CustomSpellData
+  return spellData.limitCost;
+};
 
 /**
  * Calculate the character's total Limit capacity
@@ -44,7 +59,7 @@ export const calculateUsedLimit = (character: Character): number => {
     if (spell) {
       const spellData = getSpellData(spell);
       if (spellData) {
-        usedLimit += spellData.limitCost;
+        usedLimit += getLimitCost(spellData);
       }
     }
   }
@@ -62,27 +77,15 @@ export const calculateCastingDC = (tier: SpellTier): number => {
 
 /**
  * Get spell data from a KnownSpell (resolves custom or database)
- * Returns LegacySpell format for backwards compatibility
+ * Returns CustomSpellData for custom spells, or Spell for database spells
  */
-export const getSpellData = (spell: KnownSpell): LegacySpell | null => {
+export const getSpellData = (spell: KnownSpell): CustomSpellData | Spell | null => {
   if (spell.isCustom && spell.customSpellData) {
-    // Return custom spell data as a LegacySpell object
-    return {
-      tier: spell.customSpellData.tier,
-      type: spell.customSpellData.type,
-      apCost: spell.customSpellData.apCost,
-      attributes: spell.customSpellData.attributes,
-      limitCost: spell.customSpellData.limitCost,
-      traits: spell.customSpellData.traits,
-      effect: spell.customSpellData.effect,
-      distance: spell.customSpellData.distance,
-      duration: spell.customSpellData.duration,
-      damage: spell.customSpellData.damage
-    };
+    return spell.customSpellData;
   }
 
-  if (spell.dataRef && SPELLS[spell.dataRef]) {
-    return SPELLS[spell.dataRef];
+  if (spell.dataRef) {
+    return getSpellByName(spell.dataRef) || null;
   }
 
   return null;
@@ -228,7 +231,8 @@ export const attuneSpell = (
     return { success: false, character, reason: 'Spell data not found' };
   }
 
-  if (spellData.limitCost === 0) {
+  const limitCost = getLimitCost(spellData);
+  if (limitCost === 0) {
     return { success: false, character, reason: 'This spell has no Limit cost and cannot be attuned' };
   }
 
@@ -238,11 +242,11 @@ export const attuneSpell = (
   }
 
   const currentLimit = calculateCurrentLimit(character);
-  if (spellData.limitCost > currentLimit) {
+  if (limitCost > currentLimit) {
     return {
       success: false,
       character,
-      reason: `Not enough Limit. Need ${spellData.limitCost}, have ${currentLimit} remaining.`
+      reason: `Not enough Limit. Need ${limitCost}, have ${currentLimit} remaining.`
     };
   }
 
@@ -285,11 +289,20 @@ export const convertToCustomSpell = (spell: KnownSpell): KnownSpell => {
     return spell;
   }
 
-  if (!spell.dataRef || !SPELLS[spell.dataRef]) {
+  if (!spell.dataRef) {
     return spell;
   }
 
-  const spellData = SPELLS[spell.dataRef];
+  const spellData = getSpellByName(spell.dataRef);
+  if (!spellData) {
+    return spell;
+  }
+
+  // Get the appropriate version (basic or advanced based on spell type)
+  const version = spell.type === 'advanced' && spellData.advanced 
+    ? spellData.advanced 
+    : spellData.basic;
+  const limitCost = typeof version.limitCost === 'number' ? version.limitCost : 0;
 
   return {
     ...spell,
@@ -300,12 +313,12 @@ export const convertToCustomSpell = (spell: KnownSpell): KnownSpell => {
       type: spellData.type,
       apCost: spellData.apCost,
       attributes: spellData.attributes,
-      limitCost: spellData.limitCost,
+      limitCost,
       traits: [...spellData.traits],
-      effect: spellData.effect,
-      distance: spellData.distance,
-      duration: spellData.duration,
-      damage: spellData.damage
+      effect: version.effect,
+      distance: version.distance || '-',
+      duration: spellData.duration || '-',
+      damage: version.damage
     }
   };
 };
@@ -406,7 +419,6 @@ export const upgradeSpellToAdvanced = (
 
   // MS5: Get full spell data with advanced version
   const fullSpellData = getSpellByName(spell.dataRef!);
-  const originalSpellData = SPELLS[spell.dataRef!];
 
   if (!fullSpellData?.advanced) {
     return { success: false, character, reason: 'No advanced version available' };
@@ -425,12 +437,12 @@ export const upgradeSpellToAdvanced = (
     isCustom: true, // Convert to custom since we're modifying it
     dataRef: undefined,
     customSpellData: {
-      tier: originalSpellData.tier,
+      tier: fullSpellData.tier,
       type: 'advanced',
-      apCost: originalSpellData.apCost,
-      attributes: originalSpellData.attributes,
+      apCost: fullSpellData.apCost,
+      attributes: fullSpellData.attributes,
       limitCost: advancedLimitCost,
-      traits: originalSpellData.traits,
+      traits: [...fullSpellData.traits],
       effect: fullSpellData.advanced.effect,
       distance: fullSpellData.advanced.distance || fullSpellData.basic.distance || '-',
       duration: fullSpellData.duration || '-',

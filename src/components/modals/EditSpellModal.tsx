@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Character, KnownSpell, SpellTier, SpellType } from '@/types/character';
-import { getSpellData, updateSpellInKnown } from '@/utils/spells';
+import { getSpellData, getLimitCost, updateSpellInKnown } from '@/utils/spells';
 
 interface EditSpellModalProps {
   isOpen: boolean;
@@ -37,17 +37,37 @@ export const EditSpellModal: React.FC<EditSpellModalProps> = ({
     const spellData = getSpellData(spell);
     if (!spellData) return;
 
+    const limitCostValue = getLimitCost(spellData);
+    
+    // Get effect/distance/damage from the appropriate source
+    let effectVal = '';
+    let distanceVal = '-';
+    let damageVal = '';
+    
+    if ('basic' in spellData) {
+      // It's a Spell object
+      const version = spellData.type === 'advanced' && spellData.advanced ? spellData.advanced : spellData.basic;
+      effectVal = version.effect;
+      distanceVal = version.distance || '-';
+      damageVal = version.damage || '';
+    } else {
+      // It's CustomSpellData
+      effectVal = spellData.effect;
+      distanceVal = spellData.distance;
+      damageVal = spellData.damage || '';
+    }
+
     setName(spell.name);
     setTier(spellData.tier);
     setType(spellData.type);
     setApCost(spellData.apCost);
     setAttributes(spellData.attributes);
-    setLimitCost(spellData.limitCost.toString());
+    setLimitCost(limitCostValue.toString());
     setTraits(spellData.traits.join(', '));
-    setEffect(spellData.effect);
-    setDistance(spellData.distance);
-    setDuration(spellData.duration);
-    setDamage(spellData.damage || '');
+    setEffect(effectVal);
+    setDistance(distanceVal);
+    setDuration(spellData.duration || '-');
+    setDamage(damageVal);
   }, [spell]);
 
   const handleSave = () => {

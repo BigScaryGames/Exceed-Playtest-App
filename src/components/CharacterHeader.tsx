@@ -71,19 +71,30 @@ export const CharacterHeader: React.FC<CharacterHeaderProps> = ({ character, onM
     let martialCP = 0;
     let spellcraftCP = 0;
 
-    character.progressionLog.forEach(entry => {
-      // Combat perks and staged perks contribute to Martial
-      if ((entry.type === 'perk' && entry.xpType === 'combat') || entry.type === 'stagedPerk') {
-        martialCP += entry.cost || 0;
+    // Calculate from perks based on their type
+    // Note: Staged perks (conditioning) do NOT contribute to Martial domain
+    character.perks.forEach(perk => {
+      const perkEntry = character.progressionLog.find(e =>
+        e.type === 'perk' && e.name === perk.name
+      );
+      if (perkEntry) {
+        if (perk.type === 'Combat') {
+          martialCP += perkEntry.cost || 0;
+        } else if (perk.type === 'Magic') {
+          spellcraftCP += perkEntry.cost || 0;
+        }
       }
-      // Spells and social perks contribute to Spellcraft
-      else if (entry.type === 'spell' || (entry.type === 'perk' && entry.xpType === 'social')) {
+    });
+
+    // Add spells to Spellcraft
+    character.progressionLog.forEach(entry => {
+      if (entry.type === 'spell') {
         spellcraftCP += entry.cost || 0;
       }
     });
 
     return { Martial: martialCP, Spellcraft: spellcraftCP };
-  }, [character.progressionLog]);
+  }, [character.perks, character.progressionLog]);
 
   // Calculate Limit
   const totalLimit = calculateLimit(character);

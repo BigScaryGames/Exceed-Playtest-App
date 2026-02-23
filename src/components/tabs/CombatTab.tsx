@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Character, Weapon, InventoryItem } from '@/types/character';
 import type { PerkDatabase } from '@/types/perks';
-import { WEAPONS } from '@/data/weapons';
 import { DiceRollerModal, RollData } from '@/components/modals/DiceRollerModal';
 import {
   getEquippedWeapons,
@@ -361,33 +360,14 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
     handleDeleteCombatPerk(index);
   };
 
-  // Get equipped weapons - with backward compatibility
+  // Get equipped weapons from inventory
   const equippedWeaponsFromInventory = getEquippedWeapons(character);
-  let equippedWeapons: Array<{ item: InventoryItem; weaponData: Weapon } | { name: string; weaponData: Weapon }> = [];
-
-  if (equippedWeaponsFromInventory.length > 0) {
-    // Use new inventory system
-    equippedWeapons = equippedWeaponsFromInventory
-      .map(item => {
-        const weaponData = getWeaponData(item);
-        return weaponData ? { item, weaponData } : null;
-      })
-      .filter((w): w is { item: InventoryItem; weaponData: Weapon } => w !== null);
-  } else if (character.equippedWeapon1 || character.equippedWeapon2) {
-    // Fallback to old system
-    if (character.equippedWeapon1 && character.equippedWeapon1 !== 'None') {
-      equippedWeapons.push({
-        name: character.equippedWeapon1,
-        weaponData: WEAPONS[character.equippedWeapon1] || WEAPONS['None']
-      });
-    }
-    if (character.equippedWeapon2 && character.equippedWeapon2 !== 'None') {
-      equippedWeapons.push({
-        name: character.equippedWeapon2,
-        weaponData: WEAPONS[character.equippedWeapon2] || WEAPONS['None']
-      });
-    }
-  }
+  const equippedWeapons: Array<{ item: InventoryItem; weaponData: Weapon }> = equippedWeaponsFromInventory
+    .map(item => {
+      const weaponData = getWeaponData(item);
+      return weaponData ? { item, weaponData } : null;
+    })
+    .filter((w): w is { item: InventoryItem; weaponData: Weapon } => w !== null);
 
   // Calculate defense stats using utility functions
   const deflect = calculateDeflectFromEquipped(character);
@@ -559,12 +539,11 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
               : 'grid-cols-1'
           }`}>
             {equippedWeapons.map((weapon, index) => {
-              const weaponName = 'item' in weapon ? weapon.item.name : weapon.name;
               const label = index === 0 ? 'Primary' : 'Secondary';
               return (
                 <WeaponRollSection
-                  key={weaponName + index}
-                  weaponName={weaponName}
+                  key={weapon.item.name + index}
+                  weaponName={weapon.item.name}
                   weaponData={weapon.weaponData}
                   character={character}
                   label={label}

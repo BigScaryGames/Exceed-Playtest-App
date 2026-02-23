@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Character, SpellTier, SpellType } from '@/types/character';
-import { SPELLS, getSpellEntries } from '@/data/spells';
+import { getAllSpells, getSpellByName, getLimitCostFromSpell } from '@/data/spells';
 import {
   canLearnSpell,
   getSpellXPCost,
@@ -47,11 +47,11 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
   const availableXP = character.combatXP; // Magic only uses Combat XP
 
   // Get available spells from database (filter by spellcraft level and not already known)
-  const availableSpells = getSpellEntries().filter(([name, spell]) => {
-    const alreadyKnown = character.knownSpells?.some(s => s.dataRef === name);
+  const availableSpells = getAllSpells().filter(spell => {
+    const alreadyKnown = character.knownSpells?.some(s => s.dataRef === spell.name);
     const canLearn = canLearnSpell(character, spell.tier);
     return !alreadyKnown && canLearn;
-  });
+  }).map(spell => spell.name);
 
   const handleLearnDatabase = () => {
     if (!selectedSpellName) {
@@ -59,7 +59,11 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
       return;
     }
 
-    const spellData = SPELLS[selectedSpellName];
+    const spellData = getSpellByName(selectedSpellName);
+    if (!spellData) {
+      alert('Spell not found');
+      return;
+    }
 
     // Check if attribute selection is required
     const attributes = spellData.attributes.split('/').map(a => a.trim());
@@ -197,7 +201,8 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
 
   if (!isOpen) return null;
 
-  const selectedSpellData = selectedSpellName ? SPELLS[selectedSpellName] : null;
+  const selectedSpellData = selectedSpellName ? getSpellByName(selectedSpellName) : null;
+  const selectedSpellLimitCost = selectedSpellData ? getLimitCostFromSpell(selectedSpellData) : 0;
   const previewXpCost = mode === 'database' && selectedSpellData
     ? getSpellXPCost(selectedSpellData.tier, selectedSpellData.type)
     : getSpellXPCost(customTier, customType);
@@ -276,11 +281,15 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
                   className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
                 >
                   <option value="">-- Choose a spell --</option>
-                  {availableSpells.map(([name, spell]) => (
-                    <option key={name} value={name}>
-                      {name} (Tier {spell.tier}, {spell.type === 'basic' ? 'Basic' : 'Advanced'}) - {getSpellXPCost(spell.tier, spell.type)} XP
-                    </option>
-                  ))}
+                  {availableSpells.map(name => {
+                    const spell = getSpellByName(name);
+                    if (!spell) return null;
+                    return (
+                      <option key={name} value={name}>
+                        {name} (Tier {spell.tier}, {spell.type === 'basic' ? 'Basic' : 'Advanced'}) - {getSpellXPCost(spell.tier, spell.type)} XP
+                      </option>
+                    );
+                  })}
                 </select>
                 {availableSpells.length === 0 && (
                   <p className="text-sm text-slate-400 mt-2">
@@ -297,15 +306,15 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
                     <div><span className="text-slate-400">Type:</span> {selectedSpellData.type === 'basic' ? 'Basic' : 'Advanced'}</div>
                     <div><span className="text-slate-400">AP Cost:</span> {selectedSpellData.apCost}</div>
                     <div><span className="text-slate-400">Attributes:</span> {selectedSpellData.attributes}</div>
-                    <div><span className="text-slate-400">Limit:</span> {selectedSpellData.limitCost}</div>
-                    <div><span className="text-slate-400">Distance:</span> {selectedSpellData.distance}</div>
-                    <div><span className="text-slate-400">Duration:</span> {selectedSpellData.duration}</div>
-                    {selectedSpellData.damage && (
-                      <div><span className="text-slate-400">Damage:</span> {selectedSpellData.damage}</div>
+                    <div><span className="text-slate-400">Limit:</span> {selectedSpellLimitCost}</div>
+                    <div><span className="text-slate-400">Distance:</span> {selectedSpellData.basic.distance || '-'}</div>
+                    <div><span className="text-slate-400">Duration:</span> {selectedSpellData.duration || '-'}</div>
+                    {selectedSpellData.basic.damage && (
+                      <div><span className="text-slate-400">Damage:</span> {selectedSpellData.basic.damage}</div>
                     )}
                     <div className="pt-2 border-t border-slate-600">
                       <span className="text-slate-400">Effect:</span>
-                      <p className="text-slate-300 italic mt-1">{selectedSpellData.effect}</p>
+                      <p className="text-slate-300 italic mt-1">{selectedSpellData.basic.effect}</p>
                     </div>
                   </div>
                 </div>

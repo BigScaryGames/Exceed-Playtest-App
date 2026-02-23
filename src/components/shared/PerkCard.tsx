@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Plus } from 'lucide-react';
-import { Character } from '@/types/character';
 import type { Perk, Ability, Effect } from '@/types/perks';
 
 interface PerkCardProps {
   perk: Perk;
-  character: Character;
   abilities?: Ability[];
   effects?: Effect[];
   isLearned?: boolean;
@@ -31,7 +29,6 @@ const formatCost = (perk: Perk): string => {
 
 export const PerkCard: React.FC<PerkCardProps> = ({
   perk,
-  character: _character, // unused but kept for interface compatibility
   abilities = [],
   effects = [],
   isLearned = false,

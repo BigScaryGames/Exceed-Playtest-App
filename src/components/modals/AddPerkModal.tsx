@@ -114,6 +114,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     }
 
     // Determine which XP pool to use
+    // Skill perks use Social XP, Combat/Magic perks use Combat XP
     const xpType: 'combat' | 'social' = perk.type === 'skill' ? 'social' : 'combat';
     const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
     const perkCost = perk.cost.xp;
@@ -139,7 +140,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 
     let updatedCharacter = { ...character };
     updatedCharacter.perks = [...character.perks, newPerk];
-    
+
     if (xpType === 'social') {
       updatedCharacter.socialXP -= perkCost;
     } else {
@@ -154,7 +155,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         name: perk.name,
         cost: perkCost,
         attribute: effectiveAttribute,
-        xpType: xpType,
+        xpType,
         stagedLevel: newPerk.isStaged ? 1 : undefined
       }
     ];

@@ -12,8 +12,6 @@ export const createEmptyCharacter = (): Character => ({
   },
   skills: [],
   perks: [],
-  equipment: [],
-  customItems: [],
   progressionLog: [],
   weaponDomains: {
     Martial: 0,
@@ -21,10 +19,6 @@ export const createEmptyCharacter = (): Character => ({
   },
   maxWounds: 2,
   hpPerWound: 5,
-  armorType: 'None',
-  equippedWeapon1: 'None',
-  equippedWeapon2: 'None',
-  equippedShield: 'None',
   currentStamina: null,
   currentHealth: null,
   markedWounds: 0,
@@ -59,70 +53,6 @@ export const saveCharacter = (character: Character): void => {
 
 // Migrate character to add missing fields
 const migrateCharacter = (character: Character): Character => {
-  // Add magic system fields if missing
-  if (!character.knownSpells) {
-    character.knownSpells = [];
-  }
-  if (!character.attunedSpells) {
-    character.attunedSpells = [];
-  }
-  // Add inventory if missing
-  if (!character.inventory) {
-    character.inventory = [];
-  }
-  // Add perks array if missing
-  if (!character.perks) {
-    character.perks = [];
-  }
-  // Add woundsNotes if missing
-  if (!character.woundsNotes) {
-    character.woundsNotes = '';
-  }
-  // Clean up old fields that no longer exist
-  if ('spellcraft' in character) {
-    delete (character as any).spellcraft;
-  }
-  if ('magicXP' in character) {
-    delete (character as any).magicXP;
-  }
-  if ('combatPerks' in character) {
-    delete (character as any).combatPerks;
-  }
-  if ('magicPerks' in character) {
-    delete (character as any).magicPerks;
-  }
-  if ('flaws' in character) {
-    delete (character as any).flaws;
-  }
-  if ('stagedPerks' in character) {
-    delete (character as any).stagedPerks;
-  }
-
-  // MS5: Migrate old per-weapon domains to new Martial/Spellcraft system
-  const oldDomains = character.weaponDomains as any;
-  if (oldDomains && ('1H' in oldDomains || '2H' in oldDomains || 'SaS' in oldDomains)) {
-    // Take the max level from old weapon domains as the new Martial level
-    const maxMartialLevel = Math.max(
-      oldDomains['1H'] || 0, oldDomains['2H'] || 0, oldDomains['SaS'] || 0,
-      oldDomains['Sh'] || 0, oldDomains['Ar'] || 0
-    );
-    const spellcraftLevel = oldDomains['Spell'] || 0;
-
-    // Convert to new structure
-    character.weaponDomains = {
-      Martial: maxMartialLevel,
-      Spellcraft: spellcraftLevel
-    };
-  }
-
-  // Ensure MS5 domains exist
-  if (!('Martial' in character.weaponDomains)) {
-    (character.weaponDomains as any).Martial = 0;
-  }
-  if (!('Spellcraft' in character.weaponDomains)) {
-    (character.weaponDomains as any).Spellcraft = 0;
-  }
-
   return character;
 };
 

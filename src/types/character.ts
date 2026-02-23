@@ -48,13 +48,6 @@ export interface CharacterPerk {
   acquiredAt: number;            // Timestamp when acquired
   perkSnapshot?: DatabasePerk;   // Full snapshot from database
 }
-
-export interface Equipment {
-  name: string;
-  weight: number;
-  quantity: number;
-}
-
 export interface ProgressionLogEntry {
   type: 'skill' | 'perk' | 'stagedPerk' | 'extraWound' | 'spell';
   name?: string;
@@ -63,7 +56,7 @@ export interface ProgressionLogEntry {
   cost: number;
   tier?: number; // For spells
   spellType?: 'basic' | 'advanced'; // For spells
-  xpType?: 'combat' | 'social'; // Track which XP pool was used
+  xpType?: 'combat' | 'social'; // Track which XP pool was used (combat for Martial/Spellcraft, social for Skills)
   stagedLevel?: number; // For staged perks: which level was purchased
 }
 
@@ -75,22 +68,16 @@ export interface Character {
   stats: Stats;
   skills: Skill[];
   perks: CharacterPerk[];        // Unified: perks, flaws, and staged perks
-  equipment: Equipment[];
-  customItems: Equipment[];
   progressionLog: ProgressionLogEntry[];
   weaponDomains: WeaponDomains;
   maxWounds: number;
   hpPerWound: number;
-  armorType: string;
-  equippedWeapon1: string;
-  equippedWeapon2: string;
-  equippedShield: string;
   currentStamina: number | null;
   currentHealth: number | null;
   markedWounds: number;
   woundsNotes?: string;
   extraWoundCount: number;
-  inventory?: InventoryItem[];
+  inventory: InventoryItem[];
   stowedWeightReduction?: number;
   money?: number;
   knownSpells?: KnownSpell[];
@@ -206,20 +193,6 @@ export interface Spell {
   advanced?: SpellVersionData;
   description?: string;
   duration?: string;
-}
-
-// Legacy spell format for backwards compatibility
-export interface LegacySpell {
-  tier: SpellTier;
-  type: SpellType;
-  apCost: string;
-  attributes: string;
-  limitCost: number;
-  traits: string[];
-  effect: string;
-  distance: string;
-  duration: string;
-  damage?: string;
 }
 
 export interface CustomSpellData {

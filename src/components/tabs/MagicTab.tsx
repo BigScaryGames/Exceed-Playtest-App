@@ -5,6 +5,7 @@ import type { PerkDatabase } from '@/types/perks';
 import {
   calculateCastingDC,
   getSpellData,
+  getLimitCost,
   attuneSpell,
   unattuneSpell,
   removeSpellFromKnown,
@@ -320,6 +321,19 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                       const isExpanded = expandedSpellId === spell.id;
                       const canUpgrade = canUpgradeSpell(spell);
                       const upgradeCost = canUpgrade ? getUpgradeCost(spell) : 0;
+                      const limitCost = getLimitCost(spellData);
+                      
+                      // Get display properties from spell data
+                      const displayDistance = 'basic' in spellData 
+                        ? (spellData.type === 'advanced' && spellData.advanced ? spellData.advanced.distance : spellData.basic.distance) || '-'
+                        : spellData.distance;
+                      const displayDuration = 'basic' in spellData ? spellData.duration || '-' : spellData.duration;
+                      const displayDamage = 'basic' in spellData
+                        ? (spellData.type === 'advanced' && spellData.advanced ? spellData.advanced.damage : spellData.basic.damage)
+                        : spellData.damage;
+                      const displayEffect = 'basic' in spellData
+                        ? (spellData.type === 'advanced' && spellData.advanced ? spellData.advanced.effect : spellData.basic.effect)
+                        : spellData.effect;
 
                       return (
                         <div
@@ -356,11 +370,11 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                                 <div className="text-xs text-slate-400 flex items-center gap-2 flex-wrap">
                                   <span>AP {spellData.apCost}</span>
                                   <span>•</span>
-                                  <span>{spellData.distance}</span>
-                                  {spellData.limitCost > 0 && (
+                                  <span>{displayDistance}</span>
+                                  {limitCost > 0 && (
                                     <>
                                       <span>•</span>
-                                      <span className="text-yellow-400">Limit {spellData.limitCost}</span>
+                                      <span className="text-yellow-400">Limit {limitCost}</span>
                                     </>
                                   )}
                                 </div>
@@ -368,7 +382,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
 
                               {/* Right: Action Buttons */}
                               <div className="flex gap-2">
-                                {spellData.limitCost > 0 && (
+                                {limitCost > 0 && (
                                   <button
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -404,11 +418,11 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                               {/* Spell Details */}
                               <div className="text-xs text-slate-300 mt-3 mb-3 space-y-2">
                                 <div>
-                                  <span className="text-slate-400">Duration:</span> {spellData.duration}
+                                  <span className="text-slate-400">Duration:</span> {displayDuration}
                                 </div>
-                                {spellData.damage && (
+                                {displayDamage && (
                                   <div>
-                                    <span className="text-slate-400">Damage:</span> {spellData.damage}
+                                    <span className="text-slate-400">Damage:</span> {displayDamage}
                                   </div>
                                 )}
                                 <div>
@@ -416,7 +430,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                                 </div>
                                 <div>
                                   <span className="text-slate-400">Effect:</span>
-                                  <p className="text-slate-300 italic mt-1">{spellData.effect}</p>
+                                  <p className="text-slate-300 italic mt-1">{displayEffect}</p>
                                 </div>
                                 <div>
                                   <span className="text-slate-400">Casting DC:</span> {castingDC}

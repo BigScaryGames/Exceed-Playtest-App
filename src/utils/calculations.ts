@@ -1,6 +1,5 @@
 import { Character, AttributeCode, ProgressionLogEntry, Weapon, WeaponDomains } from '@/types/character';
 import { ARMOR_TYPES } from '@/data/armor';
-import { WEAPONS } from '@/data/weapons';
 import { SHIELDS } from '@/data/shields';
 import { MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS, ENCUMBRANCE_LEVELS,
   CP_THRESHOLDS
@@ -77,6 +76,8 @@ export const calculateAttributeValues = (progressionLog: ProgressionLogEntry[]) 
 };
 
 // MS5: Calculate weapon domain levels (consolidated to Martial + Spellcraft)
+// Note: Staged perks (conditioning) do NOT contribute to Martial domain -
+// they represent toughness training, not fighting skill
 export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]): WeaponDomains => {
   let martialCP = 0;
   let spellcraftCP = 0;
@@ -87,16 +88,12 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]): W
     if (entry.type === 'perk' && entry.xpType === 'combat') {
       martialCP += entry.cost;
     }
-    // Staged perks (conditioning) contribute to Martial domain
-    else if (entry.type === 'stagedPerk') {
-      martialCP += entry.cost;
-    }
     // Spells contribute to Spellcraft domain
-    else if (entry.type === 'spell') {
+    if (entry.type === 'spell') {
       spellcraftCP += entry.cost;
     }
     // Perks with xpType='social' contribute to Spellcraft domain
-    else if (entry.type === 'perk' && entry.xpType === 'social') {
+    if (entry.type === 'perk' && entry.xpType === 'social') {
       spellcraftCP += entry.cost;
     }
   });
@@ -165,13 +162,12 @@ export const calculateHP = (character: Character) => {
   };
 };
 
-// Calculate armor penalty based on Might requirement
-export const calculateArmorPenalty = (armorType: string, might: number): number => {
-  const armor = ARMOR_TYPES[armorType];
-  if (!armor) return 0;
+// Calculate armor penalty based on armor data
+export const calculateArmorPenalty = (armorData: typeof ARMOR_TYPES[string], might: number): number => {
+  if (!armorData) return 0;
 
   // If might meets requirement, use penaltyMet, otherwise use full penalty
-  return might >= armor.mightReq ? armor.penaltyMet : armor.penalty;
+  return might >= armorData.mightReq ? armorData.penaltyMet : armorData.penalty;
 };
 
 // Calculate speed
@@ -180,82 +176,25 @@ export const calculateSpeed = (agility: number, endurance: number, armorPenalty:
   return Math.max(0, baseSpeed + armorPenalty);
 };
 
-// Calculate deflect value (MS5: Martial domain + weapon attribute + equipment bonus)
-// Deflect = Martial + Agility/Dexterity/Might (based on weapon type) + Equipment Defense bonus
-export const calculateDeflect = (character: Character): number => {
-  const weapon1 = WEAPONS[character.equippedWeapon1];
-  const weapon2 = WEAPONS[character.equippedWeapon2];
-  const shield = SHIELDS[character.equippedShield];
-
-  // MS5: All weapons use Martial domain
-  const martialLevel = character.weaponDomains.Martial || 0;
-
-  // Determine which attribute to use based on weapon properties
-  // Finesse weapons use Dexterity, Heavy weapons use Might, others use Agility
-  let weaponAttribute = character.stats.AG; // Default: Agility
-  
-  if (weapon1) {
-    if (weapon1.finesse && character.stats.DX > character.stats.AG) {
-      weaponAttribute = character.stats.DX;
-    } else if (weapon1.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
-      weaponAttribute = character.stats.MG;
-    }
-  } else if (weapon2) {
-    // Off-hand weapon
-    if (weapon2.finesse && character.stats.DX > character.stats.AG) {
-      weaponAttribute = character.stats.DX;
-    } else if (weapon2.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
-      weaponAttribute = character.stats.MG;
-    }
-  }
-
-  // Get equipment defense bonus from shield
-  const shieldBonus = shield?.defenseBonus || 0;
-
-  // Deflect = Martial domain + weapon attribute + shield bonus
-  return martialLevel + weaponAttribute + shieldBonus;
-};
-
 // Calculate encumbrance
 export const calculateEncumbrance = (character: Character) => {
   const capacity = Math.pow(5 + character.stats.EN + character.stats.MG, 2);
 
-  let totalWeight;
-  let equippedWeight;
-  let inventoryWeight;
+  // Calculate from unified inventory
+  // Equipped items count toward weight
+  const equippedWeight = character.inventory
+    .filter(item => item.state === 'equipped')
+    .reduce((sum, item) => sum + (item.weight * item.quantity), 0);
 
-  // Use new inventory system if available
-  if (character.inventory && character.inventory.length > 0) {
-    // Calculate from unified inventory
-    // Equipped items count toward weight
-    equippedWeight = character.inventory
-      .filter(item => item.state === 'equipped')
-      .reduce((sum, item) => sum + (item.weight * item.quantity), 0);
+  // Stowed items count toward weight, with weight reduction applied
+  const stowedWeight = character.inventory
+    .filter(item => item.state === 'stowed')
+    .reduce((sum, item) => sum + (item.weight * item.quantity), 0);
+  const weightReduction = character.stowedWeightReduction || 0;
 
-    // Stowed items count toward weight, with weight reduction applied
-    const stowedWeight = character.inventory
-      .filter(item => item.state === 'stowed')
-      .reduce((sum, item) => sum + (item.weight * item.quantity), 0);
-    const weightReduction = character.stowedWeightReduction || 0;
-
-    // Packed items DON'T count toward encumbrance (stored elsewhere)
-    inventoryWeight = Math.max(0, stowedWeight - weightReduction);
-    totalWeight = equippedWeight + inventoryWeight;
-  } else {
-    // Fallback to old system
-    const equipmentWeight = character.equipment.reduce((sum, item) => sum + (item.weight * item.quantity), 0);
-    const customItemsWeight = character.customItems.reduce((sum, item) => sum + (item.weight * item.quantity), 0);
-
-    // Calculate weight from equipped gear
-    const armorWeight = ARMOR_TYPES[character.armorType]?.weight || 0;
-    const weapon1Weight = WEAPONS[character.equippedWeapon1]?.weight || 0;
-    const weapon2Weight = WEAPONS[character.equippedWeapon2]?.weight || 0;
-    const shieldWeight = SHIELDS[character.equippedShield]?.weight || 0;
-    equippedWeight = armorWeight + weapon1Weight + weapon2Weight + shieldWeight;
-
-    inventoryWeight = equipmentWeight + customItemsWeight;
-    totalWeight = equipmentWeight + customItemsWeight + equippedWeight;
-  }
+  // Packed items DON'T count toward encumbrance (stored elsewhere)
+  const inventoryWeight = Math.max(0, stowedWeight - weightReduction);
+  const totalWeight = equippedWeight + inventoryWeight;
 
   const percentage = (totalWeight / capacity) * 100;
 
@@ -364,24 +303,9 @@ export const calculateDeflectForWeapon = (character: Character, weapon: Weapon):
 // Per rules: Deflect uses the best defensive option available
 export const calculateDeflectFromEquipped = (character: Character): number => {
   const equippedWeaponsFromInventory = getEquippedWeapons(character);
-  let equippedWeapons: Array<Weapon> = [];
-
-  if (equippedWeaponsFromInventory.length > 0) {
-    // Use new inventory system
-    equippedWeapons = equippedWeaponsFromInventory
-      .map(item => getWeaponData(item))
-      .filter((w): w is Weapon => w !== null);
-  } else if (character.equippedWeapon1 || character.equippedWeapon2) {
-    // Fallback to old system
-    if (character.equippedWeapon1 && character.equippedWeapon1 !== 'None') {
-      const weapon = WEAPONS[character.equippedWeapon1];
-      if (weapon) equippedWeapons.push(weapon);
-    }
-    if (character.equippedWeapon2 && character.equippedWeapon2 !== 'None') {
-      const weapon = WEAPONS[character.equippedWeapon2];
-      if (weapon) equippedWeapons.push(weapon);
-    }
-  }
+  const equippedWeapons: Array<Weapon> = equippedWeaponsFromInventory
+    .map(item => getWeaponData(item))
+    .filter((w): w is Weapon => w !== null);
 
   // Calculate weapon-based deflect (Parry)
   const weaponDeflect = equippedWeapons.length > 0
@@ -397,11 +321,10 @@ export const calculateDeflectFromEquipped = (character: Character): number => {
 
 // Calculate block value from equipped shield (MS5: uses Martial domain)
 export const calculateBlockFromEquipped = (character: Character): number => {
-  // Get equipped shield - with backward compatibility
   const equippedShieldItem = getEquippedShield(character);
   const shieldData = equippedShieldItem
     ? (getShieldData(equippedShieldItem) || SHIELDS['None'])
-    : (character.equippedShield ? SHIELDS[character.equippedShield] : SHIELDS['None']);
+    : SHIELDS['None'];
 
   // MS5: Shields use Martial domain
   const martialLevel = character.weaponDomains.Martial || 0;
@@ -423,11 +346,10 @@ export const calculateBlockFromEquipped = (character: Character): number => {
 
 // Calculate dodge including armor and encumbrance penalties
 export const calculateDodgeFromEquipped = (character: Character): number => {
-  // Get armor stats
   const equippedArmor = getEquippedArmor(character);
   const armorData = equippedArmor
     ? (getArmorData(equippedArmor) || ARMOR_TYPES['None'])
-    : (character.armorType ? ARMOR_TYPES[character.armorType] : ARMOR_TYPES['None']);
+    : ARMOR_TYPES['None'];
 
   const meetsArmorReq = character.stats.MG >= armorData.mightReq;
   const armorPenalty = meetsArmorReq ? armorData.penaltyMet : armorData.penalty;
@@ -459,7 +381,7 @@ export const calculateHPValues = (character: Character) => {
   const equippedArmor = getEquippedArmor(character);
   const armorData = equippedArmor
     ? (getArmorData(equippedArmor) || ARMOR_TYPES['None'])
-    : (character.armorType ? ARMOR_TYPES[character.armorType] : ARMOR_TYPES['None']);
+    : ARMOR_TYPES['None'];
   const armorBonus = armorData.bonus;
 
   // Calculate extraHP from staged perks instead of stored field

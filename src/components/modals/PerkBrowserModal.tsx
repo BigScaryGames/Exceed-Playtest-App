@@ -653,7 +653,6 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
                   <PerkCard
                     key={perk.id}
                     perk={perk}
-                    character={character}
                     abilities={perkDatabase?.abilities || []}
                     effects={perkDatabase?.effects || []}
                     isExpanded={expandedPerkId === perk.id}

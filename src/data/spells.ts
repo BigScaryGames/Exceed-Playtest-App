@@ -1,4 +1,4 @@
-import { Spell, LegacySpell } from '@/types/character';
+import { Spell } from '@/types/character';
 
 // Use import.meta.env.BASE_URL to get the correct base path (works with GitHub Pages)
 const BUNDLED_SPELLS_PATH = `${import.meta.env.BASE_URL}data/spells.json`;
@@ -148,62 +148,12 @@ export function isSpellDatabaseLoaded(): boolean {
 }
 
 /**
- * Convert new Spell format to legacy format
+ * Get the limit cost from spell data (handles both Spell and CustomSpellData formats)
+ * Exported here for convenience since this module exports getSpellByName
  */
-function spellToLegacy(spell: Spell): LegacySpell {
-  const limitCost = typeof spell.basic.limitCost === 'number'
-    ? spell.basic.limitCost
-    : 0;
-
-  return {
-    tier: spell.tier,
-    type: spell.type,
-    apCost: spell.apCost,
-    attributes: spell.attributes,
-    limitCost,
-    traits: spell.traits,
-    effect: spell.basic.effect || spell.shortDescription,
-    distance: spell.basic.distance || '-',
-    duration: spell.duration || '-',
-    damage: spell.basic.damage,
-  };
-}
-
-/**
- * Get a legacy spell by name (for backwards compatibility)
- */
-export function getLegacySpellByName(name: string): LegacySpell | undefined {
-  const spell = getSpellByName(name);
-  if (!spell) return undefined;
-  return spellToLegacy(spell);
-}
-
-// Legacy SPELLS object for backwards compatibility
-// Maps spell name to spell data
-export const SPELLS: Record<string, LegacySpell> = new Proxy({} as Record<string, LegacySpell>, {
-  get(_target, prop: string) {
-    return getLegacySpellByName(prop);
-  },
-  has(_target, prop: string) {
-    return getSpellByName(prop) !== undefined;
-  },
-  ownKeys(_target) {
-    return spellDatabase.map(s => s.name);
-  },
-  getOwnPropertyDescriptor(_target, prop: string) {
-    const legacy = getLegacySpellByName(prop);
-    if (!legacy) return undefined;
-    return {
-      enumerable: true,
-      configurable: true,
-      value: legacy,
-    };
-  }
-});
-
-// Helper to get all spell entries for Object.entries() compatibility
-export function getSpellEntries(): [string, LegacySpell][] {
-  return spellDatabase.map(spell => [spell.name, spellToLegacy(spell)]);
+export function getLimitCostFromSpell(spell: Spell): number {
+  const version = spell.type === 'advanced' && spell.advanced ? spell.advanced : spell.basic;
+  return typeof version.limitCost === 'number' ? version.limitCost : 0;
 }
 
 // XP costs for learning spells by tier and type
@@ -225,7 +175,3 @@ export const SPELLCRAFT_XP_REQUIREMENTS: Record<number, number> = {
   4: 50,   // +20 XP (total 50)
   5: 75    // +25 XP (total 75)
 };
-
-// MS5: SPELL_UPGRADES is no longer needed - advanced versions are now in the spell data
-// Keeping for backwards compatibility but deprecated
-export const SPELL_UPGRADES: Record<string, Partial<LegacySpell>> = {};

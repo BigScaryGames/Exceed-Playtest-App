@@ -9,7 +9,6 @@ import { MagicTab } from '@/components/tabs/MagicTab';
 import { PerksTab } from '@/components/tabs/PerksTab';
 import { NotesTab } from '@/components/tabs/NotesTab';
 import { calculateAttributeValues, calculateWeaponDomains } from '@/utils/calculations';
-import { migrateCharacterIfNeeded, needsMigration } from '@/utils/migration';
 
 interface CharacterSheetProps {
   character: Character;
@@ -63,14 +62,6 @@ export const CharacterSheet: React.FC<CharacterSheetProps> = ({ character, onUpd
     setTouchStart(0);
     setTouchEnd(0);
   };
-
-  // Migrate character to new inventory system if needed
-  useEffect(() => {
-    if (needsMigration(character)) {
-      const migratedCharacter = migrateCharacterIfNeeded(character);
-      onUpdate(migratedCharacter);
-    }
-  }, [character.name]); // Run on mount and when character changes
 
   // Auto-calculate stats and weapon domains from progression log
   useEffect(() => {
