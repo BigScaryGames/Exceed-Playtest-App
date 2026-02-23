@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, Minus } from 'lucide-react';
-import { Character, InventoryItem, ItemState } from '@/types/character';
+import { Character, InventoryItem, ItemState, AttributeCode } from '@/types/character';
 import { calculateEncumbrance, calculateSpeedFromEquipped } from '@/utils/calculations';
 import {
   getWeaponData,
@@ -42,6 +42,17 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
 
     const updatedInventory = character.inventory?.map(item =>
       item.id === itemId ? { ...item, quantity: newQuantity } : item
+    );
+
+    onUpdate({
+      ...character,
+      inventory: updatedInventory
+    });
+  };
+
+  const handleAttributeChange = (itemId: string, attributeType: 'attackAttribute' | 'deflectAttribute', value: AttributeCode) => {
+    const updatedInventory = character.inventory?.map(item =>
+      item.id === itemId ? { ...item, [attributeType]: value } : item
     );
 
     onUpdate({
@@ -170,6 +181,48 @@ export const EquipmentTab: React.FC<EquipmentTabProps> = ({ character, onUpdate 
                 <div><span className="text-slate-400">Stats:</span> {renderItemDetails(item)}</div>
               )}
               <div><span className="text-slate-400">Weight:</span> {item.weight} kg each</div>
+              
+              {/* Weapon Attribute Selectors */}
+              {item.type === 'weapon' && (
+                <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-600">
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1">Attack Attribute</label>
+                    <select
+                      value={item.attackAttribute || 'AG'}
+                      onChange={(e) => handleAttributeChange(item.id, 'attackAttribute', e.target.value as AttributeCode)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full bg-slate-600 border border-slate-500 rounded px-2 py-1 text-white text-xs"
+                    >
+                      <option value="MG">Might</option>
+                      <option value="EN">Endurance</option>
+                      <option value="AG">Agility</option>
+                      <option value="DX">Dexterity</option>
+                      <option value="WT">Wit</option>
+                      <option value="WI">Will</option>
+                      <option value="PR">Perception</option>
+                      <option value="CH">Charisma</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1">Deflect Attribute</label>
+                    <select
+                      value={item.deflectAttribute || 'AG'}
+                      onChange={(e) => handleAttributeChange(item.id, 'deflectAttribute', e.target.value as AttributeCode)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="w-full bg-slate-600 border border-slate-500 rounded px-2 py-1 text-white text-xs"
+                    >
+                      <option value="MG">Might</option>
+                      <option value="EN">Endurance</option>
+                      <option value="AG">Agility</option>
+                      <option value="DX">Dexterity</option>
+                      <option value="WT">Wit</option>
+                      <option value="WI">Will</option>
+                      <option value="PR">Perception</option>
+                      <option value="CH">Charisma</option>
+                    </select>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Action Buttons */}

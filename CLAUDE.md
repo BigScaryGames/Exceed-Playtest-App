@@ -208,14 +208,15 @@ src/
 Edit `src/data/weapons.ts`:
 ```typescript
 'Weapon Name': {
-  domain: '1H' | '2H' | 'SaS' | 'Ar' | null,
-  finesse: true/false,
+  domain: 'Martial' | null,  // MS5: All weapons use Martial domain
   damage: 'd8' | 'd10+1' | '5+Power',
   ap: 3,
-  powerReq?: 2,
-  traits: ['Trait1', 'Trait2']
+  mightReq?: 2,
+  traits: ['Trait1', 'Trait2']  // e.g., Light, Heavy, Ranged, Bow, etc.
 }
 ```
+
+**Note:** Attack and deflect attributes are now set per-item in the UI (default: Agility). This allows perks like Zen Archer to change attributes without modifying the weapon database.
 
 #### New Armor Type
 Edit `src/data/armor.ts`:

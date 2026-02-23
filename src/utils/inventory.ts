@@ -51,7 +51,6 @@ export const getWeaponData = (item: InventoryItem): Weapon | null => {
   if (item.isCustom && item.customWeaponData) {
     return {
       domain: item.customWeaponData.domain,
-      finesse: item.customWeaponData.finesse,
       damage: item.customWeaponData.damage,
       ap: item.customWeaponData.ap,
       mightReq: item.customWeaponData.mightReq,
@@ -312,7 +311,6 @@ export const convertToCustomItem = (item: InventoryItem): InventoryItem => {
     const weaponData = WEAPONS[item.dataRef];
     converted.customWeaponData = {
       domain: weaponData.domain!,
-      finesse: weaponData.finesse,
       damage: weaponData.damage,
       ap: weaponData.ap,
       mightReq: weaponData.mightReq || 0,

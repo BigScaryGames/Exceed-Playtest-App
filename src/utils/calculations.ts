@@ -1,4 +1,4 @@
-import { Character, AttributeCode, ProgressionLogEntry, Weapon, WeaponDomains } from '@/types/character';
+import { Character, AttributeCode, ProgressionLogEntry, Weapon, WeaponDomains, InventoryItem } from '@/types/character';
 import { ARMOR_TYPES } from '@/data/armor';
 import { SHIELDS } from '@/data/shields';
 import { MARTIAL_CP_THRESHOLDS, SPELLCRAFT_CP_THRESHOLDS, ENCUMBRANCE_LEVELS,
@@ -260,19 +260,20 @@ export const parseDamageString = (damageStr: string, might: number): { die: numb
 };
 
 // Calculate which attribute to use for attack based on weapon properties
-export const calculateAttackAttribute = (character: Character, weapon: Weapon): number => {
+// Uses item's attackAttribute override if set, otherwise defaults based on weapon traits
+export const calculateAttackAttribute = (character: Character, item: InventoryItem, weapon: Weapon): number => {
+  // Use item's attackAttribute override if set
+  if (item.attackAttribute) {
+    return character.stats[item.attackAttribute];
+  }
+
+  // Default behavior based on weapon traits
   let attackAttr = character.stats.AG; // Default: Agility
 
   // MS5: Check weapon traits for ranged
   if (weapon.traits.includes('Ranged') || weapon.traits.includes('Bow')) {
     // Ranged weapons use Perception
     attackAttr = character.stats.PR;
-  } else if (weapon.finesse && character.stats.DX > character.stats.AG) {
-    // Finesse weapons use Dexterity if higher
-    attackAttr = character.stats.DX;
-  } else if (weapon.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
-    // Heavy weapons use Might if higher than Agility
-    attackAttr = character.stats.MG;
   }
 
   return attackAttr;
@@ -280,7 +281,8 @@ export const calculateAttackAttribute = (character: Character, weapon: Weapon): 
 
 // Calculate deflect for a specific weapon (MS5: Martial domain + weapon attribute)
 // This is the "Parry" component of Deflect
-export const calculateDeflectForWeapon = (character: Character, weapon: Weapon): number => {
+// Uses item's deflectAttribute override if set, otherwise defaults to AG
+export const calculateDeflectForWeapon = (character: Character, item: InventoryItem, weapon: Weapon): number => {
   if (!weapon.domain) return 0;
   // Can't deflect with ranged weapons (use shield or dodge instead)
   if (weapon.traits.includes('Ranged') || weapon.traits.includes('Bow')) return 0;
@@ -288,12 +290,10 @@ export const calculateDeflectForWeapon = (character: Character, weapon: Weapon):
   // MS5: All weapons use Martial domain
   const martialLevel = character.weaponDomains.Martial || 0;
 
-  // Determine attribute: Finesse uses DX, Heavy uses MG, default AG
+  // Use item's deflectAttribute override if set, otherwise default to AG
   let deflectBase = character.stats.AG;
-  if (weapon.finesse && character.stats.DX > character.stats.AG) {
-    deflectBase = character.stats.DX;
-  } else if (weapon.traits.includes('Heavy') && character.stats.MG > character.stats.AG) {
-    deflectBase = character.stats.MG;
+  if (item.deflectAttribute) {
+    deflectBase = character.stats[item.deflectAttribute];
   }
 
   return deflectBase + martialLevel;
@@ -303,13 +303,13 @@ export const calculateDeflectForWeapon = (character: Character, weapon: Weapon):
 // Per rules: Deflect uses the best defensive option available
 export const calculateDeflectFromEquipped = (character: Character): number => {
   const equippedWeaponsFromInventory = getEquippedWeapons(character);
-  const equippedWeapons: Array<Weapon> = equippedWeaponsFromInventory
-    .map(item => getWeaponData(item))
-    .filter((w): w is Weapon => w !== null);
 
-  // Calculate weapon-based deflect (Parry)
-  const weaponDeflect = equippedWeapons.length > 0
-    ? Math.max(0, ...equippedWeapons.map(w => calculateDeflectForWeapon(character, w)))
+  // Calculate weapon-based deflect (Parry) using item's attribute overrides
+  const weaponDeflect = equippedWeaponsFromInventory.length > 0
+    ? Math.max(0, ...equippedWeaponsFromInventory.map(item => {
+        const weapon = getWeaponData(item);
+        return weapon ? calculateDeflectForWeapon(character, item, weapon) : 0;
+      }))
     : 0;
 
   // Calculate shield Block

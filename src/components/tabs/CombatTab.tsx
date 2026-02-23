@@ -101,6 +101,7 @@ const AbilityEffectCard: React.FC<AbilityEffectCardProps> = ({ item, isAbility, 
 // WeaponRollSection Component
 interface WeaponRollSectionProps {
   weaponName: string;
+  item: InventoryItem;
   weaponData: Weapon;
   character: Character;
   label: string;
@@ -109,6 +110,7 @@ interface WeaponRollSectionProps {
 
 const WeaponRollSection: React.FC<WeaponRollSectionProps> = ({
   weaponName,
+  item,
   weaponData,
   character,
   label,
@@ -119,7 +121,7 @@ const WeaponRollSection: React.FC<WeaponRollSectionProps> = ({
   const domainLevel = weaponData.domain ? character.weaponDomains.Martial : 0;
 
   // Calculate attack attribute using utility function
-  const attackAttr = calculateAttackAttribute(character, weaponData);
+  const attackAttr = calculateAttackAttribute(character, item, weaponData);
 
   // Number of damage dice based on domain level
   const damageDiceCount = calculateDamageDiceCount(domainLevel);
@@ -544,6 +546,7 @@ export const CombatTab: React.FC<CombatTabProps> = ({ character, onUpdate, perkD
                 <WeaponRollSection
                   key={weapon.item.name + index}
                   weaponName={weapon.item.name}
+                  item={weapon.item}
                   weaponData={weapon.weaponData}
                   character={character}
                   label={label}

@@ -28,7 +28,6 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
 
   // Weapon fields - MS5: Weapons use 'Martial' domain or null
   const [weaponDomain, setWeaponDomain] = useState<'Martial' | null>('Martial');
-  const [finesse, setFinesse] = useState(false);
   const [damage, setDamage] = useState('d6');
   const [ap, setAp] = useState('2');
   const [mightReq, setMightReq] = useState('0');
@@ -59,7 +58,6 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
       const weaponData = getWeaponData(item);
       if (weaponData) {
         setWeaponDomain(weaponData.domain);
-        setFinesse(weaponData.finesse);
         setDamage(weaponData.damage);
         setAp(weaponData.ap.toString());
         setMightReq((weaponData.mightReq || 0).toString());
@@ -101,7 +99,6 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
     if (item.type === 'weapon') {
       updates.customWeaponData = {
         domain: weaponDomain,
-        finesse,
         damage,
         ap: parseInt(ap) || 0,
         mightReq: parseInt(mightReq) || 0,
@@ -260,18 +257,6 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
               </div>
 
               <div>
-                <label className="flex items-center text-sm text-slate-300">
-                  <input
-                    type="checkbox"
-                    checked={finesse}
-                    onChange={(e) => setFinesse(e.target.checked)}
-                    className="mr-2"
-                  />
-                  Finesse Weapon
-                </label>
-              </div>
-
-              <div>
                 <label className="block text-xs text-slate-400 mb-1">
                   Traits (comma-separated)
                 </label>
@@ -279,7 +264,7 @@ export const EditItemModal: React.FC<EditItemModalProps> = ({
                   type="text"
                   value={traits}
                   onChange={(e) => setTraits(e.target.value)}
-                  placeholder="e.g., Light, Quick Drawn, Range 3"
+                  placeholder="e.g., Light, Quick Drawn, Range 3, Heavy, Ranged"
                   className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
                 />
               </div>

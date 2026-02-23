@@ -107,7 +107,6 @@ export interface Shield {
 
 export interface Weapon {
   domain: 'Martial' | null;  // MS5: All melee/ranged weapons use Martial domain
-  finesse: boolean;
   damage: string;
   ap: number;
   mightReq?: number;
@@ -131,7 +130,6 @@ export type ItemState = 'equipped' | 'stowed' | 'packed';
 
 export interface CustomWeaponData {
   domain: 'Martial' | null;
-  finesse: boolean;
   damage: string;
   ap: number;
   mightReq: number;
@@ -165,6 +163,9 @@ export interface InventoryItem {
   customWeaponData?: CustomWeaponData;
   customArmorData?: CustomArmorData;
   customShieldData?: CustomShieldData;
+  // Weapon attribute overrides (for perks like Zen Archer, or manual selection)
+  attackAttribute?: AttributeCode;
+  deflectAttribute?: AttributeCode;
 }
 
 // Magic System Types
