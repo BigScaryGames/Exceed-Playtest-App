@@ -96,11 +96,6 @@ export const ProgressionListTab: React.FC<ProgressionListTabProps> = ({ characte
                   </td>
                   <td className="py-3 px-3 text-sm text-white">
                     {entry.name}
-                    {entry.type === 'spell' && entry.spellType && (
-                      <span className="ml-2 text-xs text-purple-400">
-                        ({entry.spellType})
-                      </span>
-                    )}
                   </td>
                   <td className="py-3 px-3 text-sm text-slate-300">
                     {entry.type === 'spell' ? `T${entry.tier || 0}` : (entry.level || '-')}
@@ -110,7 +105,7 @@ export const ProgressionListTab: React.FC<ProgressionListTabProps> = ({ characte
                   </td>
                   <td className="py-3 px-3 text-sm text-green-400">
                     {entry.type === 'spell'
-                      ? (entry.cost ? `${entry.cost} ${entry.xpType === 'social' ? 'SP' : 'CP'}` : '-')
+                      ? (entry.cost ? `${entry.cost} ${entry.xpType === 'skill' ? 'SP' : 'CP'}` : '-')
                       : (entry.cost ? `${entry.cost} CP` : '-')
                     }
                   </td>

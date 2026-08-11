@@ -11,9 +11,7 @@ import {
   removeSpellFromKnown,
   getSpellsByTier,
   getSpellcraft,
-  canUpgradeSpell,
-  getUpgradeCost,
-  upgradeSpellToAdvanced
+  getPrerequisiteText
 } from '@/utils/spells';
 import { AddSpellModal } from '@/components/modals/AddSpellModal';
 import { EditSpellModal } from '@/components/modals/EditSpellModal';
@@ -176,15 +174,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
     setIsRollerOpen(true);
   };
 
-  const handleUpgradeSpell = (spellId: string) => {
-    const result = upgradeSpellToAdvanced(character, spellId, 'combat'); // Magic only uses Combat XP
-    if (result.success) {
-      onUpdate(result.character);
-    } else {
-      alert(result.reason);
-    }
-  };
-
   const toggleSpellExpand = (spellId: string) => {
     setExpandedSpellId(expandedSpellId === spellId ? null : spellId);
   };
@@ -319,21 +308,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                       const isAttuned = character.attunedSpells?.includes(spell.id);
                       const castingDC = calculateCastingDC(spell.tier);
                       const isExpanded = expandedSpellId === spell.id;
-                      const canUpgrade = canUpgradeSpell(spell);
-                      const upgradeCost = canUpgrade ? getUpgradeCost(spell) : 0;
                       const limitCost = getLimitCost(spellData);
-                      
-                      // Get display properties from spell data
-                      const displayDistance = 'basic' in spellData 
-                        ? (spellData.type === 'advanced' && spellData.advanced ? spellData.advanced.distance : spellData.basic.distance) || '-'
-                        : spellData.distance;
-                      const displayDuration = 'basic' in spellData ? spellData.duration || '-' : spellData.duration;
-                      const displayDamage = 'basic' in spellData
-                        ? (spellData.type === 'advanced' && spellData.advanced ? spellData.advanced.damage : spellData.basic.damage)
-                        : spellData.damage;
-                      const displayEffect = 'basic' in spellData
-                        ? (spellData.type === 'advanced' && spellData.advanced ? spellData.advanced.effect : spellData.basic.effect)
-                        : spellData.effect;
 
                       return (
                         <div
@@ -351,11 +326,6 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                                 <div className="flex items-center gap-2 mb-1">
                                   {isExpanded ? <ChevronDown size={16} className="text-slate-400 flex-shrink-0" /> : <ChevronRight size={16} className="text-slate-400 flex-shrink-0" />}
                                   <span className="text-white font-medium truncate">{spell.name}</span>
-                                  <span className={`text-xs px-1.5 py-0.5 rounded flex-shrink-0 ${
-                                    spell.type === 'basic' ? 'bg-blue-700' : 'bg-purple-700'
-                                  }`}>
-                                    {spell.type === 'basic' ? 'Basic' : 'Advanced'}
-                                  </span>
                                   {spell.isCustom && (
                                     <span className="text-xs bg-amber-700 px-1.5 py-0.5 rounded flex-shrink-0">
                                       Custom
@@ -370,7 +340,7 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                                 <div className="text-xs text-slate-400 flex items-center gap-2 flex-wrap">
                                   <span>AP {spellData.apCost}</span>
                                   <span>•</span>
-                                  <span>{displayDistance}</span>
+                                  <span>{spellData.distance || '-'}</span>
                                   {limitCost > 0 && (
                                     <>
                                       <span>•</span>
@@ -418,47 +388,29 @@ export const MagicTab: React.FC<MagicTabProps> = ({ character, onUpdate, perkDat
                               {/* Spell Details */}
                               <div className="text-xs text-slate-300 mt-3 mb-3 space-y-2">
                                 <div>
-                                  <span className="text-slate-400">Duration:</span> {displayDuration}
+                                  <span className="text-slate-400">Duration:</span> {spellData.duration || '-'}
                                 </div>
-                                {displayDamage && (
+                                {spellData.damage && (
                                   <div>
-                                    <span className="text-slate-400">Damage:</span> {displayDamage}
+                                    <span className="text-slate-400">Damage:</span> {spellData.damage}
                                   </div>
                                 )}
                                 <div>
                                   <span className="text-slate-400">Traits:</span> {spellData.traits.join(', ')}
                                 </div>
+                                {spellData.prerequisites && spellData.prerequisites.requirements.length > 0 && (
+                                  <div>
+                                    <span className="text-slate-400">Prerequisites:</span> {getPrerequisiteText(spellData.prerequisites)}
+                                  </div>
+                                )}
                                 <div>
                                   <span className="text-slate-400">Effect:</span>
-                                  <p className="text-slate-300 italic mt-1">{displayEffect}</p>
+                                  <p className="text-slate-300 italic mt-1">{spellData.effect}</p>
                                 </div>
                                 <div>
                                   <span className="text-slate-400">Casting DC:</span> {castingDC}
                                 </div>
                               </div>
-
-                              {/* Upgrade Section */}
-                              {canUpgrade && (
-                                <div className="bg-purple-900/30 border border-purple-700 rounded p-3 mb-3">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <div>
-                                      <p className="text-purple-300 font-semibold text-sm">Upgrade Available</p>
-                                      <p className="text-purple-400 text-xs mt-1">
-                                        Upgrade to Advanced version ({upgradeCost} Combat XP)
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleUpgradeSpell(spell.id);
-                                    }}
-                                    className="w-full bg-purple-700 hover:bg-purple-600 rounded py-2 text-white font-semibold text-sm"
-                                  >
-                                    Upgrade to Advanced
-                                  </button>
-                                </div>
-                              )}
 
                               {/* Action Buttons */}
                               <div className="grid grid-cols-2 gap-2">

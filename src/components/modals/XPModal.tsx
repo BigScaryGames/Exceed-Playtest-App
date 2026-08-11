@@ -5,23 +5,23 @@ import { Modal } from '@/components/shared/Modal';
 interface XPModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddXP: (combatXP: number, socialXP: number) => void;
+  onAddXP: (combatXP: number, skillXP: number) => void;
 }
 
 export const XPModal: React.FC<XPModalProps> = ({ isOpen, onClose, onAddXP }) => {
   const [combatXPInput, setCombatXPInput] = useState('');
-  const [socialXPInput, setSocialXPInput] = useState('');
+  const [skillXPInput, setSkillXPInput] = useState('');
 
   const handleAddXP = () => {
     const combat = parseInt(combatXPInput) || 0;
-    const social = parseInt(socialXPInput) || 0;
+    const social = parseInt(skillXPInput) || 0;
     onAddXP(combat, social);
     handleClose();
   };
 
   const handleClose = () => {
     setCombatXPInput('');
-    setSocialXPInput('');
+    setSkillXPInput('');
     onClose();
   };
 
@@ -48,8 +48,8 @@ export const XPModal: React.FC<XPModalProps> = ({ isOpen, onClose, onAddXP }) =>
         </label>
         <input
           type="number"
-          value={socialXPInput}
-          onChange={(e) => setSocialXPInput(e.target.value)}
+          value={skillXPInput}
+          onChange={(e) => setSkillXPInput(e.target.value)}
           placeholder="Enter Skill XP"
           className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
         />

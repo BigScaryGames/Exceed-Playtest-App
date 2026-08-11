@@ -1,4 +1,4 @@
-# CLAUDE.md
+claude\\\\\\\\\\\\# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -81,8 +81,8 @@ src/
 - **App.tsx**: Manages app views (landing, create, list, character sheet), character import/export, localStorage integration
 - **CharacterSheet.tsx**: Main character view with tab navigation, swipe support, auto-calculation of stats
 - **CharacterHeader.tsx**: Displays character name, XP, and collapsible stats
-- **Tabs**: SkillsTab, CombatTab, EquipmentTab, ProgressionListTab
-- **Modals**: XPModal, SkillSelectModal, PerkModal, CombatPerkModal, ArmorSelectModal
+- **Tabs**: SkillsTab, CombatTab, EquipmentTab, MagicTab, PerksTab, ProgressionListTab, NotesTab
+- **Modals**: XPModal, SkillSelectModal, PerkBrowserModal, ConditioningPerkModal, EditItemModal, AddItemModal, DiceRollerModal
 
 ## Game Mechanics Implementation
 
@@ -90,9 +90,14 @@ src/
 - **8 Attributes**: Might (MG), Endurance (EN), Agility (AG), Dexterity (DX), Wit (WT), Will (WI), Perception (PR), Charisma (CH)
 - **Range**: -3 to +5 via CP thresholds
 - **CP Thresholds**: -30/-20/-10/0/10/30/60/100/150 → -3/-2/-1/0/1/2/3/4/5
-- **Dual XP Pools**: Combat XP and Social XP
+- **Dual XP Pools**: Combat XP and Skill XP
 - **Progression Log**: Complete audit trail of all XP expenditures
+  - `cost`: CP contributed to attributes/domains (always stored, even for free perks)
+  - `xpType`: Which XP pool was used ('combat' | 'skill')
+  - `perkType`: For perks, which perk type for domain calculation ('Combat' | 'Magic' | 'Skill')
+  - `isFree`: If true, perk granted for free (no XP cost/refund, but still grants CP)
 - **Flaws**: Perks with `isFlaw: true` that grant XP (negative cost) instead of costing XP
+- **Free Perks**: Perks with `isFree: true` - grant normal CP to attributes/domains but cost 0 XP
 
 ### Unified Perk System (MS6)
 - **Single Array**: All perks stored in `character.perks[]` (no more combatPerks/magicPerks/stagedPerks separation)
@@ -114,7 +119,9 @@ src/
   - Stage 1-4: Extra HP 1/2/3/4
   - Stage 5: Extra Wound + Capstone effect
 - **Custom Perks**: Can be created via "Browse Perks and Flaws" → "Create Custom" tab
-- **Free Perks**: Checkbox for 0 XP cost (in-game rewards)
+  - Can grant custom abilities/effects by writing description text
+  - Custom effects appear in Combat/Magic/Skills tabs based on perk type
+- **Free Perks**: Checkbox for 0 XP cost (in-game rewards) - still grants normal CP to attributes/domains
 
 ### Skills System
 - 33 learnable skills across 7 categories
@@ -126,8 +133,11 @@ src/
 - **HP System**: Stamina + Health with draggable UI
 - **Wounds**: Base wounds + extra wounds (from conditioning perks)
 - **Weapon Domains**: Martial, Spellcraft
-- **Domain Levels**: 0-5 based on CP thresholds (10/30/60/100/150)
-- **Combat Perks**: Tied to Martial domain, affects deflect and attack
+- **Domain Levels**: 0-5 based on CP thresholds
+  - Martial: 10/30/60/100/150 CP
+  - Spellcraft: 10/30/60/100/150 CP
+- **Combat Perks**: Tied to Martial domain (uses Combat XP, `perkType: 'Combat'`)
+- **Magic Perks**: Tied to Spellcraft domain (uses Combat XP, `perkType: 'Magic'`)
 - **Defense Stats** (auto-calculated per `Rules/Mechanics/Defense Types.md`):
   - **Deflect** = higher of (Weapon Parry) or (Shield Block)
     - Parry = Martial + AG/DX/MG (weapon-based)
@@ -138,16 +148,25 @@ src/
 - **Armor**: 9 types with Might requirements and penalties
 
 ### Equipment System
-- Primary/secondary weapons + shield
+- Primary/secondary weapons + shield (shields are weapons with Shield trait)
 - Armor with stat requirements
 - **Encumbrance**: Capacity = (5 + EN + MG)², with 5 penalty levels
 - Custom item inventory with weight/quantity tracking
+- **Shields**: Now treated as weapons with `defenseBonus` (adds to Deflect), `negation`, and `armorPenalty`
+  - Light shields (Buckler): Use Agility for block
+  - Medium shields (Kite): Use Agility for block
+  - Heavy shields (Tower, Fortress): Use Might for block
 
 ## Key Utilities
 
 ### `calculations.ts`
 - `calculateAttributeValues()`: Converts progression log to attribute stats (supports -3 to +5 range)
 - `calculateWeaponDomains()`: Calculates Martial/Spellcraft domain levels
+  - Uses `progressionLog` entries with `xpType` and `perkType` fields
+  - Combat perks (`xpType: 'combat', perkType: 'Combat'`) → Martial domain
+  - Magic perks (`xpType: 'combat', perkType: 'Magic'`) → Spellcraft domain
+  - Skill perks (`xpType: 'skill', perkType: 'Skill'`) → Spellcraft domain
+  - Spells (`type: 'spell'`) → Spellcraft domain
 - `calculateHP()`, `calculateHPValues()`: HP, stamina, health calculations with bar percentages
 - `calculateExtraHPFromStagedPerks()`: Calculates bonus HP from conditioning perks (stages 1-4)
 - `calculateArmorPenalty()`: Armor penalty based on Might requirement
@@ -179,7 +198,7 @@ src/
 1. User clicks "Add Skill" in SkillsTab
 2. SkillSelectModal displays available skills from `SKILL_DATABASE`
 3. On selection, shows AttributeSelector for attribute choice
-4. Updates character: adds to `skills[]`, deducts from `socialXP`, adds entry to `progressionLog`
+4. Updates character: adds to `skills[]`, deducts from `skillXP`, adds entry to `progressionLog`
 5. Auto-save triggers in App.tsx
 
 #### Leveling Up a Skill
@@ -198,9 +217,17 @@ src/
 #### Adding Combat Perks
 1. User clicks "+" in Combat Perks section
 2. CombatPerkModal opens with form (name, cost, domain, attribute, description)
-3. On save: adds to `combatPerks[]`, adds to `progressionLog` with domain
+3. On save: adds to `perks[]`, adds to `progressionLog` with `xpType: 'combat', perkType: 'Combat'`
 4. Domain CP totals recalculated via `calculateWeaponDomains()`
-5. Domain level auto-updates based on CP thresholds (5/15/30/50/75)
+5. Domain level auto-updates based on CP thresholds
+
+#### Adding Magic Perks
+1. User clicks "Browse Perks and Flaws" → filters by Magic
+2. Selects a magic perk (e.g., Mage, Elemental Mage)
+3. Uses Combat XP, but contributes to Spellcraft domain (via `perkType: 'Magic'`)
+4. Domain level auto-updates based on CP thresholds (10/30/60/100/150)
+
+**Important**: Magic perks use `xpType: 'combat'` (cost Combat XP) but have `perkType: 'Magic'` to route CP to Spellcraft domain instead of Martial.
 
 ### Adding New Game Content
 
@@ -212,11 +239,14 @@ Edit `src/data/weapons.ts`:
   damage: 'd8' | 'd10+1' | '5+Power',
   ap: 3,
   mightReq?: 2,
-  traits: ['Trait1', 'Trait2']  // e.g., Light, Heavy, Ranged, Bow, etc.
+  traits: ['Trait1', 'Trait2'],  // e.g., Light, Heavy, Ranged, Bow, Shield
+  defenseBonus?: 2,  // For shields: adds to Deflect
+  negation?: 4,      // For shields: damage negation
+  armorPenalty?: 1   // For shields: speed/dodge penalty if Might req not met
 }
 ```
 
-**Note:** Attack and deflect attributes are now set per-item in the UI (default: Agility). This allows perks like Zen Archer to change attributes without modifying the weapon database.
+**Note:** Attack and deflect attributes are set per-item in the Equipment tab UI (default: Agility). This allows perks like Zen Archer to change attributes without modifying the weapon database.
 
 #### New Armor Type
 Edit `src/data/armor.ts`:

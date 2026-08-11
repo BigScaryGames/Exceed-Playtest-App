@@ -168,7 +168,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
 
   // Handle skill selection from database
   const handleSkillSelect = (skill: SkillDefinition) => {
-    if (character.socialXP >= 2) {
+    if (character.skillXP >= 2) {
       setSelectedSkill(skill);
       setShowAddSkillModal(false);
       setShowAttributeSelectModal(true);
@@ -194,7 +194,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
       onUpdate({
         ...character,
         skills: [...character.skills, newSkill],
-        socialXP: character.socialXP - cost,
+        skillXP: character.skillXP - cost,
         progressionLog: [
           ...character.progressionLog,
           {
@@ -203,7 +203,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
             level: 1,
             attribute: attribute,
             cost: cost,
-            xpType: 'social'
+            xpType: 'skill'
           }
         ]
       });
@@ -226,7 +226,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
       onUpdate({
         ...character,
         skills: updatedSkills,
-        socialXP: character.socialXP - cost,
+        skillXP: character.skillXP - cost,
         progressionLog: [
           ...character.progressionLog,
           {
@@ -235,7 +235,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
             level: newLevel,
             attribute: attribute,
             cost: cost,
-            xpType: 'social'
+            xpType: 'skill'
           }
         ]
       });
@@ -267,7 +267,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
     const skill = character.skills[index];
     const cost = (skill.level + 1) * 2;
 
-    if (character.socialXP >= cost) {
+    if (character.skillXP >= cost) {
       setSelectedSkill({
         name: skill.name,
         attributes: skill.attributes,
@@ -302,7 +302,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
       onUpdate({
         ...character,
         skills: updatedSkills,
-        socialXP: character.socialXP + cost,
+        skillXP: character.skillXP + cost,
         progressionLog: updatedLog
       });
     } else {
@@ -333,7 +333,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
       onUpdate({
         ...character,
         skills: updatedSkills,
-        socialXP: character.socialXP + cost,
+        skillXP: character.skillXP + cost,
         progressionLog: updatedLog
       });
     }
@@ -346,7 +346,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
     const oldPerk = character.perks[editingPerkIndex];
     // Find the original cost from progression log
     const originalEntry = character.progressionLog.find(
-      e => e.type === 'perk' && e.xpType === 'social' && e.name === oldPerk.name
+      e => e.type === 'perk' && e.xpType === 'skill' && e.name === oldPerk.name
     );
     const originalCost = originalEntry?.cost || 0;
     const costDifference = perk.cost - originalCost;
@@ -363,14 +363,14 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
         !(
           entry.type === 'perk' &&
           entry.name === oldPerk.name &&
-          entry.xpType === 'social'
+          entry.xpType === 'skill'
         )
     );
 
     onUpdate({
       ...character,
       perks: updatedPerks,
-      socialXP: character.socialXP - costDifference,
+      skillXP: character.skillXP - costDifference,
       progressionLog: [
         ...updatedLog,
         {
@@ -378,7 +378,8 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
           name: perk.name,
           attribute: perk.attribute,
           cost: perk.cost,
-          xpType: 'social' as const
+          xpType: 'skill' as const,
+          perkType: 'Skill'
         }
       ]
     });
@@ -401,7 +402,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
       if (
         updatedLog[i].type === 'perk' &&
         updatedLog[i].name === perk.name &&
-        updatedLog[i].xpType === 'social'
+        updatedLog[i].xpType === 'skill'
       ) {
         removedCost = updatedLog[i].cost;
         updatedLog.splice(i, 1);
@@ -412,7 +413,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
     onUpdate({
       ...character,
       perks: updatedPerks,
-      socialXP: character.socialXP + removedCost,
+      skillXP: character.skillXP + removedCost,
       progressionLog: updatedLog
     });
   };
@@ -485,11 +486,11 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
                     }}
                     disabled={
                       skill.level >= 5 ||
-                      character.socialXP < (skill.level + 1) * 2
+                      character.skillXP < (skill.level + 1) * 2
                     }
                     className={`flex-1 rounded py-2 text-white font-semibold flex items-center justify-center gap-1 ${
                       skill.level >= 5 ||
-                      character.socialXP < (skill.level + 1) * 2
+                      character.skillXP < (skill.level + 1) * 2
                         ? 'bg-slate-600 cursor-not-allowed opacity-50'
                         : 'bg-green-700 hover:bg-green-600'
                     }`}
@@ -584,7 +585,7 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
         onClose={() => setShowAddSkillModal(false)}
         onSelectSkill={handleSkillSelect}
         learnedSkills={character.skills.map(s => s.name)}
-        availableCP={character.socialXP}
+        availableCP={character.skillXP}
       />
 
       {/* Edit Perk Modal */}
@@ -596,14 +597,14 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
             setEditingPerkIndex(null);
           }}
           onSave={handleEditPerk}
-          availableCP={character.socialXP}
+          availableCP={character.skillXP}
           editingPerk={{
             name: character.perks[editingPerkIndex].name,
-            cost: character.progressionLog.find(e => e.type === 'perk' && e.xpType === 'social' && e.name === character.perks[editingPerkIndex].name)?.cost || 0,
+            cost: character.progressionLog.find(e => e.type === 'perk' && e.xpType === 'skill' && e.name === character.perks[editingPerkIndex].name)?.cost || 0,
             attribute: character.perks[editingPerkIndex].attribute,
             description: ''
           }}
-          existingCost={character.progressionLog.find(e => e.type === 'perk' && e.xpType === 'social' && e.name === character.perks[editingPerkIndex].name)?.cost || 0}
+          existingCost={character.progressionLog.find(e => e.type === 'perk' && e.xpType === 'skill' && e.name === character.perks[editingPerkIndex].name)?.cost || 0}
         />
       )}
 
@@ -628,8 +629,8 @@ export const SkillsTab: React.FC<SkillsTabProps> = ({ character, onUpdate, perkD
               : 2}{' '}
             XP
             <span className="ml-2">
-              ({character.socialXP} →{' '}
-              {character.socialXP -
+              ({character.skillXP} →{' '}
+              {character.skillXP -
                 (levelUpSkillIndex !== null
                   ? (character.skills[levelUpSkillIndex].level + 1) * 2
                   : 2)}{' '}

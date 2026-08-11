@@ -330,11 +330,11 @@ export default function App() {
                 <label className="block text-sm font-semibold mb-2">Skill XP</label>
                 <input
                   type="number"
-                  value={newCharacter.socialXP}
+                  value={newCharacter.skillXP}
                   onChange={(e) =>
                     setNewCharacter({
                       ...newCharacter,
-                      socialXP: parseInt(e.target.value) || 0,
+                      skillXP: parseInt(e.target.value) || 0,
                     })
                   }
                   className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-500"
@@ -409,7 +409,7 @@ export default function App() {
                       )}
                       <div className="flex gap-4 mt-2 text-xs text-slate-500">
                         <span>Combat XP: {character.combatXP}</span>
-                        <span>Skill XP: {character.socialXP}</span>
+                        <span>Skill XP: {character.skillXP}</span>
                         {character.lastOpened && (
                           <span>• Last opened: {new Date(character.lastOpened).toLocaleDateString()} {new Date(character.lastOpened).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         )}

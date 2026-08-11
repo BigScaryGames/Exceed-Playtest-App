@@ -14,7 +14,6 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "update-data": "npm run parse-data && sleep 2 && git add public/data/*.json && git commit -m 'chore: update parsed perk/spell data' && git push || true",
     "deploy": "npm run parse-data && sleep 2 && git add public/data/*.json && git commit -m 'chore: update parsed perk/spell data' && git push && tsc && vite build && gh-pages -d dist || true"
-
   },
   "homepage": "https://BigScaryGames.github.io/Exceed-Playtest-App",
   "dependencies": {
@@ -31,6 +30,7 @@
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
+    "baseline-browser-mapping": "^2.11.13",
     "dotenv-cli": "^11.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -44,4 +44,3 @@
   },
   "private": true
 }
-

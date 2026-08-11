@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Character, KnownSpell, SpellTier, SpellType } from '@/types/character';
+import { Character, KnownSpell, SpellTier } from '@/types/character';
 import { getSpellData, getLimitCost, updateSpellInKnown } from '@/utils/spells';
 
 interface EditSpellModalProps {
@@ -20,7 +20,6 @@ export const EditSpellModal: React.FC<EditSpellModalProps> = ({
 }) => {
   const [name, setName] = useState('');
   const [tier, setTier] = useState<SpellTier>(0);
-  const [type, setType] = useState<SpellType>('basic');
   const [apCost, setApCost] = useState('2');
   const [attributes, setAttributes] = useState('WT');
   const [limitCost, setLimitCost] = useState('0');
@@ -38,36 +37,17 @@ export const EditSpellModal: React.FC<EditSpellModalProps> = ({
     if (!spellData) return;
 
     const limitCostValue = getLimitCost(spellData);
-    
-    // Get effect/distance/damage from the appropriate source
-    let effectVal = '';
-    let distanceVal = '-';
-    let damageVal = '';
-    
-    if ('basic' in spellData) {
-      // It's a Spell object
-      const version = spellData.type === 'advanced' && spellData.advanced ? spellData.advanced : spellData.basic;
-      effectVal = version.effect;
-      distanceVal = version.distance || '-';
-      damageVal = version.damage || '';
-    } else {
-      // It's CustomSpellData
-      effectVal = spellData.effect;
-      distanceVal = spellData.distance;
-      damageVal = spellData.damage || '';
-    }
 
     setName(spell.name);
     setTier(spellData.tier);
-    setType(spellData.type);
     setApCost(spellData.apCost);
     setAttributes(spellData.attributes);
     setLimitCost(limitCostValue.toString());
     setTraits(spellData.traits.join(', '));
-    setEffect(effectVal);
-    setDistance(distanceVal);
+    setEffect(spellData.effect);
+    setDistance(spellData.distance || '-');
     setDuration(spellData.duration || '-');
-    setDamage(damageVal);
+    setDamage(spellData.damage || '');
   }, [spell]);
 
   const handleSave = () => {
@@ -77,12 +57,10 @@ export const EditSpellModal: React.FC<EditSpellModalProps> = ({
     const updates: Partial<KnownSpell> = {
       name,
       tier,
-      type,
       isCustom: true,
       dataRef: undefined,
       customSpellData: {
         tier,
-        type,
         apCost,
         attributes,
         limitCost: parseInt(limitCost) || 0,
@@ -147,18 +125,6 @@ export const EditSpellModal: React.FC<EditSpellModalProps> = ({
                 {[0, 1, 2, 3, 4, 5].map(t => (
                   <option key={t} value={t}>Tier {t}</option>
                 ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs text-slate-400 mb-1">Type</label>
-              <select
-                value={type}
-                onChange={(e) => setType(e.target.value as SpellType)}
-                className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-              >
-                <option value="basic">Basic</option>
-                <option value="advanced">Advanced</option>
               </select>
             </div>
           </div>

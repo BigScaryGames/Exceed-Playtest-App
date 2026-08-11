@@ -90,7 +90,8 @@ export const CombatPerkModal: React.FC<CombatPerkModalProps> = ({
           name: newPerk.name,
           attribute: newPerk.attribute,
           cost: cost,
-          xpType: 'combat' as const
+          xpType: 'combat' as const,
+          perkType: 'Combat'
         }]
       });
       setNewCombatPerk({ name: '', cost: '', attribute: '', description: '' });

@@ -74,15 +74,16 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
     }
 
     const isFlaw = customPerkIsFlaw;
-    const cost = customPerkFree ? 0 : (parseInt(customPerkCost) || 0);
-    const xpType = customPerkType === 'Skill' ? 'social' : 'combat';
-    const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
+    const normalCost = parseInt(customPerkCost) || 0;  // Normal cost for CP calculations
+    const cost = customPerkFree ? 0 : normalCost;  // XP cost (0 for free perks)
+    const xpType = customPerkType === 'Skill' ? 'skill' : 'combat';
+    const availableXP = xpType === 'skill' ? character.skillXP : character.combatXP;
 
-    // Flaws grant XP, perks cost XP
-    const xpChange = isFlaw ? Math.abs(cost) : (customPerkFree ? 0 : cost);
+    // Flaws grant XP, perks cost XP (free perks cost 0 XP)
+    const xpChange = isFlaw ? Math.abs(normalCost) : cost;
     
     if (!isFlaw && !customPerkFree && availableXP < cost) {
-      alert(`Not enough ${xpType === 'social' ? 'Skill' : 'Combat'} XP. Need ${cost}, have ${availableXP}.`);
+      alert(`Not enough ${xpType === 'skill' ? 'Skill' : 'Combat'} XP. Need ${cost}, have ${availableXP}.`);
       return;
     }
 
@@ -122,15 +123,17 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
     const updatedCharacter = {
       ...character,
       perks: [...character.perks, newPerk],
-      [xpType === 'social' ? 'socialXP' : 'combatXP']: isFlaw ? availableXP + xpChange : availableXP - xpChange,
+      [xpType === 'skill' ? 'skillXP' : 'combatXP']: isFlaw ? availableXP + xpChange : availableXP - xpChange,
       progressionLog: [
         ...character.progressionLog,
         {
           type: 'perk' as const,
           name: customPerkName.trim(),
-          cost: isFlaw ? -xpChange : xpChange,  // Negative cost for flaws
+          cost: isFlaw ? -normalCost : normalCost,  // Normal cost for CP (negative for flaws)
           attribute: customPerkAttribute,
-          xpType: xpType as 'combat' | 'social'
+          xpType: xpType as 'combat' | 'skill',
+          perkType: customPerkType,  // For domain calculation
+          isFree: customPerkFree && !isFlaw  // Mark as free (but not flaws)
         }
       ]
     };
@@ -268,7 +271,7 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
 
     // Filter by learnability
     if (showOnlyLearnable) {
-      const xpPool = (type: PerkType) => type === 'Skill' ? character.socialXP : character.combatXP;
+      const xpPool = (type: PerkType) => type === 'Skill' ? character.skillXP : character.combatXP;
       perks = perks.filter(perk => {
         // Check affordability
         if (perk.cost.variable) {
@@ -384,7 +387,7 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
 
     // Import necessary types and add perk logic
     // This is a simplified version - the full logic would match AddPerkModal
-    const xpPool = perk.type === 'skill' ? 'socialXP' : 'combatXP';
+    const xpPool = perk.type === 'skill' ? 'skillXP' : 'combatXP';
 
     const updatedCharacter = { ...character };
 
@@ -416,7 +419,8 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
         name: perk.name,
         attribute: selectedAttr,
         cost: xpCost,
-        xpType: perk.type === 'skill' ? 'social' as const : 'combat' as const,
+        xpType: perk.type === 'skill' ? 'skill' as const : 'combat' as const,
+        perkType: perk.type.charAt(0).toUpperCase() + perk.type.slice(1) as 'Combat' | 'Magic' | 'Skill',
       },
     ];
 
@@ -726,7 +730,7 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
                     }
                     onAdd={(attr) => handleAddPerk(perk, attr)}
                     showAddButton={true}
-                    availableXP={perk.type === 'skill' ? character.socialXP : character.combatXP}
+                    availableXP={perk.type === 'skill' ? character.skillXP : character.combatXP}
                   />
                 ))}
               </div>
@@ -741,7 +745,7 @@ export const PerkBrowserModal: React.FC<PerkBrowserModalProps> = ({
             </span>
             <div className="flex gap-2 text-sm">
               <span className="text-red-400">Combat: {character.combatXP} XP</span>
-              <span className="text-blue-400">Skill: {character.socialXP} XP</span>
+              <span className="text-blue-400">Skill: {character.skillXP} XP</span>
             </div>
           </div>
           </ErrorBoundary>

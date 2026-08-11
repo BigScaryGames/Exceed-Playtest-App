@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { Character, SpellTier, SpellType } from '@/types/character';
-import { getAllSpells, getSpellByName, getLimitCostFromSpell } from '@/data/spells';
+import React, { useState, useMemo } from 'react';
+import { X, Search } from 'lucide-react';
+import { Character, SpellTier, Spell } from '@/types/character';
+import { getAllSpells } from '@/data/spells';
 import {
   canLearnSpell,
   getSpellXPCost,
   addSpellToKnown,
   generateSpellId,
   calculateCastingDC,
-  getSpellcraft
+  getSpellcraft,
+  checkSpellPrerequisites,
+  getMissingPrerequisites
 } from '@/utils/spells';
+import { SpellCard } from '@/components/shared/SpellCard';
 
 interface AddSpellModalProps {
   isOpen: boolean;
@@ -27,13 +30,14 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
   const [mode, setMode] = useState<'database' | 'custom'>('database');
   const [selectedAttribute, setSelectedAttribute] = useState<string | null>(null);
 
-  // Database mode
-  const [selectedSpellName, setSelectedSpellName] = useState('');
+  // Database mode - search and filters
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTier, setSelectedTier] = useState<number | null>(null);
+  const [expandedSpellId, setExpandedSpellId] = useState<string | null>(null);
 
   // Custom mode
   const [customName, setCustomName] = useState('');
   const [customTier, setCustomTier] = useState<SpellTier>(0);
-  const [customType, setCustomType] = useState<SpellType>('basic');
   const [customApCost, setCustomApCost] = useState('2');
   const [customAttributes, setCustomAttributes] = useState('WT');
   const [customLimitCost, setCustomLimitCost] = useState('0');
@@ -46,71 +50,85 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
   const spellcraft = getSpellcraft(character);
   const availableXP = character.combatXP; // Magic only uses Combat XP
 
-  // Get available spells from database (filter by spellcraft level and not already known)
-  const availableSpells = getAllSpells().filter(spell => {
+  // Get all spells that aren't already known (show all tiers, even locked ones)
+  const allSpells = useMemo(() => getAllSpells().filter(spell => {
     const alreadyKnown = character.knownSpells?.some(s => s.dataRef === spell.name);
-    const canLearn = canLearnSpell(character, spell.tier);
-    return !alreadyKnown && canLearn;
-  }).map(spell => spell.name);
+    return !alreadyKnown;
+  }), [character.knownSpells]);
 
-  const handleLearnDatabase = () => {
-    if (!selectedSpellName) {
-      alert('Please select a spell');
+  // Filter spells by search query and tier
+  const filteredSpells = useMemo(() => {
+    return allSpells.filter(spell => {
+      // Tier filter
+      if (selectedTier !== null && spell.tier !== selectedTier) return false;
+
+      // Search filter
+      if (searchQuery.trim()) {
+        const searchLower = searchQuery.toLowerCase();
+        const matches = spell.name.toLowerCase().includes(searchLower) ||
+          spell.effect.toLowerCase().includes(searchLower) ||
+          spell.traits.some(t => t.toLowerCase().includes(searchLower));
+        if (!matches) return false;
+      }
+
+      return true;
+    });
+  }, [allSpells, selectedTier, searchQuery]);
+
+  // Handler for learning from SpellCard (supports optional attribute)
+  const handleLearnSpell = (spell: Spell, attribute?: string) => {
+    const xpCost = getSpellXPCost(spell.tier);
+
+    // Check tier requirement
+    if (!canLearnSpell(character, spell.tier)) {
+      if (spell.tier === 0) {
+        alert('Tier 0 spells require the Mage perk');
+      } else {
+        alert(`Your Spellcraft level (${spellcraft}) is too low for Tier ${spell.tier} spells`);
+      }
       return;
     }
-
-    const spellData = getSpellByName(selectedSpellName);
-    if (!spellData) {
-      alert('Spell not found');
-      return;
-    }
-
-    // Check if attribute selection is required
-    const attributes = spellData.attributes.split('/').map(a => a.trim());
-    if (attributes.length > 1 && !selectedAttribute) {
-      alert('Please select which attribute to advance');
-      return;
-    }
-
-    const xpCost = getSpellXPCost(spellData.tier, spellData.type);
 
     if (availableXP < xpCost) {
       alert(`Not enough Combat XP. Need ${xpCost}, have ${availableXP}`);
       return;
     }
 
+    if (!checkSpellPrerequisites(character, spell)) {
+      const missing = getMissingPrerequisites(character, spell);
+      alert(`Missing prerequisites:\n${missing.join('\n')}`);
+      return;
+    }
+
+    const attributes = spell.attributes?.split('/').map(a => a.trim()) || [];
+    const attributeForLog = attribute || (attributes.length > 0 ? attributes[0] : 'WT');
+
     const newSpell = {
       id: generateSpellId(),
-      name: selectedSpellName,
-      tier: spellData.tier,
-      type: spellData.type,
+      name: spell.name,
+      tier: spell.tier,
       isCustom: false,
-      dataRef: selectedSpellName,
+      dataRef: spell.name,
       xpCost
     };
 
     const updatedCharacter = addSpellToKnown(character, newSpell);
-
-    // Deduct XP from Combat pool (magic only uses Combat XP)
     updatedCharacter.combatXP -= xpCost;
-
-    // Add to progression log with selected attribute
-    const attributeForLog = selectedAttribute || attributes[0]; // Use selected or default to first
     updatedCharacter.progressionLog = [
       ...updatedCharacter.progressionLog,
       {
         type: 'spell',
-        name: selectedSpellName,
-        tier: spellData.tier,
-        spellType: spellData.type,
+        name: spell.name,
+        tier: spell.tier,
         attribute: attributeForLog,
-        cost: xpCost
+        cost: xpCost,
+        xpType: 'combat'
       }
     ];
 
     onUpdate(updatedCharacter);
-    setSelectedSpellName('');
     setSelectedAttribute(null);
+    setExpandedSpellId(null);
     onClose();
   };
 
@@ -127,7 +145,7 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
       return;
     }
 
-    const xpCost = getSpellXPCost(customTier, customType);
+    const xpCost = getSpellXPCost(customTier);
 
     if (availableXP < xpCost) {
       alert(`Not enough Combat XP. Need ${xpCost}, have ${availableXP}`);
@@ -135,7 +153,11 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
     }
 
     if (!canLearnSpell(character, customTier)) {
-      alert(`Your Spellcraft level (${spellcraft}) is too low for Tier ${customTier} spells`);
+      if (customTier === 0) {
+        alert('Tier 0 spells require the Mage perk');
+      } else {
+        alert(`Your Spellcraft level (${spellcraft}) is too low for Tier ${customTier} spells`);
+      }
       return;
     }
 
@@ -143,12 +165,10 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
       id: generateSpellId(),
       name: customName,
       tier: customTier,
-      type: customType,
       isCustom: true,
       xpCost,
       customSpellData: {
         tier: customTier,
-        type: customType,
         apCost: customApCost,
         attributes: customAttributes,
         limitCost: parseInt(customLimitCost) || 0,
@@ -173,9 +193,9 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
         type: 'spell',
         name: customName,
         tier: customTier,
-        spellType: customType,
         attribute: attributeForLog,
-        cost: xpCost
+        cost: xpCost,
+        xpType: 'combat'
       }
     ];
 
@@ -188,7 +208,6 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
   const resetCustomForm = () => {
     setCustomName('');
     setCustomTier(0);
-    setCustomType('basic');
     setCustomApCost('2');
     setCustomAttributes('WT');
     setCustomLimitCost('0');
@@ -201,14 +220,8 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
 
   if (!isOpen) return null;
 
-  const selectedSpellData = selectedSpellName ? getSpellByName(selectedSpellName) : null;
-  const selectedSpellLimitCost = selectedSpellData ? getLimitCostFromSpell(selectedSpellData) : 0;
-  const previewXpCost = mode === 'database' && selectedSpellData
-    ? getSpellXPCost(selectedSpellData.tier, selectedSpellData.type)
-    : getSpellXPCost(customTier, customType);
-  const previewDC = mode === 'database' && selectedSpellData
-    ? calculateCastingDC(selectedSpellData.tier)
-    : calculateCastingDC(customTier);
+  const previewXpCost = mode === 'custom' ? getSpellXPCost(customTier) : 0;
+  const previewDC = mode === 'custom' ? calculateCastingDC(customTier) : 0;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
@@ -271,79 +284,73 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
           {/* Database Mode */}
           {mode === 'database' && (
             <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-semibold text-slate-300 mb-2">
-                  Select Spell (Spellcraft {spellcraft})
-                </label>
-                <select
-                  value={selectedSpellName}
-                  onChange={(e) => setSelectedSpellName(e.target.value)}
-                  className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white"
-                >
-                  <option value="">-- Choose a spell --</option>
-                  {availableSpells.map(name => {
-                    const spell = getSpellByName(name);
-                    if (!spell) return null;
-                    return (
-                      <option key={name} value={name}>
-                        {name} (Tier {spell.tier}, {spell.type === 'basic' ? 'Basic' : 'Advanced'}) - {getSpellXPCost(spell.tier, spell.type)} XP
-                      </option>
-                    );
-                  })}
-                </select>
-                {availableSpells.length === 0 && (
-                  <p className="text-sm text-slate-400 mt-2">
-                    No spells available at your current Spellcraft level or all spells already known.
-                  </p>
-                )}
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search spells by name, effect..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg pl-10 pr-4 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                />
               </div>
 
-              {selectedSpellData && (
-                <div className="bg-slate-700 rounded p-3">
-                  <h4 className="text-white font-semibold mb-2">{selectedSpellName}</h4>
-                  <div className="text-sm text-slate-300 space-y-1">
-                    <div><span className="text-slate-400">Tier:</span> {selectedSpellData.tier} (DC {previewDC})</div>
-                    <div><span className="text-slate-400">Type:</span> {selectedSpellData.type === 'basic' ? 'Basic' : 'Advanced'}</div>
-                    <div><span className="text-slate-400">AP Cost:</span> {selectedSpellData.apCost}</div>
-                    <div><span className="text-slate-400">Attributes:</span> {selectedSpellData.attributes}</div>
-                    <div><span className="text-slate-400">Limit:</span> {selectedSpellLimitCost}</div>
-                    <div><span className="text-slate-400">Distance:</span> {selectedSpellData.basic.distance || '-'}</div>
-                    <div><span className="text-slate-400">Duration:</span> {selectedSpellData.duration || '-'}</div>
-                    {selectedSpellData.basic.damage && (
-                      <div><span className="text-slate-400">Damage:</span> {selectedSpellData.basic.damage}</div>
-                    )}
-                    <div className="pt-2 border-t border-slate-600">
-                      <span className="text-slate-400">Effect:</span>
-                      <p className="text-slate-300 italic mt-1">{selectedSpellData.basic.effect}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Tier Filter Buttons */}
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  onClick={() => setSelectedTier(null)}
+                  className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
+                    selectedTier === null
+                      ? 'bg-blue-700 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  All Tiers
+                </button>
+                {[0, 1, 2, 3, 4, 5].map(tier => (
+                  <button
+                    key={tier}
+                    onClick={() => setSelectedTier(tier)}
+                    className={`px-3 py-1 rounded text-sm font-semibold transition-colors ${
+                      selectedTier === tier
+                        ? 'bg-blue-700 text-white'
+                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                    }`}
+                  >
+                    Tier {tier}
+                  </button>
+                ))}
+              </div>
 
-              {/* Attribute Selection for spells with multiple attributes */}
-              {selectedSpellData && selectedSpellData.attributes.split('/').length > 1 && (
-                <div className="mt-3">
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    Select Attribute to Advance
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {selectedSpellData.attributes.split('/').map((attr) => {
-                      const attrTrimmed = attr.trim();
-                      return (
-                        <button
-                          key={attrTrimmed}
-                          onClick={() => setSelectedAttribute(attrTrimmed)}
-                          className={`py-2 px-4 rounded font-semibold transition-colors ${
-                            selectedAttribute === attrTrimmed
-                              ? 'bg-purple-700 text-white'
-                              : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                          }`}
-                        >
-                          {attrTrimmed}
-                        </button>
-                      );
-                    })}
-                  </div>
+              {/* Spell Grid */}
+              {filteredSpells.length > 0 ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  {filteredSpells.map(spell => (
+                    <SpellCard
+                      key={spell.name}
+                      spell={spell}
+                      character={character}
+                      isExpanded={expandedSpellId === spell.name}
+                      onToggleExpand={() => setExpandedSpellId(expandedSpellId === spell.name ? null : spell.name)}
+                      onLearn={(attribute) => handleLearnSpell(spell, attribute)}
+                      showLearnButton={true}
+                      availableXP={availableXP}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-slate-400">No spells found matching your filters</p>
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSelectedTier(null);
+                    }}
+                    className="mt-2 text-blue-400 hover:text-blue-300 text-sm"
+                  >
+                    Clear filters
+                  </button>
                 </div>
               )}
             </div>
@@ -376,18 +383,6 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
                         Tier {tier} {tier > spellcraft ? '(locked)' : ''}
                       </option>
                     ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-slate-400 mb-1">Type</label>
-                  <select
-                    value={customType}
-                    onChange={(e) => setCustomType(e.target.value as SpellType)}
-                    className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-white text-sm"
-                  >
-                    <option value="basic">Basic</option>
-                    <option value="advanced">Advanced</option>
                   </select>
                 </div>
               </div>
@@ -520,22 +515,24 @@ export const AddSpellModal: React.FC<AddSpellModalProps> = ({
 
         {/* Footer */}
         <div className="sticky bottom-0 bg-slate-800 border-t border-slate-700 p-4 flex justify-end gap-3">
+          {mode === 'custom' && (
+            <button
+              onClick={handleCreateCustom}
+              disabled={!customName.trim()}
+              className={`px-4 py-2 rounded font-semibold ${
+                !customName.trim()
+                  ? 'bg-slate-600 text-slate-400 cursor-not-allowed'
+                  : 'bg-blue-700 hover:bg-blue-600 text-white'
+              }`}
+            >
+              Create Spell ({getSpellXPCost(customTier)} XP)
+            </button>
+          )}
           <button
             onClick={onClose}
             className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded font-semibold"
           >
-            Cancel
-          </button>
-          <button
-            onClick={mode === 'database' ? handleLearnDatabase : handleCreateCustom}
-            disabled={mode === 'database' ? !selectedSpellName : !customName.trim()}
-            className={`px-4 py-2 rounded font-semibold ${
-              (mode === 'database' && !selectedSpellName) || (mode === 'custom' && !customName.trim())
-                ? 'bg-slate-600 text-slate-400 cursor-not-allowed'
-                : 'bg-blue-700 hover:bg-blue-600 text-white'
-            }`}
-          >
-            Learn Spell ({previewXpCost} XP)
+            {mode === 'custom' ? 'Cancel' : 'Close'}
           </button>
         </div>
       </div>

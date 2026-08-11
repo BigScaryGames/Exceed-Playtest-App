@@ -14,31 +14,43 @@ const __dirname = path.dirname(__filename);
 
 // Types matching src/types/character.ts
 type SpellTier = 0 | 1 | 2 | 3 | 4 | 5;
-type SpellType = 'basic' | 'advanced';
+
+// Prerequisite types
+type PrerequisiteType = 'spell' | 'perk' | 'attribute' | 'skill' | 'domain' | 'tier';
+
+interface Prerequisite {
+  type: PrerequisiteType;
+  id?: string;
+  name?: string;
+  attribute?: string;
+  minValue?: number;
+  skillName?: string;
+  minLevel?: number;
+  domain?: string;
+  domainLevel?: number;
+  minTier?: number;
+}
+
+interface SpellPrerequisites {
+  requirements: Prerequisite[];
+  description?: string;
+}
 
 interface ParsedSpell {
   id: string;
   name: string;
   tier: SpellTier;
-  type: SpellType;
   apCost: string;
   attributes: string;
   traits: string[];
   shortDescription: string;
-  basic: {
-    limitCost: number;
-    effect: string;
-    distance?: string;
-    damage?: string;
-  };
-  advanced?: {
-    limitCost: number | string;  // Can be "Self 0 / Party 1" format
-    effect: string;
-    distance?: string;
-    damage?: string;
-  };
+  limitCost: number | string;
+  effect: string;
+  distance?: string;
+  damage?: string;
   description?: string;
   duration?: string;
+  prerequisites?: SpellPrerequisites;
 }
 
 interface SpellDatabase {
@@ -50,6 +62,87 @@ interface SpellDatabase {
 // Configuration
 const LOCAL_SPELLS_PATH = '/home/r/Exceed/ExceedV/source/content/Spells';
 const OUTPUT_PATH = path.join(__dirname, '..', 'public', 'data', 'spells.json');
+
+/**
+ * Parse prerequisites from markdown text
+ * Formats:
+ * - [[Spell Name]] - spell or perk requirement
+ * - Medicine 1, Biology 4 - skill requirements
+ * - MG 2, WI +3 - attribute requirements
+ * - Martial 2, Spellcraft 3 - domain requirements
+ * - — or empty - no prerequisites
+ */
+function parsePrerequisites(prereqText: string | undefined): SpellPrerequisites | undefined {
+  if (!prereqText || prereqText.trim() === '—' || prereqText.trim() === '') {
+    return undefined;
+  }
+
+  const requirements: Prerequisite[] = [];
+  // Split by comma and process each requirement
+  const parts = prereqText.split(',').map(p => p.trim()).filter(p => p);
+
+  for (const part of parts) {
+    // Check for wiki link [[...]] - could be spell or perk
+    const wikiLinkMatch = part.match(/\[\[([^\]]+)\]\]/);
+    if (wikiLinkMatch) {
+      const name = wikiLinkMatch[1].trim();
+      // For now, store as 'spell' type - will be resolved at runtime
+      // If it doesn't match a spell, validation will check perks too
+      requirements.push({
+        type: 'spell',
+        name,
+        id: filenameToId(name)
+      });
+      continue;
+    }
+
+    // Check for attribute requirement: MG 2, WI +3, EN 0, etc.
+    const attrMatch = part.match(/^([A-Z]{2})\s*([+-]?\d+)$/i);
+    if (attrMatch) {
+      const attr = attrMatch[1].toUpperCase();
+      if (['MG', 'EN', 'AG', 'DX', 'WT', 'WI', 'PR', 'CH'].includes(attr)) {
+        requirements.push({
+          type: 'attribute',
+          attribute: attr,
+          minValue: parseInt(attrMatch[2], 10)
+        });
+        continue;
+      }
+    }
+
+    // Check for domain requirement: Martial 2, Spellcraft 3
+    const domainMatch = part.match(/^(Martial|Spellcraft)\s*(\d+)$/i);
+    if (domainMatch) {
+      requirements.push({
+        type: 'domain',
+        domain: domainMatch[1].charAt(0).toUpperCase() + domainMatch[1].slice(1).toLowerCase() as 'Martial' | 'Spellcraft',
+        domainLevel: parseInt(domainMatch[2], 10)
+      });
+      continue;
+    }
+
+    // Check for skill requirement: Medicine 1, Biology 4
+    // This should come after domain check since domains are specific words
+    const skillMatch = part.match(/^([A-Za-z][A-Za-z\s]*)\s*(\d+)$/);
+    if (skillMatch) {
+      requirements.push({
+        type: 'skill',
+        skillName: skillMatch[1].trim(),
+        minLevel: parseInt(skillMatch[2], 10)
+      });
+      continue;
+    }
+
+    // If we can't parse it, skip it (could add console.warn for debugging)
+    console.warn(`[parse-spells] Could not parse prerequisite: "${part}"`);
+  }
+
+  if (requirements.length === 0) {
+    return undefined;
+  }
+
+  return { requirements };
+}
 
 /**
  * Convert filename to kebab-case ID
@@ -84,15 +177,6 @@ function parseTier(text: string): SpellTier {
 }
 
 /**
- * Parse type field (Basic, Advanced, Basic/Advanced)
- */
-function parseType(text: string): SpellType {
-  const lower = text.toLowerCase();
-  if (lower.includes('advanced')) return 'advanced';
-  return 'basic';
-}
-
-/**
  * Parse limit cost - handles numbers and special formats
  */
 function parseLimitCost(text: string): number | string {
@@ -112,13 +196,12 @@ function parseLimitCost(text: string): number | string {
  */
 function parseSpellContent(filename: string, content: string): ParsedSpell | null {
   try {
-    // MS5: Extract name from filename (without .md extension)
+    // Extract name from filename (without .md extension)
     const name = filename.replace(/\.md$/, '').trim();
     if (!name) return null;
 
     // Parse header fields
     const tierMatch = content.match(/\*\*Tier:\*\*\s*(.+?)$/m);
-    const typeMatch = content.match(/\*\*Type:\*\*\s*(.+?)$/m);
     const apCostMatch = content.match(/\*\*AP Cost:\*\*\s*(.+?)$/m);
     const attributesMatch = content.match(/\*\*Attributes:\*\*\s*(.+?)$/m);
     const traitsMatch = content.match(/\*\*Traits:\*\*\s*(.+?)$/m);
@@ -126,46 +209,26 @@ function parseSpellContent(filename: string, content: string): ParsedSpell | nul
     // Parse short description
     const shortDescMatch = content.match(/##\s+Short Description\s*\n([\s\S]*?)(?=\n##|$)/);
 
-    // Parse basic version
-    const basicMatch = content.match(/##\s+Basic Version\s*\n([\s\S]*?)(?=\n##|$)/);
-    let basicLimitCost = 0;
-    let basicEffect = '';
-    let basicDistance: string | undefined;
-    let basicDamage: string | undefined;
+    // Parse effect section
+    const effectMatch = content.match(/##\s+Effect\s*\n([\s\S]*?)(?=\n##|$)/);
+    let limitCost: number | string = 0;
+    let effect = '';
+    let distance: string | undefined;
+    let damage: string | undefined;
 
-    if (basicMatch) {
-      const basicSection = basicMatch[1];
-      const limitMatch = basicSection.match(/\*\*Limit Cost:\*\*\s*(.+?)$/m);
-      const effectMatch = basicSection.match(/\*\*Effect:\*\*\s*(.+?)$/m);
-      const distanceMatch = basicSection.match(/\*\*Distance\*?\*?:?\*?\*?\s*(.+?)$/m);
-      const damageMatch = basicSection.match(/\*\*Damage:\*\*\s*(.+?)$/m);
+    if (effectMatch) {
+      const effectSection = effectMatch[1];
+      const limitMatch = effectSection.match(/\*\*Limit Cost:\*\*\s*(.+?)$/m);
+      const effectTextMatch = effectSection.match(/\*\*Effect:\*\*\s*(.+?)$/m);
+      const distanceMatch = effectSection.match(/\*\*Distance\*?\*?:?\*?\*?\s*(.+?)$/m);
+      const damageMatch = effectSection.match(/\*\*Damage:\*\*\s*(.+?)$/m);
 
       if (limitMatch) {
-        const parsed = parseLimitCost(limitMatch[1].trim());
-        basicLimitCost = typeof parsed === 'number' ? parsed : 0;
+        limitCost = parseLimitCost(limitMatch[1].trim());
       }
-      if (effectMatch) basicEffect = effectMatch[1].trim();
-      if (distanceMatch) basicDistance = distanceMatch[1].trim();
-      if (damageMatch) basicDamage = damageMatch[1].trim();
-    }
-
-    // Parse advanced version (optional)
-    const advancedMatch = content.match(/##\s+Advanced Version\s*\n([\s\S]*?)(?=\n##|$)/);
-    let advanced: ParsedSpell['advanced'] | undefined;
-
-    if (advancedMatch) {
-      const advSection = advancedMatch[1];
-      const limitMatch = advSection.match(/\*\*Limit Cost:\*\*\s*(.+?)$/m);
-      const effectMatch = advSection.match(/\*\*Effect:\*\*\s*(.+?)$/m);
-      const distanceMatch = advSection.match(/\*\*Distance\*?\*?:?\*?\*?\s*(.+?)$/m);
-      const damageMatch = advSection.match(/\*\*Damage:\*\*\s*(.+?)$/m);
-
-      advanced = {
-        limitCost: limitMatch ? parseLimitCost(limitMatch[1].trim()) : 0,
-        effect: effectMatch ? effectMatch[1].trim() : '',
-        distance: distanceMatch ? distanceMatch[1].trim() : undefined,
-        damage: damageMatch ? damageMatch[1].trim() : undefined,
-      };
+      if (effectTextMatch) effect = effectTextMatch[1].trim();
+      if (distanceMatch) distance = distanceMatch[1].trim();
+      if (damageMatch) damage = damageMatch[1].trim();
     }
 
     // Parse description (optional)
@@ -174,24 +237,25 @@ function parseSpellContent(filename: string, content: string): ParsedSpell | nul
     // Parse duration (optional, at the end)
     const durationMatch = content.match(/\*\*Duration:\*\*\s*(.+?)$/m);
 
+    // Parse prerequisites (optional, at the end)
+    const prerequisitesMatch = content.match(/\*\*Prerequisites:\*\*\s*(.+?)$/m);
+    const prerequisites = prerequisitesMatch ? parsePrerequisites(prerequisitesMatch[1].trim()) : undefined;
+
     const spell: ParsedSpell = {
       id: filenameToId(filename),
       name,
       tier: tierMatch ? parseTier(tierMatch[1].trim()) : 0,
-      type: typeMatch ? parseType(typeMatch[1].trim()) : 'basic',
       apCost: apCostMatch ? apCostMatch[1].trim() : '-',
       attributes: attributesMatch ? attributesMatch[1].trim() : '-',
       traits: traitsMatch ? parseTraits(traitsMatch[1].trim()) : [],
       shortDescription: shortDescMatch ? shortDescMatch[1].trim() : '',
-      basic: {
-        limitCost: basicLimitCost,
-        effect: basicEffect,
-        distance: basicDistance,
-        damage: basicDamage,
-      },
-      advanced,
+      limitCost,
+      effect,
+      distance,
+      damage,
       description: descriptionMatch ? descriptionMatch[1].trim().replace(/^\[|\]$/g, '') : undefined,
       duration: durationMatch ? durationMatch[1].trim() : undefined,
+      prerequisites,
     };
 
     return spell;

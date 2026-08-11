@@ -504,7 +504,7 @@ export const PerksTab: React.FC<PerksTabProps> = ({
     onUpdate({
       ...character,
       perks: updatedPerks,
-      socialXP: character.socialXP + cost,
+      skillXP: character.skillXP + cost,
       progressionLog: updatedLog
     });
   };

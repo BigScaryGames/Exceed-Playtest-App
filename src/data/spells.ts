@@ -22,10 +22,13 @@ interface SpellCache {
   database: SpellDatabaseJSON;
   timestamp: number;
   expiresAt: number;
+  version: string;  // Track the spells.json version
+  lastUpdated: number;  // Track the spells.json lastUpdated timestamp
 }
 
 /**
  * Get cached spells from localStorage
+ * Returns null if cache is expired or if spells.json has been updated (version/lastUpdated mismatch)
  */
 function getCachedSpells(): Spell[] | null {
   try {
@@ -37,6 +40,19 @@ function getCachedSpells(): Spell[] | null {
     // Check if cache is expired
     if (Date.now() > cache.expiresAt) {
       localStorage.removeItem(SPELL_CACHE_KEY);
+      console.log('[SpellLoader] Cache expired');
+      return null;
+    }
+
+    // Check if we have a version/lastUpdated mismatch (build updated spells.json)
+    // This happens when the build runs and generates new data
+    const currentVersion = cache.database.version;
+    const currentLastUpdated = cache.database.lastUpdated;
+
+    // If the stored version/lastUpdated doesn't match what's in cache, invalidate
+    if (cache.version !== currentVersion || cache.lastUpdated !== currentLastUpdated) {
+      localStorage.removeItem(SPELL_CACHE_KEY);
+      console.log('[SpellLoader] Cache version mismatch, invalidating');
       return null;
     }
 
@@ -57,6 +73,8 @@ function cacheSpells(database: SpellDatabaseJSON): void {
       database,
       timestamp: Date.now(),
       expiresAt: Date.now() + CACHE_DURATION_MS,
+      version: database.version,
+      lastUpdated: database.lastUpdated,
     };
 
     localStorage.setItem(SPELL_CACHE_KEY, JSON.stringify(cache));
@@ -148,22 +166,20 @@ export function isSpellDatabaseLoaded(): boolean {
 }
 
 /**
- * Get the limit cost from spell data (handles both Spell and CustomSpellData formats)
- * Exported here for convenience since this module exports getSpellByName
+ * Get the limit cost from spell data
  */
 export function getLimitCostFromSpell(spell: Spell): number {
-  const version = spell.type === 'advanced' && spell.advanced ? spell.advanced : spell.basic;
-  return typeof version.limitCost === 'number' ? version.limitCost : 0;
+  return typeof spell.limitCost === 'number' ? spell.limitCost : 0;
 }
 
-// XP costs for learning spells by tier and type
-export const SPELL_XP_COSTS: Record<number, { basic: number; advanced: number }> = {
-  0: { basic: 1, advanced: 3 },
-  1: { basic: 3, advanced: 5 },
-  2: { basic: 5, advanced: 7 },
-  3: { basic: 7, advanced: 10 },
-  4: { basic: 10, advanced: 15 },
-  5: { basic: 15, advanced: 25 }
+// XP costs for learning spells by tier (using basic costs only)
+export const SPELL_XP_COSTS: Record<number, number> = {
+  0: 1,
+  1: 3,
+  2: 5,
+  3: 7,
+  4: 10,
+  5: 15
 };
 
 // Spellcraft progression XP requirements (follows attribute pricing)

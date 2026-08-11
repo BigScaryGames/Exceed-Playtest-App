@@ -82,16 +82,21 @@ export const calculateWeaponDomains = (progressionLog: ProgressionLogEntry[]): W
 
   // Sum up CP for each domain
   progressionLog.forEach(entry => {
-    // Perks with xpType='combat' contribute to Martial domain
+    // Perks with xpType='combat' contribute to Martial domain (except magic perks)
     if (entry.type === 'perk' && entry.xpType === 'combat') {
-      martialCP += entry.cost;
+      // Magic perks (perkType='Magic') contribute to Spellcraft, not Martial
+      if (entry.perkType === 'Magic') {
+        spellcraftCP += entry.cost;
+      } else {
+        martialCP += entry.cost;
+      }
     }
     // Spells contribute to Spellcraft domain
     if (entry.type === 'spell') {
       spellcraftCP += entry.cost;
     }
-    // Perks with xpType='social' contribute to Spellcraft domain
-    if (entry.type === 'perk' && entry.xpType === 'social') {
+    // Perks with xpType='skill' contribute to Spellcraft domain
+    if (entry.type === 'perk' && entry.xpType === 'skill') {
       spellcraftCP += entry.cost;
     }
   });

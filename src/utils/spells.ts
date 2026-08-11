@@ -3,8 +3,9 @@ import {
   KnownSpell,
   Spell,
   SpellTier,
-  SpellType,
-  CustomSpellData
+  CustomSpellData,
+  Prerequisite,
+  SpellPrerequisites
 } from '@/types/character';
 import { SPELL_XP_COSTS, SPELLCRAFT_XP_REQUIREMENTS, getSpellByName } from '@/data/spells';
 
@@ -12,15 +13,11 @@ import { SPELL_XP_COSTS, SPELLCRAFT_XP_REQUIREMENTS, getSpellByName } from '@/da
  * Get the limit cost from spell data (handles both Spell and CustomSpellData formats)
  */
 export const getLimitCost = (spellData: Spell | CustomSpellData): number => {
-  if ('basic' in spellData) {
-    // It's a Spell object - use basic version limit cost
-    const basic = spellData.type === 'advanced' && spellData.advanced 
-      ? spellData.advanced 
-      : spellData.basic;
-    return typeof basic.limitCost === 'number' ? basic.limitCost : 0;
+  if ('limitCost' in spellData && typeof spellData.limitCost === 'number') {
+    // Spell object or CustomSpellData
+    return spellData.limitCost;
   }
-  // It's CustomSpellData
-  return spellData.limitCost;
+  return 0;
 };
 
 /**
@@ -92,12 +89,12 @@ export const getSpellData = (spell: KnownSpell): CustomSpellData | Spell | null 
 };
 
 /**
- * Get the new format Spell data from a KnownSpell
- * Use this when you need access to basic/advanced versions
+ * Get the full format Spell data from a KnownSpell
+ * Use this when you need access to full spell data (e.g., for prerequisite checking)
  */
 export const getFullSpellData = (spell: KnownSpell): Spell | null => {
   if (spell.isCustom) {
-    return null; // Custom spells don't have the new format
+    return null; // Custom spells don't have the full format
   }
 
   if (spell.dataRef) {
@@ -127,8 +124,8 @@ export const canLearnSpell = (character: Character, tier: SpellTier): boolean =>
 /**
  * Get the XP cost for learning a spell
  */
-export const getSpellXPCost = (tier: SpellTier, type: SpellType): number => {
-  return SPELL_XP_COSTS[tier][type];
+export const getSpellXPCost = (tier: SpellTier): number => {
+  return SPELL_XP_COSTS[tier] || 0;
 };
 
 /**
@@ -144,7 +141,7 @@ export const getSpellcraftXPRequirement = (level: number): number => {
  */
 export const calculateSpellDomainXP = (character: Character): number => {
   return character.progressionLog
-    .filter(entry => entry.type === 'spell' || (entry.type === 'perk' && entry.xpType === 'social'))
+    .filter(entry => entry.type === 'spell' || (entry.type === 'perk' && entry.xpType === 'skill'))
     .reduce((sum, entry) => sum + entry.cost, 0);
 };
 
@@ -298,11 +295,7 @@ export const convertToCustomSpell = (spell: KnownSpell): KnownSpell => {
     return spell;
   }
 
-  // Get the appropriate version (basic or advanced based on spell type)
-  const version = spell.type === 'advanced' && spellData.advanced 
-    ? spellData.advanced 
-    : spellData.basic;
-  const limitCost = typeof version.limitCost === 'number' ? version.limitCost : 0;
+  const limitCost = typeof spellData.limitCost === 'number' ? spellData.limitCost : 0;
 
   return {
     ...spell,
@@ -310,15 +303,14 @@ export const convertToCustomSpell = (spell: KnownSpell): KnownSpell => {
     dataRef: undefined,
     customSpellData: {
       tier: spellData.tier,
-      type: spellData.type,
       apCost: spellData.apCost,
       attributes: spellData.attributes,
       limitCost,
       traits: [...spellData.traits],
-      effect: version.effect,
-      distance: version.distance || '-',
+      effect: spellData.effect,
+      distance: spellData.distance || '-',
       duration: spellData.duration || '-',
-      damage: version.damage
+      damage: spellData.damage
     }
   };
 };
@@ -362,119 +354,151 @@ export const getSpellsByTier = (character: Character): Map<SpellTier, KnownSpell
 };
 
 /**
- * Check if a spell can be upgraded to advanced
- * Returns true if the spell is currently basic and has an advanced version available
+ * Check if a character meets a single prerequisite
  */
-export const canUpgradeSpell = (spell: KnownSpell): boolean => {
-  if (spell.type !== 'basic') return false;
-  if (spell.isCustom) return false; // Custom spells can't be auto-upgraded
-  if (!spell.dataRef) return false;
+function meetsPrerequisite(character: Character, prereq: Prerequisite): boolean {
+  switch (prereq.type) {
+    case 'spell': {
+      // Check if character knows the required spell
+      return character.knownSpells?.some(spell => {
+        if (prereq.id) {
+          // Check by dataRef (database reference)
+          return spell.dataRef === prereq.id || spell.dataRef === prereq.name;
+        }
+        if (prereq.name) {
+          // Check by name
+          return spell.name === prereq.name;
+        }
+        return false;
+      }) || false;
+    }
 
-  // MS5: Check if the spell has an advanced version in the new format
-  const fullSpell = getSpellByName(spell.dataRef);
-  return fullSpell?.advanced !== undefined;
-};
+    case 'perk': {
+      // Check if character has the required perk
+      return character.perks?.some(perk => {
+        if (prereq.id) {
+          return perk.perkId === prereq.id || perk.perkId === prereq.name;
+        }
+        if (prereq.name) {
+          return perk.name === prereq.name;
+        }
+        return false;
+      }) || false;
+    }
+
+    case 'skill': {
+      // Check if character has the required skill at sufficient level
+      if (!prereq.skillName || prereq.minLevel === undefined) return false;
+      const skill = character.skills.find(s => s.name === prereq.skillName);
+      return skill ? skill.level >= prereq.minLevel : false;
+    }
+
+    case 'attribute': {
+      // Check if character meets the attribute requirement
+      if (!prereq.attribute || prereq.minValue === undefined) return false;
+      const attrValue = character.stats[prereq.attribute];
+      return attrValue !== undefined ? attrValue >= prereq.minValue : false;
+    }
+
+    case 'domain': {
+      // Check if character meets the domain level requirement
+      if (!prereq.domain || prereq.domainLevel === undefined) return false;
+      const domainValue = character.weaponDomains[prereq.domain];
+      return domainValue !== undefined ? domainValue >= prereq.domainLevel : false;
+    }
+
+    case 'tier': {
+      // Check if character meets the minimum spellcraft tier
+      if (prereq.minTier === undefined) return false;
+      return getSpellcraft(character) >= prereq.minTier;
+    }
+
+    default:
+      return false;
+  }
+}
 
 /**
- * Get the XP cost to upgrade a spell from basic to advanced
+ * Check if a character meets all prerequisites for a spell
  */
-export const getUpgradeCost = (spell: KnownSpell): number => {
-  const advancedCost = SPELL_XP_COSTS[spell.tier].advanced;
-  const basicCost = spell.xpCost; // What was already paid
-  return advancedCost - basicCost;
-};
-
-/**
- * Upgrade a spell from basic to advanced
- * Returns updated character with upgraded spell and XP deducted
- */
-export const upgradeSpellToAdvanced = (
+export const checkSpellPrerequisites = (
   character: Character,
-  spellId: string,
-  xpType: 'combat' | 'social'
-): { success: boolean; character: Character; reason?: string } => {
-  if (!character.knownSpells) {
-    return { success: false, character, reason: 'No known spells' };
+  spell: Spell | CustomSpellData
+): boolean => {
+  const prereqs = spell.prerequisites;
+  if (!prereqs || prereqs.requirements.length === 0) {
+    return true; // No prerequisites means anyone can learn it
   }
 
-  const spell = character.knownSpells.find(s => s.id === spellId);
-  if (!spell) {
-    return { success: false, character, reason: 'Spell not found' };
+  return prereqs.requirements.every(prereq => meetsPrerequisite(character, prereq));
+};
+
+/**
+ * Get a list of unmet prerequisites as human-readable strings
+ */
+export const getMissingPrerequisites = (
+  character: Character,
+  spell: Spell | CustomSpellData
+): string[] => {
+  const prereqs = spell.prerequisites;
+  if (!prereqs || prereqs.requirements.length === 0) {
+    return []; // No prerequisites
   }
 
-  if (!canUpgradeSpell(spell)) {
-    return { success: false, character, reason: 'This spell cannot be upgraded' };
-  }
+  const missing: string[] = [];
 
-  const upgradeCost = getUpgradeCost(spell);
-  const availableXP = xpType === 'combat' ? character.combatXP : character.socialXP;
+  for (const prereq of prereqs.requirements) {
+    if (meetsPrerequisite(character, prereq)) continue;
 
-  if (availableXP < upgradeCost) {
-    return {
-      success: false,
-      character,
-      reason: `Not enough ${xpType === 'combat' ? 'Combat' : 'Skill'} XP. Need ${upgradeCost}, have ${availableXP}`
-    };
-  }
-
-  // MS5: Get full spell data with advanced version
-  const fullSpellData = getSpellByName(spell.dataRef!);
-
-  if (!fullSpellData?.advanced) {
-    return { success: false, character, reason: 'No advanced version available' };
-  }
-
-  // Parse advanced limit cost
-  const advancedLimitCost = typeof fullSpellData.advanced.limitCost === 'number'
-    ? fullSpellData.advanced.limitCost
-    : 0;
-
-  // Create upgraded custom spell data
-  const upgradedSpell: KnownSpell = {
-    ...spell,
-    type: 'advanced',
-    xpCost: spell.xpCost + upgradeCost,
-    isCustom: true, // Convert to custom since we're modifying it
-    dataRef: undefined,
-    customSpellData: {
-      tier: fullSpellData.tier,
-      type: 'advanced',
-      apCost: fullSpellData.apCost,
-      attributes: fullSpellData.attributes,
-      limitCost: advancedLimitCost,
-      traits: [...fullSpellData.traits],
-      effect: fullSpellData.advanced.effect,
-      distance: fullSpellData.advanced.distance || fullSpellData.basic.distance || '-',
-      duration: fullSpellData.duration || '-',
-      damage: fullSpellData.advanced.damage
+    switch (prereq.type) {
+      case 'spell':
+        missing.push(`Spell: ${prereq.name || prereq.id || 'Unknown'}`);
+        break;
+      case 'perk':
+        missing.push(`Perk: ${prereq.name || prereq.id || 'Unknown'}`);
+        break;
+      case 'skill':
+        missing.push(`Skill: ${prereq.skillName} ${prereq.minLevel || 0}+`);
+        break;
+      case 'attribute':
+        missing.push(`Attribute: ${prereq.attribute} ${prereq.minValue || 0}+`);
+        break;
+      case 'domain':
+        missing.push(`Domain: ${prereq.domain} ${prereq.domainLevel || 0}+`);
+        break;
+      case 'tier':
+        missing.push(`Spellcraft Tier ${prereq.minTier || 0}+`);
+        break;
     }
-  };
-
-  // Update character
-  const updatedCharacter = {
-    ...character,
-    knownSpells: character.knownSpells.map(s => s.id === spellId ? upgradedSpell : s)
-  };
-
-  // Deduct XP
-  if (xpType === 'combat') {
-    updatedCharacter.combatXP -= upgradeCost;
-  } else {
-    updatedCharacter.socialXP -= upgradeCost;
   }
 
-  // Add to progression log
-  updatedCharacter.progressionLog = [
-    ...updatedCharacter.progressionLog,
-    {
-      type: 'spell',
-      name: `${spell.name} (Upgrade)`,
-      tier: spell.tier,
-      spellType: 'advanced',
-      cost: upgradeCost,
-      xpType
-    }
-  ];
+  return missing;
+};
 
-  return { success: true, character: updatedCharacter };
+/**
+ * Get a formatted string of prerequisites for UI display
+ */
+export const getPrerequisiteText = (prereqs: SpellPrerequisites | undefined): string => {
+  if (!prereqs || prereqs.requirements.length === 0) {
+    return 'None';
+  }
+
+  return prereqs.requirements.map(prereq => {
+    switch (prereq.type) {
+      case 'spell':
+        return prereq.name || prereq.id || 'Unknown Spell';
+      case 'perk':
+        return prereq.name || prereq.id || 'Unknown Perk';
+      case 'skill':
+        return `${prereq.skillName} ${prereq.minLevel || 0}+`;
+      case 'attribute':
+        return `${prereq.attribute} ${prereq.minValue || 0}+`;
+      case 'domain':
+        return `${prereq.domain} ${prereq.domainLevel || 0}+`;
+      case 'tier':
+        return `Spellcraft Tier ${prereq.minTier || 0}+`;
+      default:
+        return 'Unknown Requirement';
+    }
+  }).join(', ');
 };

@@ -115,12 +115,12 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 
     // Determine which XP pool to use
     // Skill perks use Social XP, Combat/Magic perks use Combat XP
-    const xpType: 'combat' | 'social' = perk.type === 'skill' ? 'social' : 'combat';
-    const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
+    const xpType: 'combat' | 'skill' = perk.type === 'skill' ? 'skill' : 'combat';
+    const availableXP = xpType === 'skill' ? character.skillXP : character.combatXP;
     const perkCost = perk.cost.xp;
 
     if (availableXP < perkCost) {
-      alert(`Not enough ${xpType === 'social' ? 'Skill' : 'Combat'} XP. Need ${perkCost}, have ${availableXP}.`);
+      alert(`Not enough ${xpType === 'skill' ? 'Skill' : 'Combat'} XP. Need ${perkCost}, have ${availableXP}.`);
       return;
     }
 
@@ -141,8 +141,8 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     let updatedCharacter = { ...character };
     updatedCharacter.perks = [...character.perks, newPerk];
 
-    if (xpType === 'social') {
-      updatedCharacter.socialXP -= perkCost;
+    if (xpType === 'skill') {
+      updatedCharacter.skillXP -= perkCost;
     } else {
       updatedCharacter.combatXP -= perkCost;
     }
@@ -156,6 +156,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         cost: perkCost,
         attribute: effectiveAttribute,
         xpType,
+        perkType: newPerk.type,  // For domain calculation
         stagedLevel: newPerk.isStaged ? 1 : undefined
       }
     ];
@@ -173,11 +174,11 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 
     // Determine category and XP type
     const perkCategory = category || 'skill';
-    const xpType: 'combat' | 'social' = perkCategory === 'skill' ? 'social' : 'combat';
-    const availableXP = xpType === 'social' ? character.socialXP : character.combatXP;
+    const xpType: 'combat' | 'skill' = perkCategory === 'skill' ? 'skill' : 'combat';
+    const availableXP = xpType === 'skill' ? character.skillXP : character.combatXP;
 
     if (availableXP < cost) {
-      alert(`Not enough ${xpType === 'social' ? 'Skill' : 'Combat'} XP. Need ${cost}, have ${availableXP}.`);
+      alert(`Not enough ${xpType === 'skill' ? 'Skill' : 'Combat'} XP. Need ${cost}, have ${availableXP}.`);
       return;
     }
 
@@ -204,8 +205,8 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
     let updatedCharacter = { ...character };
     updatedCharacter.perks = [...character.perks, newPerk];
     
-    if (xpType === 'social') {
-      updatedCharacter.socialXP -= cost;
+    if (xpType === 'skill') {
+      updatedCharacter.skillXP -= cost;
     } else {
       updatedCharacter.combatXP -= cost;
     }
@@ -218,7 +219,8 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
         name: customName,
         cost,
         attribute: customAttribute,
-        xpType: xpType
+        xpType: xpType,
+        perkType: newPerk.type  // For domain calculation
       }
     ];
 
@@ -228,13 +230,13 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
 
   // Calculate XP type and available XP for display and validation
   // Magic now uses Combat XP only (same as combat perks)
-  let displayXpType: 'combat' | 'social';
+  let displayXpType: 'combat' | 'skill';
   if (category === 'skill') {
-    displayXpType = 'social';
+    displayXpType = 'skill';
   } else {
     displayXpType = 'combat'; // Both combat and magic use Combat XP
   }
-  const availableXP = displayXpType === 'social' ? character.socialXP : character.combatXP;
+  const availableXP = displayXpType === 'skill' ? character.skillXP : character.combatXP;
   const canAfford = source === 'predefined'
     ? (selectedPerk ? availableXP >= selectedPerk.cost.xp : false)
     : (customCost ? availableXP >= parseInt(customCost) : false);
@@ -253,7 +255,7 @@ export const AddPerkModal: React.FC<AddPerkModalProps> = ({
           <div>
             <h3 className="text-xl font-bold text-white">Add Perk</h3>
             <p className="text-sm text-slate-400 mt-1">
-              Available {displayXpType === 'social' ? 'Skill' : 'Combat'} XP: {availableXP}
+              Available {displayXpType === 'skill' ? 'Skill' : 'Combat'} XP: {availableXP}
               {perkDatabase && ` • ${availablePerks.length} perks available`}
             </p>
           </div>

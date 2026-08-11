@@ -5,7 +5,7 @@ export const createEmptyCharacter = (): Character => ({
   name: '',
   concept: '',
   combatXP: 0,
-  socialXP: 0,
+  skillXP: 0,
   stats: {
     MG: 0, EN: 0, AG: 0, DX: 0,
     WT: 0, WI: 0, PR: 0, CH: 0

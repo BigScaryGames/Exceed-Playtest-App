@@ -1,6 +1,6 @@
 {
-  "version": "2026-02-23T22:29:55.849Z",
-  "lastUpdated": 1771885795849,
+  "version": "2026-08-11T13:38:39.193Z",
+  "lastUpdated": 1786455519194,
   "perks": {
     "combat": [
       {
@@ -111,9 +111,12 @@
         "type": "combat",
         "source": "database",
         "requirements": {
-          "text": "Martial 2",
+          "text": "Martial 2, [[Fast Archer]]",
           "skills": [
             "Martial 2"
+          ],
+          "perks": [
+            "Fast Archer"
           ]
         },
         "attributes": [
@@ -128,7 +131,7 @@
         "tags": [
           "Combat"
         ],
-        "description": "Count as flanking partner within weapon's first range.",
+        "description": "Your quick movements force enemies to pay attention to you.",
         "effect": "Don't Turn Your Back On Me",
         "grants": {
           "abilities": [],
@@ -536,7 +539,7 @@
         "tags": [
           "Combat"
         ],
-        "description": "Add your Dexterity to damage when striking vulnerable foes.\n\nWhen attacking a flanked or off-guard target with a Light weapon, add your Dexterity modifier to the damage roll.",
+        "description": "Add your Dexterity to damage when striking vulnerable foes.\n\nWhen attacking an off-guard target with a Light weapon, add your Dexterity modifier to the damage roll.",
         "effect": "Backstab",
         "grants": {
           "abilities": [],
@@ -675,7 +678,7 @@
         "tags": [
           "Combat"
         ],
-        "description": "Strike all targets within reach simultaneously.",
+        "description": "Strike all targets in your skirmish simultaneously.",
         "effect": "",
         "grants": {
           "abilities": [
@@ -749,6 +752,41 @@
         }
       },
       {
+        "id": "just-the-two-of-us",
+        "name": "Just the Two of Us",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "[[Spend Some Time with You]], Manipulation 3",
+          "perks": [
+            "Spend Some Time with You"
+          ],
+          "skills": [
+            "Manipulation 3"
+          ]
+        },
+        "attributes": [
+          "Charisma",
+          "Will"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "description": "Everyone watching understands, somehow, that this is not their fight to join.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "just-the-two-of-us"
+          ],
+          "effects": []
+        }
+      },
+      {
         "id": "mighty-charge",
         "name": "Mighty Charge",
         "type": "combat",
@@ -806,11 +844,43 @@
         "tags": [
           "Combat"
         ],
-        "description": "Sacrifice accuracy for devastating damage against vulnerable foes with light weapons.\n\nYou know where to strike when they can't defend. Against flanked or off-guard targets, you may take a penalty to your attack roll to increase your weapon damage die.",
+        "description": "Sacrifice accuracy for devastating damage against vulnerable foes with light weapons.\n\nYou know where to strike when they can't defend. Against off-guard targets, you may take a penalty to your attack roll to increase your weapon damage die.",
         "effect": "",
         "grants": {
           "abilities": [
             "piranha-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "spend-some-time-with-you",
+        "name": "Spend Some Time with You",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2",
+          "skills": [
+            "Martial 2"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Charisma"
+        ],
+        "cost": {
+          "xp": 8,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "description": "Don't mind the others. Right now, it's just us.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "spend-some-time-with-you"
           ],
           "effects": []
         }
@@ -876,13 +946,46 @@
         "tags": [
           "Combat"
         ],
-        "description": "Strike multiple adjacent targets with one attack.",
+        "description": "Strike two targets in your skirmish with one attack.",
         "effect": "",
         "grants": {
           "abilities": [
             "two-birds"
           ],
           "effects": []
+        }
+      },
+      {
+        "id": "you-and-i",
+        "name": "You and I",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "[[Just the Two of Us]], Spellcraft 3 or Theology 3 or Magical Theory 3",
+          "perks": [
+            "Just the Two of Us",
+            "Spellcraft 3 or Theology 3 or Magical Theory 3"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Charisma"
+        ],
+        "cost": {
+          "xp": 15,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "description": "The world itself agrees: no one else belongs in this moment.",
+        "effect": "You and I",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "you-and-i"
+          ]
         }
       },
       {
@@ -1555,6 +1658,41 @@
         }
       },
       {
+        "id": "come-and-get-me",
+        "name": "Come and Get Me",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Footwork]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Footwork"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Charisma"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "description": "Retreat is just an invitation with better footwork.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "come-and-get-me"
+          ],
+          "effects": []
+        }
+      },
+      {
         "id": "dodge-behind-your-back",
         "name": "Dodge Behind Your Back",
         "type": "combat",
@@ -1657,7 +1795,7 @@
         "tags": [
           "Combat"
         ],
-        "description": "Step freely when you successfully dodge a melee attack.",
+        "description": "Disengage after dodging a melee attack.",
         "effect": "Dodging Step",
         "grants": {
           "abilities": [],
@@ -1756,7 +1894,7 @@
         "tags": [
           "Combat"
         ],
-        "description": "Step as part of your first attack each turn.",
+        "description": "Engage as part of an attack while unencumbered.",
         "effect": "Light Steps",
         "grants": {
           "abilities": [],
@@ -1791,7 +1929,7 @@
         "tags": [
           "Combat"
         ],
-        "description": "Your first Stride doesn't trigger reactions.",
+        "description": "You are adept at leaving without declarations.",
         "effect": "Small Steps",
         "grants": {
           "abilities": [],
@@ -2379,9 +2517,9 @@
         },
         "apCost": null,
         "tags": [
-          "Combat"
+          "Skill"
         ],
-        "description": "Use your staff to enhance jumping and balance.",
+        "description": "Use your staff to enhance jumping and balance out of combat.",
         "effect": "Staff Acrobat",
         "grants": {
           "abilities": [],
@@ -2655,7 +2793,7 @@
         "tags": [
           "Combat"
         ],
-        "description": "Strike enemies as they retreat from your reach.",
+        "description": "Strike enemies as they leave your skirmish without disengaging.",
         "effect": "",
         "grants": {
           "abilities": [
@@ -2832,7 +2970,7 @@
           "Combat",
           "Shield"
         ],
-        "description": "Deflect attacks targeting adjacent allies instead of them.",
+        "description": "Deflect attacks targeting allies in your skirmish instead of them.",
         "effect": "",
         "grants": {
           "abilities": [
@@ -3016,11 +3154,151 @@
           "Combat",
           "Shield"
         ],
-        "description": "Allow adjacent allies to hide behind you and your heavy shield.",
+        "description": "Allow allies in your skirmish to hide behind you and your heavy shield.",
         "effect": "",
         "grants": {
           "abilities": [
             "the-wall"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "bowling-strike",
+        "name": "Bowling Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 4, [[Home Run]]",
+          "skills": [
+            "Martial 4"
+          ],
+          "perks": [
+            "Home Run"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 15,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "description": "Their formation was the mistake. You're just the consequence.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "bowling-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "herding-strike",
+        "name": "Herding Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, knows [[Ability - Shoving Strike|Shoving Strike]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Ability - Shoving Strike|Shoving Strike"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 8,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "description": "Some fight where they stand. You decide where they stand.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "herding-strike"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "home-run",
+        "name": "Home Run",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Herding Strike]]",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Herding Strike"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 12,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "description": "The crowd goes wild.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "home-run"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "rocket-strike",
+        "name": "Rocket Strike",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 5, [[Bowling Strike]]",
+          "skills": [
+            "Martial 5"
+          ],
+          "perks": [
+            "Bowling Strike"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 0,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat"
+        ],
+        "description": "Gravity will finish what you started.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "rocket-strike"
           ],
           "effects": []
         }
@@ -3209,7 +3487,7 @@
         "tags": [
           "Combat"
         ],
-        "description": "Protect adjacent allies from being flanked.\n\nYou watch the back of someone else. Maybe you are just that type of a person who is always there.",
+        "description": "Protect allies in your skirmish from numerical disadvantage.\n\nYou watch the back of someone else. Maybe you are just that type of a person who is always there.",
         "effect": "Watching your back",
         "grants": {
           "abilities": [],
@@ -3454,6 +3732,294 @@
           ],
           "effects": []
         }
+      },
+      {
+        "id": "chokehold",
+        "name": "Chokehold",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Wrestler's Control]]",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Wrestler's Control"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Wrestling"
+        ],
+        "description": "Silence a grabbed target — no speech, no verbal spellcasting.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "chokehold"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "counter-grab",
+        "name": "Counter Grab",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Takedown]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Takedown"
+          ]
+        },
+        "attributes": [
+          "Agility",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Wrestling"
+        ],
+        "description": "Turn a perfect deflect into a grapple as a reaction.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "counter-grab"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "drag-along",
+        "name": "Drag Along",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, [[Takedown]]",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Takedown"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Wrestling"
+        ],
+        "description": "Move while grappling, bringing your captive with you.",
+        "effect": "Drag Along",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "drag-along"
+          ]
+        }
+      },
+      {
+        "id": "iron-grip",
+        "name": "Iron Grip",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Takedown]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Takedown"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Wrestling"
+        ],
+        "description": "Escaping your grapple takes two successes instead of one.",
+        "effect": "Iron Grip",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "iron-grip"
+          ]
+        }
+      },
+      {
+        "id": "takedown",
+        "name": "Takedown",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 1, Brawling",
+          "skills": [
+            "Martial 1"
+          ],
+          "perks": [
+            "Brawling"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Wrestling"
+        ],
+        "description": "Grapple safely — your failed grabs no longer give the target a free attack.",
+        "effect": "Takedown",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "takedown"
+          ]
+        }
+      },
+      {
+        "id": "throw",
+        "name": "Throw",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 3, [[Wrestler's Control]] or [[Iron Grip]]",
+          "skills": [
+            "Martial 3"
+          ],
+          "perks": [
+            "Wrestler's Control"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 15,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Wrestling"
+        ],
+        "description": "Hurl your grabbed opponent away — damage, forced disengage, and a hard landing.",
+        "effect": "",
+        "grants": {
+          "abilities": [
+            "throw"
+          ],
+          "effects": []
+        }
+      },
+      {
+        "id": "weapon-thief",
+        "name": "Weapon Thief",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, Brawling",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Brawling"
+          ]
+        },
+        "attributes": [
+          "Dexterity",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Wrestling"
+        ],
+        "description": "Disarm a creature you've grabbed and take their weapon for yourself.",
+        "effect": "Weapon Thief",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "weapon-thief"
+          ]
+        }
+      },
+      {
+        "id": "wrestler-s-control",
+        "name": "Wrestler's Control",
+        "type": "combat",
+        "source": "database",
+        "requirements": {
+          "text": "Martial 2, [[Takedown]]",
+          "skills": [
+            "Martial 2"
+          ],
+          "perks": [
+            "Takedown"
+          ]
+        },
+        "attributes": [
+          "Might",
+          "Agility"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Combat",
+          "Wrestling"
+        ],
+        "description": "Grapple without exposing yourself — you don't suffer the Grabbed penalties while grappling.",
+        "effect": "Wrestler's Control",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "wrestler-s-control"
+          ]
+        }
       }
     ],
     "magic": [
@@ -3481,11 +4047,77 @@
           "Spellcraft",
           "Spellshape"
         ],
-        "description": "You learn the [[Basic Elemental Invokation]], a universal spell",
+        "description": "You learn the [[Basic Elemental Invocation]], a universal spell",
         "effect": "",
         "grants": {
           "abilities": [],
           "effects": []
+        }
+      },
+      {
+        "id": "inward-focus",
+        "name": "Inward Focus",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 2",
+          "skills": [
+            "Spellcraft 2"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Specialization"
+        ],
+        "description": "Your magic turns inward. Greater capacity — but it answers to you alone.",
+        "effect": "Inward Focus",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "inward-focus"
+          ]
+        }
+      },
+      {
+        "id": "mage-of-an-element",
+        "name": "Mage of an Element",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 2",
+          "skills": [
+            "Spellcraft 2"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Specialization"
+        ],
+        "description": "One element answers you above all others — and the rest grow distant.",
+        "effect": "Mage of an Element",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "mage-of-an-element"
+          ]
         }
       },
       {
@@ -3494,12 +4126,12 @@
         "type": "magic",
         "source": "database",
         "requirements": {
-          "text": "GM permission, Magical Theory 1/Theology 1",
+          "text": "GM permission, Magical Theory skill level 1 or Theology skill level 1",
           "special": [
             "GM permission"
           ],
           "perks": [
-            "Magical Theory 1/Theology 1"
+            "Magical Theory skill level 1 or Theology skill level 1"
           ]
         },
         "attributes": [
@@ -3521,6 +4153,240 @@
           "abilities": [],
           "effects": [
             "mage"
+          ]
+        }
+      },
+      {
+        "id": "empowered-spell",
+        "name": "Empowered Spell",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 2",
+          "skills": [
+            "Spellcraft 2"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Might"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Metamagic"
+        ],
+        "description": "Pour more of yourself into the spell — extra damage dice for a harder cast.",
+        "effect": "Empowered Spell",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "empowered-spell"
+          ]
+        }
+      },
+      {
+        "id": "grand-weaving",
+        "name": "Grand Weaving",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 3, any two #Metamagic perks",
+          "skills": [
+            "Spellcraft 3"
+          ],
+          "perks": [
+            "any two #Metamagic perks"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 15,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Metamagic"
+        ],
+        "description": "The cap comes off. Weave enormous castings across multiple turns — if you can hold the threads together.",
+        "effect": "Grand Weaving",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "grand-weaving"
+          ]
+        }
+      },
+      {
+        "id": "lingering-spell",
+        "name": "Lingering Spell",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 1",
+          "skills": [
+            "Spellcraft 1"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Endurance"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Metamagic"
+        ],
+        "description": "Make your magic last — stretch a spell's duration step by step.",
+        "effect": "Lingering Spell",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "lingering-spell"
+          ]
+        }
+      },
+      {
+        "id": "reaching-spell",
+        "name": "Reaching Spell",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 1",
+          "skills": [
+            "Spellcraft 1"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Metamagic"
+        ],
+        "description": "Throw your spells further than they were meant to go.",
+        "effect": "Reaching Spell",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "reaching-spell"
+          ]
+        }
+      },
+      {
+        "id": "split-spell",
+        "name": "Split Spell",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 2",
+          "skills": [
+            "Spellcraft 2"
+          ]
+        },
+        "attributes": [
+          "Wit",
+          "Perception"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Metamagic"
+        ],
+        "description": "One incantation, several victims — add targets to a spell.",
+        "effect": "Split Spell",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "split-spell"
+          ]
+        }
+      },
+      {
+        "id": "subtle-casting",
+        "name": "Subtle Casting",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 1",
+          "skills": [
+            "Spellcraft 1"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Charisma"
+        ],
+        "cost": {
+          "xp": 5,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Metamagic"
+        ],
+        "description": "Cast with your hands in your pockets — no gestures, no words, just results.",
+        "effect": "Subtle Casting",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "subtle-casting"
+          ]
+        }
+      },
+      {
+        "id": "widened-spell",
+        "name": "Widened Spell",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 2",
+          "skills": [
+            "Spellcraft 2"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Metamagic"
+        ],
+        "description": "Turn a pointed spell into a wave — hit a whole skirmish, or a whole zone.",
+        "effect": "Widened Spell",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "widened-spell"
           ]
         }
       },
@@ -3548,11 +4414,44 @@
           "Spellcraft",
           "Spellshape"
         ],
-        "description": "When you select this perk, select attribute it is going to work with.\n\nWhen **surrounded by or adjacent to** an element, or if you were attacked by a spell with that **elemental trait** on the previous turn, the **AP cost of casting a spell of that same element is reduced by 1** (minimum 1).",
+        "description": "When you select this perk, select attribute it is going to work with.\n\nWhen **in a zone with an abundance of** an element, or if you were attacked by a spell with that **elemental trait** on the previous turn, the **AP cost of casting a spell of that same element is reduced by 1** (minimum 1).",
         "effect": "",
         "grants": {
           "abilities": [],
           "effects": []
+        }
+      },
+      {
+        "id": "withering-focus",
+        "name": "Withering Focus",
+        "type": "magic",
+        "source": "database",
+        "requirements": {
+          "text": "Spellcraft 2",
+          "skills": [
+            "Spellcraft 2"
+          ]
+        },
+        "attributes": [
+          "Will",
+          "Wit"
+        ],
+        "cost": {
+          "xp": 10,
+          "variable": false
+        },
+        "apCost": null,
+        "tags": [
+          "Spellcraft",
+          "Specialization"
+        ],
+        "description": "You traded the mending arts for a sharper curse.",
+        "effect": "Withering Focus",
+        "grants": {
+          "abilities": [],
+          "effects": [
+            "withering-focus"
+          ]
         }
       }
     ],
@@ -3718,7 +4617,7 @@
           "Skill",
           "Scrying"
         ],
-        "description": "Enhance your ability to perceive magic.\n\nArcane sight had its moment of glory among nobles and mages alike upon its invention two centuries ago. People passed the quite painful ritual to gain the knowledge on whom to challenge and whom to avoid.\nThe boom ended overnight with the invention of #Illusion enchantments mimicking the Spellcraft Tier. [[Mislieading Rings]] are mass produced ever since.",
+        "description": "Enhance your ability to perceive magic.\n\nArcane sight had its moment of glory among nobles and mages alike upon its invention two centuries ago. People passed the quite painful ritual to gain the knowledge on whom to challenge and whom to avoid.\nThe boom ended overnight with the invention of #Illusion enchantments mimicking the Spellcraft Tier. [[Misleading Rings]] are mass produced ever since.",
         "effect": "Arcane Sight",
         "grants": {
           "abilities": [],
@@ -4923,7 +5822,7 @@
         "tags": [
           "Skill"
         ],
-        "description": "Tracking is your second nature.\n\nYou have honed your skills in reading the subtle signs left by creatures passing through the wilderness, and can do so while maintaining normal movement speed without sacrificing accuracy.",
+        "description": "Tracking is your second nature.\n\nYou have honed your skills in reading the subtle signs left by creatures passing through the wilderness, and can do so while maintaining normal travel pace without sacrificing accuracy.",
         "effect": "Tracker",
         "grants": {
           "abilities": [],
@@ -4970,7 +5869,7 @@
     {
       "id": "all-the-birds",
       "name": "All the Birds",
-      "effect": "**AP Cost:** +4\n\nMake a melee strike against all targets within your reach. Resolve strikes one after another. Roll Attack and Damage once.",
+      "effect": "**AP Cost:** +4\n\nMake a melee strike against all targets in a skirmish. Resolve strikes one after another. Roll Attack and Damage once.",
       "tags": [
         "Strike",
         "AoE"
@@ -5000,11 +5899,48 @@
       ]
     },
     {
+      "id": "bowling-strike",
+      "name": "Bowling Strike",
+      "effect": "**AP Cost:** +3\n\nAs [[Ability - Home Run|Home Run]], but you may aim the launched enemy at another creature along the flight path. The second target defends against your attack roll as a #Projectile (Dodge, or Deflect where allowed) — their friend counts as the projectile. On a failed defense, the second target takes your weapon damage and both end up in the same skirmish. (Damage split/Prone riders TBD at playtest.)",
+      "tags": [
+        "Strike",
+        "Projectile",
+        "Movement"
+      ]
+    },
+    {
       "id": "calf-strike",
       "name": "Calf Strike",
       "effect": "**AP Cost:** 2\n\nStrike the blunt end of your weapon at enemy's calf. If you hit, the enemy rolls Endurance against your Might. On a failure, they halve their speed until the end of their turn.",
       "tags": [
         "Strike"
+      ]
+    },
+    {
+      "id": "chokehold",
+      "name": "Chokehold",
+      "effect": "**AP Cost:** 1\n**Requirement:** You are grappling the target.\n\nLock the grabbed target's throat. Until the start of your next turn, the target cannot speak or cast spells that require voice.",
+      "tags": [
+        "Brawling",
+        "Bane"
+      ]
+    },
+    {
+      "id": "come-and-get-me",
+      "name": "Come and Get Me",
+      "effect": "**AP Cost:** 2\n\nMake a [[Feint (WIP)|Feint]] check against an enemy in your skirmish.\n\n**On success**, you reposition and they are pulled along with you — neither of you spends a Reaction:\n- If you were in a duel (a skirmish of two), you both enter another skirmish in your zone — goading them into your friends.\n- If you were in a larger skirmish, you both leave it and form a duel — goading them away from theirs.\n\n**On failure**, you simply [[Disengage]] and [[Engage]] as normal.\n\nThis is combat flowing through the zone — the fight moves because you make it move.",
+      "tags": [
+        "Movement",
+        "Mind"
+      ]
+    },
+    {
+      "id": "counter-grab",
+      "name": "Counter Grab",
+      "effect": "**AP Cost:** R\n\n**Trigger:** You critically succeed a Deflect against a melee attack.\n**Effect:** Immediately attempt a [[Grapple]] on the attacker without spending AP. Failure does not grant a free attack.",
+      "tags": [
+        "Reaction",
+        "Brawling"
       ]
     },
     {
@@ -5051,7 +5987,7 @@
     {
       "id": "guardian-aura",
       "name": "Guardian Aura",
-      "effect": "**AP Cost:** R\n\nAll allies within 3 tiles are protected by your aura. You can provide advantage to your allies as a reaction on any defense. When used against AOE, you provide it to all affected allies.",
+      "effect": "**AP Cost:** R\n\nAll allies in your zone are protected by your aura. You can provide advantage to your allies as a reaction on any defense. When used against AOE, you provide it to all affected allies.",
       "tags": [
         "Reaction",
         "Aura",
@@ -5061,10 +5997,28 @@
     {
       "id": "hair-trigger",
       "name": "Hair Trigger",
-      "effect": "**AP Cost:** Variable (readied action)\n\n[[Ready]] a ranged strike with a trigger of \"target enters my line of sight\" or \"target enters my range,\" or both.\n\nWhen any hostile target qualifies, make the attack without spending a Reaction.",
+      "effect": "**AP Cost:** Variable (readied action)\n\n[[Ready]] a ranged strike with a trigger of \"target enters my line of sight\" or \"target enters my zone or a zone within my weapon's range,\" or both.\n\nWhen any hostile target qualifies, make the attack without spending a Reaction. Once per round.",
       "tags": [
         "Ranged",
         "Strike"
+      ]
+    },
+    {
+      "id": "herding-strike",
+      "name": "Herding Strike",
+      "effect": "**AP Cost:** +2\n\nDeclare when making a strike with an Impact or Unarmed weapon. On a hit, deal damage normally; the target rolls Endure vs your attack roll, with a bonus equal to the number of their allies in their skirmish (up to +3). On a failure, they are forcefully disengaged and engaged into a skirmish of your choice in the zone.",
+      "tags": [
+        "Strike",
+        "Movement"
+      ]
+    },
+    {
+      "id": "home-run",
+      "name": "Home Run",
+      "effect": "**AP Cost:** +3\n\nDeclare when making a strike with an Impact or Unarmed weapon. On a hit, the target rolls Endure vs your attack roll, with a bonus equal to the number of their allies in their skirmish (up to +3). On a failure they are launched: moved along lines toward a zone of your choice, up to half your attack roll in distance (playtest: maybe the full roll), or into a wall or obstacle if one is closer. If the flight is not stopped one way or another, the attack deals critical damage.",
+      "tags": [
+        "Strike",
+        "Movement"
       ]
     },
     {
@@ -5076,9 +6030,17 @@
       ]
     },
     {
+      "id": "just-the-two-of-us",
+      "name": "Just the Two of Us",
+      "effect": "**AP Cost:** 2\n\nWhile in a duel (a skirmish of just you and one enemy), proclaim it a duel led by destiny. Until the duel ends, anyone attempting to interfere — engaging the duel or acting into it — must roll Resolve vs your Manipulation + CH. On a failure they cannot [[Engage]] the duel this turn and take -2 on checks made into it.",
+      "tags": [
+        "Mind"
+      ]
+    },
+    {
       "id": "mighty-charge",
       "name": "Mighty Charge",
-      "effect": "**AP Cost:** 2 + Weapon Strike\n\nSprint in a straight line and make a strike. Strike deals extra damage equal to half the distance you moved.",
+      "effect": "**AP Cost:** 2 + Weapon Strike\n\nSprint in a straight line into the target's zone and make a strike, engaging as part of the attack. The strike deals extra damage equal to half the Cost of the lines you crossed during the charge (rounded down). Movement is paid separately as a normal [[Move]].",
       "tags": [
         "Strike",
         "Movement"
@@ -5087,7 +6049,7 @@
     {
       "id": "mobile-draw",
       "name": "Mobile Draw",
-      "effect": "**AP Cost:** -\n\nDeclare a ranged attack. Gain Stride AP equal to the attack's AP cost. You may Stride at any point before or after the strike, but cannot break movement actions.\n\nRequires: Not Grabbed, not Prone.",
+      "effect": "**AP Cost:** -\n#Move \nDeclare a ranged attack.  [[Move]] to an adjacent zone for number of AP your attack has. At the end of the movement make an attack.",
       "tags": [
         "Ranged",
         "Movement",
@@ -5097,7 +6059,7 @@
     {
       "id": "monkey-king-strike",
       "name": "Monkey King Strike",
-      "effect": "**AP Cost:** +2\n\nClimb up your weapon, jump and strike all enemies in a line (length = reach + 1).",
+      "effect": "**AP Cost:** +2\nDisengage, engage a different skirmish attacking up to 3 targets.",
       "tags": [
         "Strike",
         "AoE"
@@ -5125,7 +6087,7 @@
     {
       "id": "piranha-strike",
       "name": "Piranha Strike",
-      "effect": "When striking a flanked or off-guard target with a Light weapon, you may take a penalty to your attack roll to increase your weapon damage die.\n\n| Penalty | Damage Die Increase           |\n| ------- | ----------------------------- |\n| -1      | d4→d6, d6→d8, d8→d10, d10→d12 |\n| -2      | d4→d8, d6→d10, d8→d12         |\n| -3      | d4→d10, d6→d12                |",
+      "effect": "When striking an off-guard target with a Light weapon, you may take a penalty to your attack roll to increase your weapon damage die.\n\n| Penalty | Damage Die Increase           |\n| ------- | ----------------------------- |\n| -1      | d4→d6, d6→d8, d8→d10, d10→d12 |\n| -2      | d4→d8, d6→d10, d8→d12         |\n| -3      | d4→d10, d6→d12                |",
       "tags": [
         "Attack",
         "Strike",
@@ -5164,10 +6126,19 @@
     {
       "id": "reactive-strike",
       "name": "Reactive Strike",
-      "effect": "**AP Cost:** R\n\nWhen an enemy strides or runs out of your reach, make a free strike as a reaction before they leave their space.",
+      "effect": "**AP Cost:** R\n\nWhen an enemy attempts to leave the skirmish without disengaging first, make a free strike as a reaction before they leave their space.",
       "tags": [
         "Reaction",
         "Strike"
+      ]
+    },
+    {
+      "id": "ricochet-shot",
+      "name": "Ricochet Shot",
+      "effect": "**AP Cost:** TBD\n\nBounce an arrow off a hard surface to strike a target behind cover or around a corner. The target does not benefit from cover or barrier line-effects against this attack.",
+      "tags": [
+        "Attack",
+        "Projectile"
       ]
     },
     {
@@ -5177,6 +6148,15 @@
       "tags": [
         "Reaction",
         "Strike"
+      ]
+    },
+    {
+      "id": "rocket-strike",
+      "name": "Rocket Strike",
+      "effect": "WIP — the absurd apex of the shove line.\n\n**AP Cost:** +3\n\nAs [[Ability - Home Run|Home Run]], but the launch is skyward: the target is removed from the map, flying up for a round, and falls at the end of their next turn — taking falling damage and landing Prone in the zone they left (or where the GM rules). If they cannot fly or otherwise arrest the fall, they are effectively out of the fight for a round.",
+      "tags": [
+        "Strike",
+        "Movement"
       ]
     },
     {
@@ -5191,7 +6171,7 @@
     {
       "id": "shield-guardian",
       "name": "Shield Guardian",
-      "effect": "**AP Cost:** R\n\n**Trigger:** Adjacent ally is attacked.\n**Effect:** Use your reaction to attempt deflect instead of them. If this is an AOE effect, you protect both of you.",
+      "effect": "**AP Cost:** R\n\n**Trigger:** An ally in your skirmish is attacked.\n**Effect:** Use your reaction to attempt deflect instead of them. If this is an AOE effect, you protect both of you.",
       "tags": [
         "Reaction",
         "Block"
@@ -5218,7 +6198,7 @@
     {
       "id": "shoving-strike",
       "name": "Shoving Strike",
-      "effect": "**AP Cost:** +1\n\nWhen making a strike with an Impact weapon, you can declare a Shoving Strike. If you hit and deal damage, the target must roll Endure vs your attack roll or be shoved 1m away (2m on critical hit).",
+      "effect": "**AP Cost:** +1\n\nWhen making a strike with an Impact or Unarmed weapon, you can declare a Shoving Strike. If you hit and deal damage, the target must roll Endure vs your attack roll or be Shoved — forcefully disengaged from the skirmish. Unlike the basic [[Shove]], your attack roll uses any attribute your weapon allows.",
       "tags": [
         "Strike"
       ]
@@ -5226,7 +6206,7 @@
     {
       "id": "skirmisher-s-strike",
       "name": "Skirmisher's Strike",
-      "effect": "**AP Cost:** -\n\nMake a step away from an enemy after making a thrown attack within weapon's thrown range.",
+      "effect": "**AP Cost:** -\n\nAfter making a thrown attack within your weapon's thrown range, leave your skirmish as a free [[Disengage]]. Once per turn.",
       "tags": [
         "Ranged",
         "Movement"
@@ -5252,6 +6232,15 @@
       ]
     },
     {
+      "id": "spend-some-time-with-you",
+      "name": "Spend Some Time with You",
+      "effect": "**AP Cost:** weapon strike +2\n\nAttempt a [[Feint (WIP)|Feint]] or [[Shove]] check against an enemy in your skirmish. On success, you force them out: you and the target are removed from the skirmish into a duel — a new skirmish holding just the two of you — and you immediately strike, with the target [[Condition - Off Guard|Off-Guard]] against it. On failure, they resist and push you back: your momentum is broken, no strike happens, the AP is spent.",
+      "tags": [
+        "Strike",
+        "Movement"
+      ]
+    },
+    {
       "id": "spinning-staff",
       "name": "Spinning Staff",
       "effect": "**AP Cost:** 3\n\nYou spin your staff, turning it into a blur. Each enemy approaching you gets a strike as a free action until the start of your next turn or until the first successful deflection.\nTBR - to be remade. Balance is off.",
@@ -5260,12 +6249,21 @@
       ]
     },
     {
+      "id": "storm-of-arrows",
+      "name": "Storm of Arrows",
+      "effect": "**AP Cost:** TBD\n\nFire three rapid-draw shots, each at -2 to hit and -1 damage die. May distribute among targets in your skirmish or a connected zone.",
+      "tags": [
+        "Attack",
+        "Projectile"
+      ]
+    },
+    {
       "id": "that-type-of-a-person",
       "name": "That Type of a Person",
-      "effect": "**AP Cost:** R\n\nWhen an ally is downed within your Speed distance, you run to that space as a free action. This movement doesn't provoke reactions. When you stand on your downed ally's space, all offensive actions including AOE directed at the ally are directed at you instead. You can't leave the space until the end of combat or until the ally loses the unconscious condition.",
+      "effect": "**AP Cost:** R\n\nWhen an ally is downed in your zone, or in a zone you could reach by spending up to 2 AP on movement, move there as a free action and enter the skirmish in place of the incapacitated ally. \nAll checks - including defend - required to reach the destination are rolled with an advantage.\n\n\nAll offensive actions - including AOE - directed at the ally are directed at you instead. You can't leave the ally until the end of combat or until the ally is no longer incapacitated.",
       "tags": [
         "Reaction",
-        "Movement"
+        "Move"
       ]
     },
     {
@@ -5279,10 +6277,19 @@
     {
       "id": "the-wall",
       "name": "The Wall",
-      "effect": "**AP Cost:** R\n**Requirement:** You carry a heavy shield.\n\nAdjacent allies can hide behind you as a reaction, leaving the defense up to The Wall.",
+      "effect": "**AP Cost:** R\n**Requirement:** You carry a heavy shield.\n\nAllies in your skirmish can hide behind you as a reaction, leaving the defense up to The Wall.",
       "tags": [
         "Reaction",
         "Block"
+      ]
+    },
+    {
+      "id": "throw",
+      "name": "Throw",
+      "effect": "**AP Cost:** 2\n**Requirement:** You are grappling the target.\n\nRelease the grabbed target violently: deal your unarmed damage + Might, the target is forcefully disengaged from the skirmish and lands [[Condition - Prone|Prone]].",
+      "tags": [
+        "Strike",
+        "Brawling"
       ]
     },
     {
@@ -5303,7 +6310,7 @@
     {
       "id": "tower-defender",
       "name": "Tower Defender",
-      "effect": "**AP Cost:** All\n**Requirements:** You have all AP you gained at the start of the turn.\n\nDrop your quiver to the ground next to you. Each time an enemy enters your range or line of sight, make a basic ranged strike.\n\nYou can attack a number of times equal to your Tier. You cannot shoot the same target twice.",
+      "effect": "**AP Cost:** All\n**Requirements:** You have all AP you gained at the start of the turn.\n\nDrop your quiver to the ground next to you. Each time an enemy enters a zone within your weapon's range or enters your line of sight, make a basic ranged strike.\n\nYou can attack a number of times equal to your Tier. You cannot shoot the same target twice.",
       "tags": [
         "Ranged",
         "Strike"
@@ -5320,7 +6327,7 @@
     {
       "id": "two-birds",
       "name": "Two Birds",
-      "effect": "**AP Cost:** 4\n**Requirement:** You are holding non-light melee weapon.\n\nMake a melee strike against adjacent targets within your reach. Resolve strikes one after another. Roll attack and damage once.",
+      "effect": "**AP Cost:** -1\n**Requirement:** You are holding non-light melee weapon.\n\nMake a melee strike 2 targets within skirmish. Resolve strikes one after another. Roll attack and damage once.",
       "tags": [
         "Strike",
         "AoE"
@@ -5337,7 +6344,7 @@
     {
       "id": "vanishing-step",
       "name": "Vanishing Step",
-      "effect": "**AP Cost:** R\n\n**Trigger:** You successfully Dodge a melee attack.\n\nWhile Unencumbered, you may move to any space adjacent to the attacker. You are Hidden until the end of your next turn or until you attack.",
+      "effect": "**AP Cost:** R\n\n**Trigger:** You successfully Dodge a melee attack.\n**Req**: You are unencumbered,\nAttempt a stealth check against your attacker's perception with -5. On success you are [[Condition - Hidden| Hidden]].",
       "tags": [
         "Reaction",
         "Dodge",
@@ -5373,7 +6380,7 @@
     {
       "id": "arcane-sight",
       "name": "Arcane Sight",
-      "effect": "Detect Magic's **Limit cost** is now 0. **Range** = 10m × Spellcraft Tier.\nYou can identify creature's Spellcraft Tier on sight within range by spending 3 AP. You know tiers of spells cast in your sight and range.",
+      "effect": "Detect Magic's **Limit cost** is now 0. **Range:** your zone, +1 connected zone per Spellcraft tier.\nYou can identify creature's Spellcraft Tier on sight within range by spending 3 AP. You know tiers of spells cast in your sight and range.",
       "tags": [
         "Passive",
         "Scrying",
@@ -5395,7 +6402,7 @@
     {
       "id": "artillery",
       "name": "Artillery",
-      "effect": "As long as you didn't move this or previous turn, your weapon range = Aim, double your aim X.",
+      "effect": "As long as you didn't move this or the previous turn, your [[Aim]] is doubled — each Aim reduces the Distance DC by 4 instead of 2.",
       "tags": [
         "Passive"
       ]
@@ -5414,7 +6421,7 @@
     {
       "id": "backstab",
       "name": "Backstab",
-      "effect": "When attacking a flanked or off-guard target with a Light weapon, add your Dexterity to the damage roll.",
+      "effect": "When attacking an off-guard target with a Light weapon, add your Dexterity to the damage roll.",
       "tags": [
         "Passive",
         "Strike",
@@ -5433,7 +6440,7 @@
     {
       "id": "big-steps",
       "name": "Big Steps",
-      "effect": "While Unencumbered, you can Stride up to your full Speed instead of half.",
+      "effect": "While Unencumbered, entering a new zone you can engage without spending an AP.",
       "tags": []
     },
     {
@@ -5482,7 +6489,7 @@
     {
       "id": "close-quarters-shooter",
       "name": "Close Quarters Shooter",
-      "effect": "When you aim, but strike a target within your close range your attack deals extra damage equal to your archery level.",
+      "effect": "When you aim, but strike a target in your zone (range increment 0 or 1), your attack deals extra damage equal to your archery level.",
       "tags": [
         "Passive"
       ]
@@ -5542,15 +6549,25 @@
     {
       "id": "dodging-step",
       "name": "Dodging Step",
-      "effect": "While Unencumbered, when you successfully Dodge a melee attack, make a free Step within the attacker's reach.",
+      "effect": "While Unencumbered, when you successfully Dodge a melee attack, Disengage.",
       "tags": []
     },
     {
       "id": "don-t-turn-your-back-on-me",
       "name": "Don't Turn Your Back On Me",
-      "effect": "You count as a flanking partner within range of your weapon, as if your range was your reach.",
+      "effect": "You count as being in a skirmish for purposes of numeric advantage — allies attacking targets within the first range increment of your weapon count you toward their advantage.",
       "tags": [
         "Passive"
+      ]
+    },
+    {
+      "id": "drag-along",
+      "name": "Drag Along",
+      "effect": "While grappling, you can [[Engage]], [[Disengage]] and [[Move]], bringing the grabbed target with you. The movement costs +1 AP.",
+      "tags": [
+        "Passive",
+        "Brawling",
+        "Movement"
       ]
     },
     {
@@ -5558,6 +6575,16 @@
       "name": "Elusive",
       "effect": "While Unencumbered, each successful Dodge gives +1 to Dodge until the start of your next turn. Stacks.",
       "tags": []
+    },
+    {
+      "id": "empowered-spell",
+      "name": "Empowered Spell",
+      "effect": "**Metamagic — +1 AP / +2 DC per application.** The spell rolls +1 damage die per application.",
+      "tags": [
+        "Passive",
+        "Metamagic",
+        "Damage"
+      ]
     },
     {
       "id": "enchanter",
@@ -5680,7 +6707,7 @@
     {
       "id": "fast-archer",
       "name": "Fast Archer",
-      "effect": "You can aim as a free action while you stride to a maximum of Aim1.",
+      "effect": "You can aim as a free action as a part of [[Engage]] or [[Disengage]] actions.",
       "tags": [
         "Passive"
       ]
@@ -5707,12 +6734,6 @@
         "Healing",
         "FirstAid"
       ]
-    },
-    {
-      "id": "flanked",
-      "name": "Flanked",
-      "effect": "Enemies surround you in an angle of 135* or more.\n![[Flanking Rules]]\nyou gain ![[Condition - Off Guard||Off Guard Condition]]",
-      "tags": []
     },
     {
       "id": "footwork",
@@ -5751,6 +6772,15 @@
       "tags": [
         "Situational",
         "Condition"
+      ]
+    },
+    {
+      "id": "grand-weaving",
+      "name": "Grand Weaving",
+      "effect": "Your metamagic applications per cast are no longer capped by your Spellcraft tier.\n\nYou can also weave a cast across consecutive turns, spending its AP cost in parts; the spell releases on the turn the full cost is paid. If you take damage while weaving, immediately succeed the casting check at the full DC or the weave collapses and the spent AP is lost.",
+      "tags": [
+        "Passive",
+        "Metamagic"
       ]
     },
     {
@@ -5818,6 +6848,24 @@
       ]
     },
     {
+      "id": "inward-focus",
+      "name": "Inward Focus",
+      "effect": "+2 Limit. You can no longer apply #Attuned effects to anyone but yourself — no team effects, no [[Team Ritual]].",
+      "tags": [
+        "Passive",
+        "Specialization"
+      ]
+    },
+    {
+      "id": "iron-grip",
+      "name": "Iron Grip",
+      "effect": "Escaping your grapple requires 2 successful [[Escape]] attempts. The first success grants no benefit on its own.",
+      "tags": [
+        "Passive",
+        "Brawling"
+      ]
+    },
+    {
       "id": "jester",
       "name": "Jester",
       "effect": "You are a jester. Enjoy yourself.",
@@ -5864,14 +6912,32 @@
     {
       "id": "light-steps",
       "name": "Light Steps",
-      "effect": "While Unencumbered, make a Step as part of your first attack each turn. You can Step before or after the strike.",
+      "effect": "While Unencumbered, engage as a part of an attack.",
       "tags": []
+    },
+    {
+      "id": "lingering-spell",
+      "name": "Lingering Spell",
+      "effect": "**Metamagic — +1 AP / +2 DC per application.** Increase the spell's duration by one step per application: round → breather → minuta → shift.",
+      "tags": [
+        "Passive",
+        "Metamagic"
+      ]
     },
     {
       "id": "lock-consul",
       "name": "Lock Consul",
       "effect": "When circumventing locks or safes, you can adjust your approach:\n\n1. **Quick and Dirty:** Reduce the **attempt time** by 1 step (Shift → Breather → Minuta), but increase the **DC by 2**.\n    \n2. **Slow and Steady:** Ignore the normal **failure effect**, and treat **critical failure** as a simple failure",
       "tags": []
+    },
+    {
+      "id": "mage-of-an-element",
+      "name": "Mage of an Element",
+      "effect": "Choose an element when taking this perk. Spells with that elemental trait are cast at -2 DC and roll +1 damage die. Spells with any other elemental trait are cast at +2 DC.",
+      "tags": [
+        "Passive",
+        "Specialization"
+      ]
     },
     {
       "id": "mage",
@@ -5967,6 +7033,15 @@
       ]
     },
     {
+      "id": "perfect-ambush",
+      "name": "Perfect Ambush",
+      "effect": "When using [[Predictive Strike]] during an ambush, you also predict the enemy's reaction — roll the enemy's defense alongside your attack. The prediction does not prevent the enemy from using reactions or abilities to modify the final result.",
+      "tags": [
+        "Passive",
+        "Predictive"
+      ]
+    },
+    {
       "id": "perfect-block",
       "name": "Perfect Block",
       "effect": "When critically succeeding on a Deflect with a shield against a melee attack, the attacker becomes off-guard until the start of their next turn.",
@@ -6009,6 +7084,15 @@
       ]
     },
     {
+      "id": "predicted-duel",
+      "name": "Predicted Duel",
+      "effect": "TBD — Predicted Duel effect. Part of the Predictive perk line.",
+      "tags": [
+        "Passive",
+        "Predictive"
+      ]
+    },
+    {
       "id": "predicted-exchange",
       "name": "Predicted Exchange",
       "effect": "When using [[Predictive Strike]] roll the enemy's defense as well. This predicts the rolls, but doesn't prevent enemy to use reactions and other abilities and effects to modify the end result.",
@@ -6045,6 +7129,15 @@
         "Defense",
         "Polearm",
         "Weapon"
+      ]
+    },
+    {
+      "id": "reaching-spell",
+      "name": "Reaching Spell",
+      "effect": "**Metamagic — +1 AP / +2 DC per application.** Extend the spell's range by one step per application: same skirmish → your zone → +1 connected zone (or +1 range increment for spells using weapon-style ranges).",
+      "tags": [
+        "Passive",
+        "Metamagic"
       ]
     },
     {
@@ -6123,13 +7216,13 @@
     {
       "id": "small-steps",
       "name": "Small Steps",
-      "effect": "While Unencumbered, your first Stride each turn doesn't trigger reactions (except readied actions).",
+      "effect": "While Unencumbered, you get +4 to dodge against reactions for leaving a skirmish without [[Disengage|Disengaging]].",
       "tags": []
     },
     {
       "id": "spear-brothers",
       "name": "Spear Brothers",
-      "effect": "When standing adjacent to another spearman with this perk, you gain +1 Situational bonus to Deflection, and, +1 Situational bonus to strikes if the enemy is within the reach of both of you.",
+      "effect": "When you and another spearman with this perk are attacking the same skirmish, you count as one more person for the benefits of numeric advantage.",
       "tags": [
         "Passive",
         "Polearm",
@@ -6151,14 +7244,41 @@
       ]
     },
     {
+      "id": "split-spell",
+      "name": "Split Spell",
+      "effect": "**Metamagic — +1 AP / +2 DC per extra target.** Add a target within the spell's range. Each target defends separately against the same casting roll.",
+      "tags": [
+        "Passive",
+        "Metamagic"
+      ]
+    },
+    {
       "id": "staff-acrobat",
       "name": "Staff Acrobat",
-      "effect": "Add your weapon's reach to the distance of your long jumps, and half of it to your high jumps. While holding your staff, you get +2 on checks to balance.",
+      "effect": "Out of combat, add your weapon's length to the distance of your long jumps, and half of it to your high jumps. While holding your staff, you get +2 on checks to balance.",
       "tags": [
         "Passive",
         "Polearm",
         "Movement",
         "Acrobatic"
+      ]
+    },
+    {
+      "id": "subtle-casting",
+      "name": "Subtle Casting",
+      "effect": "**Metamagic — +1 AP / +2 DC.** Cast without gestures or voice; only the spell's effects are visible. Observers can't tell you are the caster without a relevant check.",
+      "tags": [
+        "Passive",
+        "Metamagic"
+      ]
+    },
+    {
+      "id": "takedown",
+      "name": "Takedown",
+      "effect": "Your failed [[Grapple]] attempts no longer grant the target a free attack.",
+      "tags": [
+        "Passive",
+        "Brawling"
       ]
     },
     {
@@ -6173,7 +7293,7 @@
     {
       "id": "the-cult-inner-member",
       "name": "The Cult Inner Member",
-      "effect": "You are close to The Leader and your oath is strong. Any attempt to mind control or coerce you (unless by the leader) is rolled with disadvantage. You gain \"Protect the Leader\" reaction (allowing you to take damage for the leader if adjacent). When driven into fervor, your attack increases by +2 and defense decreases by -3.",
+      "effect": "You are close to The Leader and your oath is strong. Any attempt to mind control or coerce you (unless by the leader) is rolled with disadvantage. You gain \"Protect the Leader\" reaction (allowing you to take damage for the leader while in their skirmish, or beside them in the same zone). When driven into fervor, your attack increases by +2 and defense decreases by -3.",
       "tags": [
         "Passive",
         "Mental",
@@ -6225,7 +7345,7 @@
     {
       "id": "tracker",
       "name": "Tracker",
-      "effect": "When tracking you don't reduce movement speed.",
+      "effect": "When tracking you don't reduce your travel pace.",
       "tags": [
         "Passive",
         "Tracking",
@@ -6242,17 +7362,6 @@
         "Parry",
         "Defense",
         "Circumstance"
-      ]
-    },
-    {
-      "id": "vanishing-step",
-      "name": "Vanishing Step",
-      "effect": "When using Dodging Step and succeeding on your dodge, roll Stealth against enemy's Perception. If you succeed, you are hidden from that enemy and appear behind their back.",
-      "tags": [
-        "Passive",
-        "Dodge",
-        "Stealth",
-        "Movement"
       ]
     },
     {
@@ -6281,7 +7390,7 @@
     {
       "id": "watching-your-back",
       "name": "Watching your back",
-      "effect": "While adjacent to you your allies cannot be flanked. Because you always are watching their backs.",
+      "effect": "Allies in your skirmish are immune to numerical disadvantage. Because you always are watching their backs.",
       "tags": [
         "Passive",
         "Team",
@@ -6296,6 +7405,52 @@
         "Passive",
         "Body",
         "Endure"
+      ]
+    },
+    {
+      "id": "weapon-thief",
+      "name": "Weapon Thief",
+      "effect": "When you succeed a [[Disarm]] against a creature you have Grabbed, you take the weapon into your free hand — or toss it anywhere in your zone.",
+      "tags": [
+        "Passive",
+        "Brawling"
+      ]
+    },
+    {
+      "id": "widened-spell",
+      "name": "Widened Spell",
+      "effect": "**Metamagic — +2 AP / +4 DC, counts as 2 applications.** Widen a single-target spell to affect a whole skirmish. Applied twice, it affects the whole zone. Allies in the area are affected too — aim carefully.",
+      "tags": [
+        "Passive",
+        "Metamagic",
+        "AoE"
+      ]
+    },
+    {
+      "id": "withering-focus",
+      "name": "Withering Focus",
+      "effect": "You cannot learn or cast #Healing spells. Your #Bane spells are cast at -2 DC, and targets defend against them at -1.",
+      "tags": [
+        "Passive",
+        "Specialization"
+      ]
+    },
+    {
+      "id": "wrestler-s-control",
+      "name": "Wrestler's Control",
+      "effect": "While grappling, you don't suffer the [[Effect - Grabbed|Grabbed]] condition's penalties yourself — no Off-Guard and no disadvantage on physical actions. You are still locked in the skirmish with your target.",
+      "tags": [
+        "Passive",
+        "Brawling"
+      ]
+    },
+    {
+      "id": "you-and-i",
+      "name": "You and I",
+      "effect": "When you use [[Ability - Just the Two of Us|Just the Two of Us]], you bend reality around the duel: the skirmish gains the traits of a [[Duel Zone]], and all attempts to interfere with the duel suffer a -5 penalty.",
+      "tags": [
+        "Passive",
+        "Mind"
       ]
     },
     {

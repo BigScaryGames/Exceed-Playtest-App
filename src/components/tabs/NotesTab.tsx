@@ -42,11 +42,11 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
     setShowRenameModal(false);
   };
 
-  const handleAddXP = (combatXP: number, socialXP: number) => {
+  const handleAddXP = (combatXP: number, skillXP: number) => {
     onUpdate({
       ...character,
       combatXP: character.combatXP + combatXP,
-      socialXP: character.socialXP + socialXP
+      skillXP: character.skillXP + skillXP
     });
     setShowXPModal(false);
   };
@@ -177,7 +177,7 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
             <div className="flex items-center gap-2">
               <BookOpen size={18} className="text-blue-400" />
               <span className="text-xl font-bold text-white">
-                {character.socialXP + character.progressionLog.filter(e => e.xpType === 'social').reduce((sum, e) => sum + e.cost, 0)}
+                {character.skillXP + character.progressionLog.filter(e => e.xpType === 'skill').reduce((sum, e) => sum + e.cost, 0)}
               </span>
             </div>
           </div>
@@ -197,7 +197,7 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
             <div className="w-px h-6 bg-slate-600"></div>
             <div className="flex items-center gap-2">
               <BookOpen size={18} className="text-blue-400" />
-              <span className="text-xl font-bold text-white">{character.socialXP}</span>
+              <span className="text-xl font-bold text-white">{character.skillXP}</span>
             </div>
           </div>
         </div>
@@ -319,11 +319,6 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
                         </td>
                         <td className="py-3 px-3 text-sm text-white">
                           {entry.name}
-                          {entry.type === 'spell' && entry.spellType && (
-                            <span className="ml-2 text-xs text-purple-400">
-                              ({entry.spellType})
-                            </span>
-                          )}
                         </td>
                         <td className="py-3 px-3 text-sm text-slate-300">
                           {entry.type === 'spell' ? `T${entry.tier || 0}` : (entry.level || '-')}
@@ -333,7 +328,7 @@ export const NotesTab: React.FC<NotesTabProps> = ({ character, onUpdate }) => {
                         </td>
                         <td className="py-3 px-3 text-sm text-green-400">
                           {entry.type === 'spell'
-                            ? (entry.cost ? `${entry.cost} ${entry.xpType === 'social' ? 'SP' : 'CP'}` : '-')
+                            ? (entry.cost ? `${entry.cost} ${entry.xpType === 'skill' ? 'SP' : 'CP'}` : '-')
                             : (entry.cost ? `${entry.cost} CP` : '-')
                           }
                         </td>

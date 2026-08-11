@@ -55,16 +55,17 @@ export interface ProgressionLogEntry {
   attribute?: string;
   cost: number;
   tier?: number; // For spells
-  spellType?: 'basic' | 'advanced'; // For spells
-  xpType?: 'combat' | 'social'; // Track which XP pool was used (combat for Martial/Spellcraft, social for Skills)
+  xpType?: 'combat' | 'skill'; // Track which XP pool was used
+  perkType?: 'Combat' | 'Magic' | 'Skill'; // For perks: track the perk type for domain calculation
   stagedLevel?: number; // For staged perks: which level was purchased
+  isFree?: boolean; // true = perk granted free (no XP cost/refund, but still grants CP)
 }
 
 export interface Character {
   name: string;
   concept: string;
   combatXP: number;
-  socialXP: number;
+  skillXP: number;
   stats: Stats;
   skills: Skill[];
   perks: CharacterPerk[];        // Unified: perks, flaws, and staged perks
@@ -168,35 +169,56 @@ export interface InventoryItem {
 
 // Magic System Types
 export type SpellTier = 0 | 1 | 2 | 3 | 4 | 5;
-export type SpellType = 'basic' | 'advanced';
 
-// MS5: Version data for basic/advanced spell variants
-export interface SpellVersionData {
-  limitCost: number | string;  // Can be "Self 0 / Party 1" format
-  effect: string;
-  distance?: string;
-  damage?: string;
+// Prerequisite types
+export type PrerequisiteType = 'spell' | 'perk' | 'attribute' | 'skill' | 'domain' | 'tier';
+
+// Single prerequisite condition
+export interface Prerequisite {
+  type: PrerequisiteType;
+  // For spell/perk: name or ID of the required item
+  id?: string;
+  name?: string;
+  // For attribute: attribute code (e.g., 'MG', 'EN') and minimum value
+  attribute?: AttributeCode;
+  minValue?: number;
+  // For skill: skill name and minimum level
+  skillName?: string;
+  minLevel?: number;
+  // For domain: domain name and minimum level
+  domain?: WeaponDomain;
+  domainLevel?: number;
+  // For tier: minimum spellcraft tier
+  minTier?: number;
 }
 
-// MS5: Updated spell structure with separate basic/advanced versions
+// Prerequisites for spells
+export interface SpellPrerequisites {
+  requirements: Prerequisite[];
+  // Optional custom description shown to players
+  description?: string;
+}
+
+// Spell data structure (simplified, no basic/advanced distinction)
 export interface Spell {
   id: string;
   name: string;
   tier: SpellTier;
-  type: SpellType;  // Whether spell has advanced version
   apCost: string;   // e.g., "2", "R", "3", "1m", "-"
   attributes: string; // e.g., "AG/WT", "EN/DX"
   traits: string[];
   shortDescription: string;
-  basic: SpellVersionData;
-  advanced?: SpellVersionData;
+  limitCost: number | string;  // Can be "Self 0 / Party 1" format
+  effect: string;
+  distance?: string;
+  damage?: string;
   description?: string;
   duration?: string;
+  prerequisites?: SpellPrerequisites;
 }
 
 export interface CustomSpellData {
   tier: SpellTier;
-  type: SpellType;
   apCost: string;
   attributes: string;
   limitCost: number;
@@ -205,13 +227,13 @@ export interface CustomSpellData {
   distance: string;
   duration: string;
   damage?: string;
+  prerequisites?: SpellPrerequisites;
 }
 
 export interface KnownSpell {
   id: string;
   name: string;
   tier: SpellTier;
-  type: SpellType;
   isCustom: boolean;
   dataRef?: string; // Reference to spell in SPELLS database
   customSpellData?: CustomSpellData;
