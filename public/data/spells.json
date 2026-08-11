@@ -1,12 +1,11 @@
 {
-  "version": "2026-02-23T22:29:56.928Z",
-  "lastUpdated": 1771885796929,
+  "version": "2026-08-11T12:41:59.789Z",
+  "lastUpdated": 1786452119789,
   "spells": [
     {
       "id": "arcane-armor",
       "name": "Arcane Armor",
       "tier": 0,
-      "type": "basic",
       "apCost": "-",
       "attributes": "WL/EN",
       "traits": [
@@ -17,32 +16,43 @@
         "Conjuration"
       ],
       "shortDescription": "Summon a light magical armor on self.",
-      "basic": {
-        "limitCost": 1,
-        "effect": "Add Armor bonus to Spellcraft Tier (minimum 1) if unarmored. Cannot be re-summoned if dispelled with non-full stamina HP."
-      },
+      "limitCost": 1,
+      "effect": "Add Armor bonus to Spellcraft Tier (minimum 1) if unarmored. Cannot be re-summoned if dispelled with non-full stamina HP.",
       "description": "Arcane Armor is rarely used in wars, and until higher tiers it is weaker defense than an actual physical armor. Despite that it is quite popular spell to learn, as Arcane Armor is weightless and requires no maintenance.  Authors note: put on a good enchanted brigantine and a nice helmet. No one needs to see your amazing hairstyle during the battle."
+    },
+    {
+      "id": "basic-elemental-invocation",
+      "name": "Basic Elemental Invocation",
+      "tier": 0,
+      "apCost": "2",
+      "attributes": "WL/WT",
+      "traits": [
+        "Active",
+        "Spell",
+        "Manipulation"
+      ],
+      "shortDescription": "Channel the ambient element of your zone to produce a minor elemental effect.",
+      "limitCost": 0,
+      "effect": "Tap into a zone with an abundance of an element (see [[Elemental Mage]]) to produce a small, useful effect of that element — a spark from a fire, a gust from wind, a splash from water. Not enough to deal damage directly, but enough to interact with the environment.",
+      "description": "Flavor text to be written",
+      "duration": "Instant"
     },
     {
       "id": "consecrate",
       "name": "Consecrate",
       "tier": 0,
-      "type": "basic",
       "apCost": "-",
       "attributes": "-",
       "traits": [],
-      "shortDescription": "Spend an breather consecrating a 10m radius area for up to a full day, making it uncomfortable for undead and monsters.",
-      "basic": {
-        "limitCost": 0,
-        "effect": ""
-      },
-      "description": "Spend an breather consecrating a 10m radius area for up to a full day, making it uncomfortable for undead and monsters."
+      "shortDescription": "Spend an breather consecrating one zone for up to a full day, making it uncomfortable for undead and monsters.",
+      "limitCost": 0,
+      "effect": "",
+      "description": "Spend an breather consecrating one zone for up to a full day, making it uncomfortable for undead and monsters."
     },
     {
       "id": "darkvision",
       "name": "Darkvision",
       "tier": 0,
-      "type": "advanced",
       "apCost": "-",
       "attributes": "PR",
       "traits": [
@@ -52,41 +62,44 @@
         "Scrying"
       ],
       "shortDescription": "Grant darkvision to self or team",
-      "basic": {
-        "limitCost": 1,
-        "effect": "5m black and white darkvision on self"
-      },
-      "advanced": {
-        "limitCost": "Self 0 / Party 1",
-        "effect": "5m Per Spellcraft tier of black and white darkvision on self/team"
-      },
+      "limitCost": "Self 1 / Party 1",
+      "effect": "Black and white darkvision. At Party cost, affects your team and extends +1 connected zone per Spellcraft tier.",
       "description": "Flavor text to be written"
     },
     {
       "id": "detect-magic",
       "name": "Detect Magic",
       "tier": 0,
-      "type": "basic",
       "apCost": "3",
       "attributes": "WT/WL",
       "traits": [
+        "Active",
+        "Attuned",
         "Spell",
         "Attuned",
         "Scrying"
       ],
       "shortDescription": "Sense magical auras and enchantments",
-      "basic": {
-        "limitCost": 1,
-        "effect": "See magic within 10m"
-      },
+      "limitCost": 1,
+      "effect": "See magic auras in your zone",
       "description": "Flavor text to be written",
       "duration": "1 round"
+    },
+    {
+      "id": "elemental-tree-plan",
+      "name": "Elemental Tree Plan",
+      "tier": 0,
+      "apCost": "-",
+      "attributes": "-",
+      "traits": [],
+      "shortDescription": "",
+      "limitCost": 0,
+      "effect": ""
     },
     {
       "id": "endure-elements",
       "name": "Endure Elements",
       "tier": 0,
-      "type": "advanced",
       "apCost": "3",
       "attributes": "EN/WL",
       "traits": [
@@ -97,37 +110,25 @@
         "Enhancement"
       ],
       "shortDescription": "Resist environmental extremes",
-      "basic": {
-        "limitCost": 1,
-        "effect": "Ignore minor environmental effects, like rain or dust storm. #TODO Environmental rules are not yet written"
-      },
-      "advanced": {
-        "limitCost": "Self 0 / Party 1",
-        "effect": "Ignore minor environmental effects, like rain or dust storm"
-      },
+      "limitCost": "Self 1 / Party 1",
+      "effect": "Ignore minor environmental effects, like rain or dust storm. #TODO Environmental rules are not yet written",
       "description": "Flavor text to be written"
     },
     {
       "id": "featherfall",
       "name": "Featherfall",
       "tier": 0,
-      "type": "advanced",
-      "apCost": "R/1",
-      "attributes": "EN/DX",
+      "apCost": "R",
+      "attributes": "EN/AG",
       "traits": [
+        "Active",
         "Spell",
         "Boon",
         "Protection"
       ],
       "shortDescription": "Negate falling damage for targets",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Negate falling damage on 1 target"
-      },
-      "advanced": {
-        "limitCost": 0,
-        "effect": "Negate falling damage on multiple targets"
-      },
+      "limitCost": 0,
+      "effect": "Negate falling damage on 1 or more targets in your zone.",
       "description": "Flavor text to be written",
       "duration": "1 minuta"
     },
@@ -135,26 +136,52 @@
       "id": "ghost-sound",
       "name": "Ghost Sound",
       "tier": 0,
-      "type": "basic",
       "apCost": "2",
       "attributes": "CH",
       "traits": [
+        "Active",
         "Spell",
         "Illusion"
       ],
       "shortDescription": "Create illusory sounds",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Audio illusion"
-      },
+      "limitCost": 0,
+      "effect": "Audio illusion",
       "description": "Flavor text to be written",
       "duration": "1 round"
+    },
+    {
+      "id": "healing-tree-plan",
+      "name": "Healing Tree Plan",
+      "tier": 0,
+      "apCost": "-",
+      "attributes": "-",
+      "traits": [],
+      "shortDescription": "",
+      "limitCost": 0,
+      "effect": ""
+    },
+    {
+      "id": "lend-vitality",
+      "name": "Lend Vitality",
+      "tier": 0,
+      "apCost": "2",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing",
+        "Boon"
+      ],
+      "shortDescription": "Transfer your stamina to an ally",
+      "limitCost": 0,
+      "effect": "Transfer up to `[Spellcraft × 6]` stamina from yourself to 1 ally. Cannot transfer more stamina than you currently have.",
+      "description": "Flavor text to be written",
+      "duration": "Instant"
     },
     {
       "id": "light",
       "name": "Light",
       "tier": 0,
-      "type": "advanced",
       "apCost": "2",
       "attributes": "WL/PR",
       "traits": [
@@ -163,14 +190,8 @@
         "Boon"
       ],
       "shortDescription": "Create small lamp level illumination around yourself or party",
-      "basic": {
-        "limitCost": 1,
-        "effect": "Bright light 10m on self"
-      },
-      "advanced": {
-        "limitCost": "Self 0 / Party 1",
-        "effect": "Bright light up to 10m  per tier on self/party members. Can change the color and the intensity of the light."
-      },
+      "limitCost": "Self 1 / Party 1",
+      "effect": "Bright light filling your zone, centered on you. At Party cost, also affects allies and extends +1 connected zone per Spellcraft tier. Can change color and intensity of the light.",
       "description": "Third most popular awakening spell and first spell taught to the students. The color of the light coming from the spell can be modified. Research has shown that the spell is way better for nigh-time reading than candles or lamps, as it doesn't cause as much stress to the eyes.",
       "duration": "1 breather if cast as a spell"
     },
@@ -178,7 +199,6 @@
       "id": "light-backpack",
       "name": "Light Backpack",
       "tier": 0,
-      "type": "advanced",
       "apCost": "-",
       "attributes": "EN/MG",
       "traits": [
@@ -189,14 +209,8 @@
         "Equipment"
       ],
       "shortDescription": "Reduce the weight you carry in your backpack.",
-      "basic": {
-        "limitCost": 1,
-        "effect": "Reduce the weight of the backpack you carry by 5* Tier kilos."
-      },
-      "advanced": {
-        "limitCost": "Self 0 / Party 1",
-        "effect": "Reduce the weight of the backpacks you and your team carries carry by 5* Tier KG."
-      },
+      "limitCost": "Self 1 / Party 1",
+      "effect": "Reduce the weight of the backpack(s) you and/or your team carry by 5 × Tier kilos.",
       "description": "This spell is ignored by the novice adventurers until their first long distance mission when those extra 20kg of pelts or 20 daily rations would have felt amazing.  The need for the spell disappears when they are rich enough for spacial bags, and it becomes disregarded again.",
       "duration": "-"
     },
@@ -204,7 +218,6 @@
       "id": "light-feet",
       "name": "Light Feet",
       "tier": 0,
-      "type": "advanced",
       "apCost": "-",
       "attributes": "EN/AG",
       "traits": [
@@ -213,33 +226,25 @@
         "Boon"
       ],
       "shortDescription": "Ignore difficult terrain while traveling",
-      "basic": {
-        "limitCost": 1,
-        "effect": "Mage ignores difficult terrain while traveling"
-      },
-      "advanced": {
-        "limitCost": "Self 0 / Party 1",
-        "effect": "Team ignores difficult terrain while traveling"
-      },
+      "limitCost": "Self 1 / Party 1",
+      "effect": "You and/or your team ignore difficult terrain while traveling.",
       "description": "Flavor text to be written"
     },
     {
       "id": "loud-mouth",
       "name": "Loud Mouth",
       "tier": 0,
-      "type": "basic",
       "apCost": "2",
       "attributes": "CH/MG",
       "traits": [
+        "Active",
         "Spell",
         "Boon",
         "Illusion"
       ],
       "shortDescription": "Amplify your voice significantly",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Amplify your voice 5 times"
-      },
+      "limitCost": 0,
+      "effect": "Amplify your voice 5 times",
       "description": "Flavor text to be written",
       "duration": "1 minuta"
     },
@@ -247,18 +252,16 @@
       "id": "message",
       "name": "Message",
       "tier": 0,
-      "type": "basic",
       "apCost": "2",
       "attributes": "CH/PR",
       "traits": [
+        "Active",
         "Spell",
         "Illusion"
       ],
       "shortDescription": "Create a telepathic communication",
-      "basic": {
-        "limitCost": 0,
-        "effect": "30m telepathic whisper, ignores range and visibility reqs for team members"
-      },
+      "limitCost": 0,
+      "effect": "Telepathic whisper; ignores range and visibility reqs for team members",
       "description": "Flavor text to be written",
       "duration": "1 minuta"
     },
@@ -266,18 +269,16 @@
       "id": "minor-disruption",
       "name": "Minor Disruption",
       "tier": 0,
-      "type": "basic",
       "apCost": "5",
       "attributes": "WL/CH",
       "traits": [
+        "Active",
         "Spell",
         "Bane"
       ],
       "shortDescription": "Disrupt a duration spell within range",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Attempt to disrupt a duration spell within 10 meters, DC=10+CastersBonus, doesn't work on spells in limits"
-      },
+      "limitCost": 0,
+      "effect": "Attempt to disrupt a duration spell in your zone, DC=10+CastersBonus, doesn't work on spells in limits",
       "description": "Flavor text to be written",
       "duration": "-"
     },
@@ -285,20 +286,18 @@
       "id": "minor-elemental-manipulation",
       "name": "Minor Elemental Manipulation",
       "tier": 0,
-      "type": "basic",
       "apCost": "3",
       "attributes": "WT/DX",
       "traits": [
+        "Active",
         "Spell",
         "Manipulation",
         "Offensive",
         "Projectile"
       ],
       "shortDescription": "Produce or manipulate small amounts of elements",
-      "basic": {
-        "limitCost": 0,
-        "effect": "1d3 damage if used offensively. Doesn't scale. Can produce flame, water, acid, move earth/stone, cool drinks."
-      },
+      "limitCost": 0,
+      "effect": "1d3 damage if used offensively. Doesn't scale. Can produce flame, water, acid, move earth/stone, cool drinks.",
       "description": "Flavor text to be written",
       "duration": "Instant"
     },
@@ -306,18 +305,16 @@
       "id": "minor-telekinesis",
       "name": "Minor Telekinesis",
       "tier": 0,
-      "type": "basic",
       "apCost": "2",
       "attributes": "WL/PR",
       "traits": [
+        "Active",
         "Spell",
         "Manipulation"
       ],
       "shortDescription": "Telekinetic manipulation of small objects",
-      "basic": {
-        "limitCost": 0,
-        "effect": "2kg max, 10m range, 2 meters per AP, hard to aim to drop things"
-      },
+      "limitCost": 0,
+      "effect": "2kg max; move the object within your zone, moving it to a connected zone costs 1 AP; hard to aim to drop things",
       "description": "Flavor text to be written",
       "duration": "1 minuta"
     },
@@ -325,18 +322,16 @@
       "id": "phantom-tools",
       "name": "Phantom Tools",
       "tier": 0,
-      "type": "basic",
       "apCost": "3",
       "attributes": "DX/WT",
       "traits": [
+        "Active",
         "Spell",
         "Conjuration"
       ],
       "shortDescription": "Create phantom tools for a skill you have",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Create phantom tools for a skill you have"
-      },
+      "limitCost": 0,
+      "effect": "Create phantom tools for a skill you have",
       "description": "Flavor text to be written",
       "duration": "1 minuta"
     },
@@ -344,18 +339,16 @@
       "id": "prestidigitation",
       "name": "Prestidigitation",
       "tier": 0,
-      "type": "basic",
       "apCost": "2",
       "attributes": "WT/DX",
       "traits": [
+        "Active",
         "Spell",
         "Manipulation"
       ],
       "shortDescription": "Minor magical effects for cleaning, flavoring, and coloring",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Cosmetic effects"
-      },
+      "limitCost": 0,
+      "effect": "Cosmetic effects",
       "description": "Flavor text to be written",
       "duration": "1 minuta"
     },
@@ -363,7 +356,6 @@
       "id": "resistance",
       "name": "Resistance",
       "tier": 0,
-      "type": "advanced",
       "apCost": "3",
       "attributes": "WL/EN",
       "traits": [
@@ -373,32 +365,24 @@
         "Protection"
       ],
       "shortDescription": "Minor protection from one damage type",
-      "basic": {
-        "limitCost": 1,
-        "effect": "-1 damage from chosen type"
-      },
-      "advanced": {
-        "limitCost": 1,
-        "effect": "-Spellcraft damage from chosen type"
-      },
+      "limitCost": 1,
+      "effect": "Reduce damage from chosen type by `[Spellcraft]`.",
       "description": "Flavor text to be written"
     },
     {
       "id": "sad-violin",
       "name": "Sad violin",
       "tier": 0,
-      "type": "basic",
       "apCost": "R",
       "attributes": "CH/DX",
       "traits": [
+        "Active",
         "Spell",
         "Illusion"
       ],
       "shortDescription": "Play ambient musical composition for the scene",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Play prerecorded musical composition as ambient music for the scene"
-      },
+      "limitCost": 0,
+      "effect": "Play prerecorded musical composition as ambient music for the scene",
       "description": "Flavor text to be written",
       "duration": "1 minuta"
     },
@@ -406,18 +390,16 @@
       "id": "stabilize",
       "name": "Stabilize",
       "tier": 0,
-      "type": "basic",
       "apCost": "5",
       "attributes": "WL/DX",
       "traits": [
+        "Active",
         "Spell",
         "Healing"
       ],
       "shortDescription": "Conduct magical first aid",
-      "basic": {
-        "limitCost": 0,
-        "effect": "First aid"
-      },
+      "limitCost": 0,
+      "effect": "First aid",
       "description": "Flavor text to be written",
       "duration": "Instant"
     },
@@ -425,33 +407,28 @@
       "id": "team-ritual",
       "name": "Team Ritual",
       "tier": 0,
-      "type": "basic",
       "apCost": "-",
       "attributes": "-",
       "traits": [],
       "shortDescription": "",
-      "basic": {
-        "limitCost": 0,
-        "effect": ""
-      }
+      "limitCost": 0,
+      "effect": ""
     },
     {
       "id": "wish-em-good-luck",
       "name": "Wish-em Good Luck",
       "tier": 0,
-      "type": "basic",
       "apCost": "2",
       "attributes": "WL/CH",
       "traits": [
+        "Active",
         "Spell",
         "Boon",
         "Luck"
       ],
       "shortDescription": "Give advantage to an ally.",
-      "basic": {
-        "limitCost": 0,
-        "effect": "The ally's next roll is affected by Good #Luck"
-      },
+      "limitCost": 0,
+      "effect": "The ally's next roll is affected by Good #Luck",
       "description": "People talk a lot, and mages are no exception. To use this spell you must mean it. Learning this spell is considered a funny challenge in magical community, but not all pass. It requires to speak what you mean for a day while actively interacting with other people. If you lie or say something you don't believe in, the you need to start all over.",
       "duration": "1 round"
     },
@@ -459,20 +436,18 @@
       "id": "alarming-wards",
       "name": "Alarming Wards",
       "tier": 1,
-      "type": "basic",
-      "apCost": "1m",
+      "apCost": "1 minute (out of combat)",
       "attributes": "PR/EN",
       "traits": [
+        "Active",
         "Spell",
         "Ward",
         "Scrying",
         "Ritual"
       ],
-      "shortDescription": "Cover small area with a movement detection spell.",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Cover a 20m^2  or a 15m radius area in movement detection ward."
-      },
+      "shortDescription": "Cover one zone with a movement detection spell.",
+      "limitCost": 0,
+      "effect": "Cover one zone in a movement detection ward. Larger areas: apply per zone or use [[Metamagic]] (Widened).",
       "description": "Bread and butter of adventurers and bodyguards. Despite its common use and relative ease of detection by trained thieves and assassins this is a one of the pillars of security systems. Note from author: Dear adventurers, if your travel in the wilderness and your support mage doesn't know this spell - you need to find another one. ",
       "duration": "4 shifts or until dispelled"
     },
@@ -480,8 +455,7 @@
       "id": "alter-shape",
       "name": "Alter Shape",
       "tier": 1,
-      "type": "advanced",
-      "apCost": "1m",
+      "apCost": "1 minute (out of combat)",
       "attributes": "CH/PR",
       "traits": [
         "Spell",
@@ -491,14 +465,8 @@
         "Illusion"
       ],
       "shortDescription": "Adjust facial features and body shape to impersonate others",
-      "basic": {
-        "limitCost": 1,
-        "effect": "You change your visuals. You can't change the body mass. This doesn't hide the voices acting skills and similar. This provides +3 to Fast-Talk and Acting trying to impersonate into a role."
-      },
-      "advanced": {
-        "limitCost": "Self 0 / Party 1",
-        "effect": "You change your and your team members visuals. You can't change the body mass. This doesn't hide the voices acting skills and similar. This provides +3 to Fast-Talk and Acting trying to impersonate into a role."
-      },
+      "limitCost": "Self 1 / Party 1",
+      "effect": "You change your visuals and optionally your team members'. You can't change body mass. This doesn't hide voices, acting skills, or similar. Provides +3 to Fast-talk and Acting when impersonating a role.",
       "description": "The Bread and Butter of spies, thieves and actors. While it is not illegal to change one's shape, impersonation is illegal and most wealthy and some well-off establishments have wards against transformation and illusion spells, highlighting the illusion for all present.",
       "duration": "-"
     },
@@ -506,7 +474,6 @@
       "id": "animate-appliance",
       "name": "Animate Appliance",
       "tier": 1,
-      "type": "basic",
       "apCost": "-",
       "attributes": "WT/CH",
       "traits": [
@@ -515,10 +482,8 @@
         "Manipulation"
       ],
       "shortDescription": "Animate household appliances to do simple menial labor",
-      "basic": {
-        "limitCost": 1,
-        "effect": "Animate a number of appliances equal to your Spellcraft to do the work for you."
-      },
+      "limitCost": 1,
+      "effect": "Animate a number of appliances equal to your Spellcraft to do the work for you.",
       "description": "Animate Appliance is the favorite tool in poor students', pathological loners and disenfranchised nobles' hands. This spell will do the untrained monotonous labor worse than any professional cleaner or a maid, but maids are expensive and you are cheap.",
       "duration": "-"
     },
@@ -526,7 +491,6 @@
       "id": "aura-of-speed",
       "name": "Aura of Speed",
       "tier": 1,
-      "type": "advanced",
       "apCost": "-",
       "attributes": "CH/EN",
       "traits": [
@@ -535,23 +499,43 @@
         "Boon",
         "Enhancement"
       ],
-      "shortDescription": "Increase team movement speed",
-      "basic": {
-        "limitCost": 0,
-        "effect": ""
-      },
-      "advanced": {
-        "limitCost": 1,
-        "effect": "+1 #Enhancement bonus to Speed to the team"
-      },
+      "shortDescription": "Increase team Speed",
+      "limitCost": 1,
+      "effect": "+1 #Enhancement bonus to Speed to the team",
       "description": "Reaching places in time is important. you should try it as well. With this spell your movement will be a breeze.",
       "duration": "-"
+    },
+    {
+      "id": "awaken",
+      "name": "Awaken",
+      "tier": 1,
+      "apCost": "3",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing",
+        "Boon"
+      ],
+      "shortDescription": "Wake unconscious allies and clear stun",
+      "limitCost": 0,
+      "effect": "Wake unconscious targets. Attempt to remove [[Condition - Stunned]] on the whole team or 1 target.",
+      "description": "Flavor text to be written",
+      "duration": "Instant",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Stabilize",
+            "id": "stabilize"
+          }
+        ]
+      }
     },
     {
       "id": "bestial-arms",
       "name": "Bestial Arms",
       "tier": 1,
-      "type": "basic",
       "apCost": "-",
       "attributes": "AG/DX",
       "traits": [
@@ -561,10 +545,8 @@
         "Transformation"
       ],
       "shortDescription": "Grow claws and defensive arm covering",
-      "basic": {
-        "limitCost": 1,
-        "effect": "You get up to two 1d4 Unarmed or 1H weapons with #Light trait. You can unarmed deflect with them."
-      },
+      "limitCost": 1,
+      "effect": "You get up to two 1d4 Unarmed or 1H weapons with #Light and #Reach traits. You can unarmed deflect with them.",
       "description": "Basic transformation step on a way to become a furry beast. The utility of this spell is overrated, as a dagger is more versatile.  Authors note: I've only seen druids and furry pervs use this spell, and in Elzmeer we don't teach druidism. This spell won't count for exam qualifications.",
       "duration": "-"
     },
@@ -572,20 +554,18 @@
       "id": "binding-chains",
       "name": "Binding Chains",
       "tier": 1,
-      "type": "basic",
       "apCost": "5",
       "attributes": "EN/WL",
       "traits": [
         "Spell",
         "Conjuration",
         "Bane",
-        "Strike"
+        "Strike",
+        "Active"
       ],
       "shortDescription": "Bind target with magical chains to restrict movement",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Target's speed is reduced to 1, Target can attempt to break the chain, which has Tier* 6 HP, or do a Break roll (breaking skill/MG vs Spellcraft) for 2AP."
-      },
+      "limitCost": 0,
+      "effect": "Target's speed is reduced to 1, Target can attempt to break the chain, which has Tier* 6 HP, or do a Break roll (breaking skill/MG vs Spellcraft) for 2AP.",
       "description": "Flavor text to be written",
       "duration": "3 rounds"
     },
@@ -593,28 +573,51 @@
       "id": "elemental-strike",
       "name": "Elemental Strike",
       "tier": 1,
-      "type": "basic",
       "apCost": "2",
       "attributes": "AG/WT",
       "traits": [
         "Spell",
         "Offensive",
-        "Strike"
+        "Strike",
+        "Active"
       ],
       "shortDescription": "Attack a target with chosen elemental damage",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Spellcraft * 4d damage of chosen element on a hit",
-        "distance": "3m"
-      },
+      "limitCost": 0,
+      "effect": "`[Spellcraft]d6` damage of chosen element on a hit",
       "description": "The most versatile offensive spell out there. People enlarge it, make it into cones, rays, bursts and walls. ",
       "duration": "-"
+    },
+    {
+      "id": "elemental-weapon",
+      "name": "Elemental Weapon",
+      "tier": 1,
+      "apCost": "—",
+      "attributes": "WL/AG",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Equipment",
+        "Strike"
+      ],
+      "shortDescription": "Imbue weapon(s) with your element",
+      "limitCost": 1,
+      "effect": "Imbue weapon(s) with an element of your choice. Weapons deal +`[Spellcraft]` elemental damage.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Elemental Strike",
+            "id": "elemental-strike"
+          }
+        ]
+      }
     },
     {
       "id": "empower-weapons",
       "name": "Empower Weapons",
       "tier": 1,
-      "type": "advanced",
       "apCost": "-",
       "attributes": "WT/AG",
       "traits": [
@@ -624,14 +627,8 @@
         "Equipment"
       ],
       "shortDescription": "Empower weapons with magic for extra damage",
-      "basic": {
-        "limitCost": 1,
-        "effect": "Weapons of you deal +1 damage. This is an Equipment bonus."
-      },
-      "advanced": {
-        "limitCost": "Self 0 / Party 1",
-        "effect": "Weapons of your allies deal +1 damage"
-      },
+      "limitCost": "Self 1 / Party 1",
+      "effect": "You and/or allies in your zone deal +1 weapon damage. This is an Equipment bonus.",
       "description": "Flavor text to be written",
       "duration": "-"
     },
@@ -639,7 +636,6 @@
       "id": "healing-aura",
       "name": "Healing Aura",
       "tier": 1,
-      "type": "advanced",
       "apCost": "-",
       "attributes": "WL/CH",
       "traits": [
@@ -649,14 +645,8 @@
         "Healing"
       ],
       "shortDescription": "Heal surface injuries of your team.",
-      "basic": {
-        "limitCost": 0,
-        "effect": ""
-      },
-      "advanced": {
-        "limitCost": 2,
-        "effect": "Spellcraft HP of healing per turn for all allies. Heals first health then stamina damage. Stacks with similar healing effects."
-      },
+      "limitCost": 2,
+      "effect": "Spellcraft HP of healing per turn for all allies. Heals first health then stamina damage. Stacks with similar healing effects.",
       "description": "The main reason to have a mage in the group. ",
       "duration": "-"
     },
@@ -664,7 +654,6 @@
       "id": "levitation",
       "name": "Levitation",
       "tier": 1,
-      "type": "advanced",
       "apCost": "-",
       "attributes": "AG/MG",
       "traits": [
@@ -673,14 +662,8 @@
         "Manipulation"
       ],
       "shortDescription": "Levitate targets to move them through the air",
-      "basic": {
-        "limitCost": 3,
-        "effect": "Each AP spent moves 1 target by 1m in the same direction. Any successful attack against you will require an Endure check or your ability to hold the spell falters."
-      },
-      "advanced": {
-        "limitCost": 3,
-        "effect": "Each AP spent moves 1 target or the whole team by 1m in the same direction. Any successful attack against you will require an Endure check or your ability to hold the spell falters."
-      },
+      "limitCost": "Self 3 / Party 3",
+      "effect": "Each AP spent moves 1 target within its zone; moving it to a connected zone costs 1 AP. Can affect yourself, 1 target, or your whole team. Any successful attack against you requires an Endure check or your ability to hold the spell falters.",
       "description": "Flavor text to be written",
       "duration": "-"
     },
@@ -688,27 +671,56 @@
       "id": "minor-curse",
       "name": "Minor Curse",
       "tier": 1,
-      "type": "basic",
       "apCost": "5",
       "attributes": "CH/WT",
       "traits": [
+        "Active",
         "Spell",
         "Bane",
         "Body"
       ],
       "shortDescription": "Place minor inconvenient curses on enemies",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Give your enemy digestive issues or a nasty pimple on the nose, make them stab their toe twice tomorrow, give them a few days of sexual dysfunction. This is a subtle spell, and someone without knowledge in arcane will not understand that you are cursing them not badmouthing. If they are roll opposed arcane check to hide the presence of the curse."
-      },
+      "limitCost": 0,
+      "effect": "Give your enemy digestive issues or a nasty pimple on the nose, make them stab their toe twice tomorrow, give them a few days of sexual dysfunction. This is a subtle spell, and someone without knowledge in arcane will not understand that you are cursing them not badmouthing. If they are roll opposed arcane check to hide the presence of the curse.",
       "description": "Flavor text to be written",
       "duration": "1d6 days"
+    },
+    {
+      "id": "minor-healing",
+      "name": "Minor Healing",
+      "tier": 1,
+      "apCost": "3",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing",
+        "Boon"
+      ],
+      "shortDescription": "Instant single-target heal",
+      "limitCost": 0,
+      "effect": "Heal `[Spellcraft]d6` HP. Only fixes HP/Stamina pools.",
+      "description": "Flavor text to be written",
+      "duration": "Instant",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Lend Vitality",
+            "id": "lend-vitality"
+          },
+          {
+            "type": "skill",
+            "skillName": "Medicine",
+            "minLevel": 1
+          }
+        ]
+      }
     },
     {
       "id": "obscure",
       "name": "Obscure",
       "tier": 1,
-      "type": "advanced",
       "apCost": "3",
       "attributes": "PR/WT",
       "traits": [
@@ -718,14 +730,8 @@
         "Illusion"
       ],
       "shortDescription": "Make yourself or team less noticeable from distance",
-      "basic": {
-        "limitCost": 3,
-        "effect": "All enemies 5m or further you roll contested stealth checks against roll with disadvantage"
-      },
-      "advanced": {
-        "limitCost": "Self 1 / Party 3",
-        "effect": "All enemies 5m or further you roll contested stealth checks against roll with disadvantage"
-      },
+      "limitCost": "Self 1 / Party 3",
+      "effect": "All enemies outside your skirmish roll contested stealth checks against you with disadvantage.",
       "description": "Flavor text to be written",
       "duration": "unlimited/3 rounds"
     },
@@ -733,8 +739,7 @@
       "id": "pest-control",
       "name": "Pest control",
       "tier": 1,
-      "type": "basic",
-      "apCost": "1 shift per 250 m²",
+      "apCost": "1 shift per zone",
       "attributes": "WT/PR",
       "traits": [
         "Spell",
@@ -744,10 +749,8 @@
         "Illusion"
       ],
       "shortDescription": "Control pest population in a small area.",
-      "basic": {
-        "limitCost": 0,
-        "effect": "This ritual has 3 modes of operation."
-      },
+      "limitCost": 0,
+      "effect": "This ritual has 3 modes of operation.",
       "description": "Decades ago the Elzmeer academy student developed this ritual to clean the dorm from pests, It was so efficient, that he dropped out of the academy, took a loan and opened his own business. Sadly, it was too good, and the city was cleansed of pests in a year. To avoid bankruptcy he lowered the spell intensity to just shoo the critters away into other houses. That wasn't enough to save his failing business venture. Thus, the reverse of the ritual was invented. It led to his execution a few weeks later.",
       "duration": "-"
     },
@@ -755,40 +758,62 @@
       "id": "profanity-filter",
       "name": "Profanity filter",
       "tier": 1,
-      "type": "basic",
       "apCost": "R",
       "attributes": "CH/WL",
       "traits": [
+        "Active",
         "Spell",
         "Bane",
         "Mind",
         "Protection"
       ],
       "shortDescription": "Counter curses and profanity by silencing offenders",
-      "basic": {
-        "limitCost": 0,
-        "effect": "When a creatures curses, tries to summon profane beings or casts a curse - you try to shut them up. Contest against their endure (if no magic) or spellcraft. On a success, they lose their actions spent to cast the spell and cannot speak until the end of their turn. If it was a curse or the target takes 3 damage as they bite their tongue."
-      },
+      "limitCost": 0,
+      "effect": "When a creatures curses, tries to summon profane beings or casts a curse - you try to shut them up. Contest against their endure (if no magic) or spellcraft. On a success, they lose their actions spent to cast the spell and cannot speak until the end of their turn. If it was a curse or the target takes 3 damage as they bite their tongue.",
       "description": "Flavor text to be written",
       "duration": "-"
+    },
+    {
+      "id": "resist-element",
+      "name": "Resist Element",
+      "tier": 1,
+      "apCost": "—",
+      "attributes": "WL/EN",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Protection"
+      ],
+      "shortDescription": "Resistance to an element of your choice",
+      "limitCost": 1,
+      "effect": "Resistance to an element of your choice. Reduces incoming damage by `[Spellcraft]`.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Minor Elemental Manipulation",
+            "id": "minor-elemental-manipulation"
+          }
+        ]
+      }
     },
     {
       "id": "simple-barrier",
       "name": "Simple barrier",
       "tier": 1,
-      "type": "basic",
       "apCost": "4",
       "attributes": "EN/WL",
       "traits": [
+        "Active",
         "Spell",
         "Conjuration",
         "Protection"
       ],
       "shortDescription": "Place magical barriers to block or bridge",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Barrier 1m² block can sustain 120KG of static pressure and take Spellcraft x d8 damage before crumbling. You can layer the barrier."
-      },
+      "limitCost": 0,
+      "effect": "Barrier 1m² block can sustain 120KG of static pressure and take Spellcraft x d8 damage before crumbling. You can layer the barrier.",
       "description": "Flavor text to be written",
       "duration": "1 minuta"
     },
@@ -796,23 +821,18 @@
       "id": "summon-skelly-boys",
       "name": "Summon Skelly boys",
       "tier": 1,
-      "type": "advanced",
       "apCost": "-",
       "attributes": "WT/CH",
       "traits": [
         "Spell",
         "Attuned",
-        "Conjuration"
+        "Conjuration",
+        "Active",
+        "Attuned"
       ],
       "shortDescription": "Summon skeleton minions for combat",
-      "basic": {
-        "limitCost": 0,
-        "effect": ""
-      },
-      "advanced": {
-        "limitCost": 0,
-        "effect": "#TODO Summoning rules. I have the vision, just need to formalize it."
-      },
+      "limitCost": 0,
+      "effect": "#TODO Summoning rules. I have the vision, just need to formalize it.",
       "description": "Flavor text to be written",
       "duration": "-"
     },
@@ -820,18 +840,16 @@
       "id": "summon-weapon",
       "name": "Summon weapon",
       "tier": 1,
-      "type": "basic",
       "apCost": "1",
       "attributes": "AG/MG",
       "traits": [
+        "Active",
         "Spell",
         "Conjuration"
       ],
       "shortDescription": "Summon an ephemeral weapon that seeks blood",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Summon an ephemeral weapon that you can use. You can only have 1. It disappears if removed from your hand. If there is no combat the weapon disappears. If you end up not using the weapon to attack until the end of the combat - the weapon strikes you with your modifier."
-      },
+      "limitCost": 0,
+      "effect": "Summon an ephemeral weapon that you can use. You can only have 1. It disappears if removed from your hand. If there is no combat the weapon disappears. If you end up not using the weapon to attack until the end of the combat - the weapon strikes you with your modifier.",
       "description": "Flavor text to be written",
       "duration": "Until the end of the combat encounter."
     },
@@ -839,20 +857,18 @@
       "id": "telekinetic-maneuver",
       "name": "Telekinetic Maneuver",
       "tier": 1,
-      "type": "basic",
       "apCost": "3",
       "attributes": "MG/WL",
       "traits": [
         "Spell",
         "Manipulation",
         "Offensive",
-        "Strike"
+        "Strike",
+        "Active"
       ],
       "shortDescription": "Push, pull, or trip targets telekinetically",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Contested check to perform a combat maneuver. On success the target is moved or prone."
-      },
+      "limitCost": 0,
+      "effect": "Contested check to perform a combat maneuver. On success the target is moved or prone.",
       "description": "Flavor text to be written",
       "duration": "-"
     },
@@ -860,21 +876,626 @@
       "id": "tentacle-arms",
       "name": "Tentacle arms",
       "tier": 1,
-      "type": "basic",
       "apCost": "3AP",
       "attributes": "DX/EN",
       "traits": [
+        "Attuned",
         "Spell",
         "Boon",
         "Transformation"
       ],
       "shortDescription": "Transform limbs into tentacles with extended reach",
-      "basic": {
-        "limitCost": 0,
-        "effect": "Your tentacles have reach 2m, but no fine manipulators. Removes manacles that don't prevent casting spells."
-      },
+      "limitCost": 0,
+      "effect": "Your tentacles count as reach weapons (attack a skirmish without entering it), but have no fine manipulators. Removes manacles that don't prevent casting spells.",
       "description": "Flavor text to be written",
       "duration": "1 shift, cannot be self dispelled. Because you don't have hands to dispell"
+    },
+    {
+      "id": "cleanse-food-and-water",
+      "name": "Cleanse Food and Water",
+      "tier": 2,
+      "apCost": "1 minute",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing"
+      ],
+      "shortDescription": "Remove poison and disease from food and water",
+      "limitCost": 0,
+      "effect": "Remove poison and disease from food and water. 1 minute per serving.",
+      "description": "Flavor text to be written",
+      "duration": "Permanent",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Cure Affliction",
+            "id": "cure-affliction"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cure-affliction",
+      "name": "Cure Affliction",
+      "tier": 2,
+      "apCost": "1 minute",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing"
+      ],
+      "shortDescription": "Cure disease, poison, sickness, contagion",
+      "limitCost": 0,
+      "effect": "Cure disease, poison, sickness, contagion in 1 target.",
+      "description": "Flavor text to be written",
+      "duration": "1 minute",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "skill",
+            "skillName": "Medicine",
+            "minLevel": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "elemental-armor",
+      "name": "Elemental Armor",
+      "tier": 2,
+      "apCost": "—",
+      "attributes": "WL/EN",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Protection",
+        "Strike"
+      ],
+      "shortDescription": "Elemental armor that hurts melee attackers",
+      "limitCost": 2,
+      "effect": "Effect of [[Resist Element]]. Melee attackers take `[Spellcraft] × 2` element damage.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Resist Element",
+            "id": "resist-element"
+          }
+        ]
+      }
+    },
+    {
+      "id": "major-healing",
+      "name": "Major Healing",
+      "tier": 2,
+      "apCost": "5",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing",
+        "Boon"
+      ],
+      "shortDescription": "Strong single-target heal that also patches minor wounds",
+      "limitCost": 0,
+      "effect": "Heal `[Spellcraft]d10` HP. Heals consequences 0.",
+      "description": "Flavor text to be written",
+      "duration": "Instant",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Minor Healing",
+            "id": "minor-healing"
+          },
+          {
+            "type": "skill",
+            "skillName": "Medicine",
+            "minLevel": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "restore-senses",
+      "name": "Restore Senses",
+      "tier": 2,
+      "apCost": "5",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing"
+      ],
+      "shortDescription": "Restore lost senses",
+      "limitCost": 0,
+      "effect": "Cure temporary Blinded, Deafened, Dumb. Heals up to severity 2 sensory wounds.",
+      "description": "Flavor text to be written",
+      "duration": "Instant",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Awaken",
+            "id": "awaken"
+          }
+        ]
+      }
+    },
+    {
+      "id": "summon-elemental",
+      "name": "Summon Elemental",
+      "tier": 2,
+      "apCost": "5",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Attuned",
+        "Conjuration"
+      ],
+      "shortDescription": "Summon an elemental servant",
+      "limitCost": 0,
+      "effect": "Summon an elemental of an element you control. It follows your orders. If destroyed, you cannot reallocate the spent limit until taking a breather.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "domain",
+            "domain": "Spellcraft",
+            "domainLevel": 2
+          },
+          {
+            "type": "spell",
+            "name": "Elemental Strike",
+            "id": "elemental-strike"
+          }
+        ]
+      }
+    },
+    {
+      "id": "summon-elemental-weapon",
+      "name": "Summon Elemental Weapon",
+      "tier": 2,
+      "apCost": "—",
+      "attributes": "WL/AG",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Conjuration",
+        "Equipment"
+      ],
+      "shortDescription": "Summon an elemental weapon",
+      "limitCost": 0,
+      "effect": "#TODO",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Elemental Weapon",
+            "id": "elemental-weapon"
+          },
+          {
+            "type": "spell",
+            "name": "Summon weapon",
+            "id": "summon-weapon"
+          }
+        ]
+      }
+    },
+    {
+      "id": "aura-of-health",
+      "name": "Aura of Health",
+      "tier": 3,
+      "apCost": "—",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Healing",
+        "Boon",
+        "Protection"
+      ],
+      "shortDescription": "Healing Aura that also grants disease and poison resistance",
+      "limitCost": 2,
+      "effect": "Upgrades [[Healing Aura]]: same passive heal + all allies get +`[Spellcraft]` to Endure checks vs disease, poison, exhaustion.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Healing Aura",
+            "id": "healing-aura"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cloud-walking",
+      "name": "Cloud walking",
+      "tier": 3,
+      "apCost": "—",
+      "attributes": "WL/AG",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Manipulation"
+      ],
+      "shortDescription": "Walk on clouds and air",
+      "limitCost": 0,
+      "effect": "#TODO",
+      "description": "Flavor text to be written",
+      "duration": "—"
+    },
+    {
+      "id": "elemental-form",
+      "name": "Elemental Form",
+      "tier": 3,
+      "apCost": "—",
+      "attributes": "WL/EN",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Transformation",
+        "Protection",
+        "Strike"
+      ],
+      "shortDescription": "Become your element",
+      "limitCost": 3,
+      "effect": "Become immune to an element.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Elemental Armor",
+            "id": "elemental-armor"
+          },
+          {
+            "type": "spell",
+            "name": "Summon Elemental",
+            "id": "summon-elemental"
+          }
+        ]
+      }
+    },
+    {
+      "id": "elemental-manipulation",
+      "name": "Elemental Manipulation",
+      "tier": 3,
+      "apCost": "4",
+      "attributes": "WL/AG",
+      "traits": [
+        "Spell",
+        "Active",
+        "Manipulation"
+      ],
+      "shortDescription": "Freeform control of your element",
+      "limitCost": 0,
+      "effect": "Freeform control of your element in your zone and connected zones. Move `[Spellcraft] × 2` volume of element per round (fire, water, earth, air).",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Minor Elemental Manipulation",
+            "id": "minor-elemental-manipulation"
+          },
+          {
+            "type": "spell",
+            "name": "Elemental Strike",
+            "id": "elemental-strike"
+          }
+        ]
+      }
+    },
+    {
+      "id": "healing-slumber",
+      "name": "Healing Slumber",
+      "tier": 3,
+      "apCost": "—",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Healing",
+        "Boon"
+      ],
+      "shortDescription": "Magical sleep that accelerates recovery",
+      "limitCost": 2,
+      "effect": "Puts willing characters to slumber. While sleeping, recovery quality counts as at least +3 or adds +1, whichever is higher, for purposes of recovery.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Healing Aura",
+            "id": "healing-aura"
+          }
+        ]
+      }
+    },
+    {
+      "id": "restoration",
+      "name": "Restoration",
+      "tier": 3,
+      "apCost": "—",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Healing"
+      ],
+      "shortDescription": "Magically patch newly acquired wounds",
+      "limitCost": 0,
+      "effect": "Attempt to patch newly acquired wound. Counts as Surgery; if conducted with surgery, counts as Enhanced treatment.",
+      "description": "Flavor text to be written",
+      "duration": "Ritual",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "skill",
+            "skillName": "Medicine",
+            "minLevel": 3
+          },
+          {
+            "type": "spell",
+            "name": "Major Healing",
+            "id": "major-healing"
+          }
+        ]
+      }
+    },
+    {
+      "id": "restore-mind",
+      "name": "Restore Mind",
+      "tier": 3,
+      "apCost": "5",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing"
+      ],
+      "shortDescription": "Clear mental magical and alchemical effects",
+      "limitCost": 0,
+      "effect": "Attempt to clear compulsion, charm, and other mental magical or alchemical effects.",
+      "description": "Flavor text to be written",
+      "duration": "Instant",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Awaken",
+            "id": "awaken"
+          }
+        ]
+      }
+    },
+    {
+      "id": "control-weather",
+      "name": "Control Weather",
+      "tier": 4,
+      "apCost": "—",
+      "attributes": "WL/EN",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Manipulation"
+      ],
+      "shortDescription": "Control weather",
+      "limitCost": 0,
+      "effect": "Currents, rain, snow, storm.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Elemental Manipulation",
+            "id": "elemental-manipulation"
+          }
+        ]
+      }
+    },
+    {
+      "id": "halt-aging",
+      "name": "Halt Aging",
+      "tier": 4,
+      "apCost": "—",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Healing",
+        "Boon"
+      ],
+      "shortDescription": "Halt the aging process",
+      "limitCost": 2,
+      "effect": "Target doesn't age while the spell is active.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "skill",
+            "skillName": "Medicine",
+            "minLevel": 5
+          },
+          {
+            "type": "skill",
+            "skillName": "Biology",
+            "minLevel": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "major-elemental-manipulation",
+      "name": "Major Elemental Manipulation",
+      "tier": 4,
+      "apCost": "5",
+      "attributes": "WL/EN",
+      "traits": [
+        "Spell",
+        "Active",
+        "Manipulation"
+      ],
+      "shortDescription": "Massive scale elemental control",
+      "limitCost": 0,
+      "effect": "Massive quantities: tons of stone, flood a zone, create a firestorm, sustained hurricane. GM adjudicates scope per element. Lasts `[Spellcraft]` rounds.",
+      "description": "Flavor text to be written",
+      "duration": "`[Spellcraft]` rounds",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Elemental Manipulation",
+            "id": "elemental-manipulation"
+          }
+        ]
+      }
+    },
+    {
+      "id": "regeneration",
+      "name": "Regeneration",
+      "tier": 4,
+      "apCost": "—",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Healing",
+        "Boon"
+      ],
+      "shortDescription": "Persistent regeneration",
+      "limitCost": 3,
+      "effect": "Regen `[Spellcraft]d6` HP/round. Consider healing conditions +4 or add +2, whichever is higher. Every Tenday a medic can attempt to remove a Permanent consequence with a surgery.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Restoration",
+            "id": "restoration"
+          },
+          {
+            "type": "skill",
+            "skillName": "Medicine",
+            "minLevel": 4
+          }
+        ]
+      }
+    },
+    {
+      "id": "resuscitate",
+      "name": "Resuscitate",
+      "tier": 4,
+      "apCost": "5",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Active",
+        "Healing"
+      ],
+      "shortDescription": "Heal a dead body to enable revival",
+      "limitCost": 0,
+      "effect": "Allows healing of the dead body to lower Life and Death check difficulty, or allow it in case of injuries incompatible with life. Failure = the spell doesn't work.",
+      "description": "Flavor text to be written",
+      "duration": "Instant",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Regeneration",
+            "id": "regeneration"
+          },
+          {
+            "type": "spell",
+            "name": "Life and Death",
+            "id": "life-and-death"
+          },
+          {
+            "type": "spell",
+            "name": "Summon Spirit",
+            "id": "summon-spirit"
+          }
+        ]
+      }
+    },
+    {
+      "id": "resurrection",
+      "name": "Resurrection",
+      "tier": 5,
+      "apCost": "1 tenday",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Healing"
+      ],
+      "shortDescription": "Raise the dead",
+      "limitCost": 0,
+      "effect": "Raise the dead. State of the body incurs penalty.",
+      "description": "Flavor text to be written",
+      "duration": "Ritual",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Summon Spirit",
+            "id": "summon-spirit"
+          },
+          {
+            "type": "spell",
+            "name": "Regeneration",
+            "id": "regeneration"
+          },
+          {
+            "type": "spell",
+            "name": "Resuscitate",
+            "id": "resuscitate"
+          }
+        ]
+      }
+    },
+    {
+      "id": "youth",
+      "name": "Youth",
+      "tier": 5,
+      "apCost": "—",
+      "attributes": "WL/CH",
+      "traits": [
+        "Spell",
+        "Attuned",
+        "Healing",
+        "Boon"
+      ],
+      "shortDescription": "Reverse the aging process",
+      "limitCost": 2,
+      "effect": "Targets grow younger with each day for a day.",
+      "description": "Flavor text to be written",
+      "duration": "—",
+      "prerequisites": {
+        "requirements": [
+          {
+            "type": "spell",
+            "name": "Halt Aging",
+            "id": "halt-aging"
+          }
+        ]
+      }
     }
   ]
 }
