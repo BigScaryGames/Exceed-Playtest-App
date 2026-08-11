@@ -8,9 +8,9 @@ const BUNDLED_SPELLS_PATH = `${import.meta.env.BASE_URL}data/spells.json`;
 let spellDatabase: Spell[] = [];
 let spellDatabaseLoaded = false;
 
-// Cache configuration (matches perks cache duration)
+// Cache configuration
 const SPELL_CACHE_KEY = 'exceed-spells-cache';
-const CACHE_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 1 day
 
 interface SpellDatabaseJSON {
   version: string;
@@ -22,13 +22,11 @@ interface SpellCache {
   database: SpellDatabaseJSON;
   timestamp: number;
   expiresAt: number;
-  version: string;  // Track the spells.json version
-  lastUpdated: number;  // Track the spells.json lastUpdated timestamp
 }
 
 /**
  * Get cached spells from localStorage
- * Returns null if cache is expired or if spells.json has been updated (version/lastUpdated mismatch)
+ * Returns null if cache is expired
  */
 function getCachedSpells(): Spell[] | null {
   try {
@@ -41,18 +39,6 @@ function getCachedSpells(): Spell[] | null {
     if (Date.now() > cache.expiresAt) {
       localStorage.removeItem(SPELL_CACHE_KEY);
       console.log('[SpellLoader] Cache expired');
-      return null;
-    }
-
-    // Check if we have a version/lastUpdated mismatch (build updated spells.json)
-    // This happens when the build runs and generates new data
-    const currentVersion = cache.database.version;
-    const currentLastUpdated = cache.database.lastUpdated;
-
-    // If the stored version/lastUpdated doesn't match what's in cache, invalidate
-    if (cache.version !== currentVersion || cache.lastUpdated !== currentLastUpdated) {
-      localStorage.removeItem(SPELL_CACHE_KEY);
-      console.log('[SpellLoader] Cache version mismatch, invalidating');
       return null;
     }
 
@@ -73,8 +59,6 @@ function cacheSpells(database: SpellDatabaseJSON): void {
       database,
       timestamp: Date.now(),
       expiresAt: Date.now() + CACHE_DURATION_MS,
-      version: database.version,
-      lastUpdated: database.lastUpdated,
     };
 
     localStorage.setItem(SPELL_CACHE_KEY, JSON.stringify(cache));
